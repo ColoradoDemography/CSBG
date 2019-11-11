@@ -12,7 +12,7 @@ agePlotPRO  <- function(lvl,listID,ACS,curYr) {
   # Collecting List of Counties
 
   f.ctyAge <- codemog_api(data="b01001",db=ACS,sumlev="50",geography="sumlev",meta="no")
-  f.ctyAge[,8:56] <- sapply(f.ctyAge[,8:56],as.numeric)
+  f.ctyAge[,c(3,8:56)] <- sapply(f.ctyAge[,c(3,8:56)],as.numeric)
  
   ctyfips <- as.character(as.numeric(substr(listID$list1,3,5)))
 
@@ -76,7 +76,7 @@ agePlotPRO  <- function(lvl,listID,ACS,curYr) {
                     age75p = 	age75/totalpopulation)  
     
     f.agesum_agy$geoname <- listID$plName1
-    f.agesum_agy$county <- "1000"
+    f.agesum_agy$county <- 0
     f.agesum_agy <- f.agesum_agy[,c(23,24,1:22)]
    
   # Combine file
@@ -130,7 +130,7 @@ agePlotPRO  <- function(lvl,listID,ACS,curYr) {
            spread(age_cat,cat_pop)
     f.place_pop$type <- "Count"
     
-    
+ 
     f.place_tab <- bind_rows(f.place_pct,f.place_pop)
     f.place_tab <- f.place_tab %>% arrange(county,desc(type))
     f.place_tab <- f.place_tab[,c(1,14,3:12)]
@@ -142,7 +142,7 @@ agePlotPRO  <- function(lvl,listID,ACS,curYr) {
     
 
   #Preparing Plot
-  f.place <- f.place[which(f.place$age_cat != "Total"),]
+  f.place <- f.place[which(f.place$age_cat != "Total"),] %>% arrange(county)
   f.place$indText  <- paste0(f.place$geoname," Age Category: ",f.place$age_cat," ",percent(f.place$age_pct * 100))  
   grTitle <- paste0("Table 1: Age Distribution, ",listID$plName1)
 
@@ -188,7 +188,7 @@ if(length(ctyfips) > 1 ){
                args = list("transforms[0].value", unique(f.place$geoname)[6]),
                label = unique(f.place$geoname)[6]),
           list(method = "restyle",
-               args = list("transforms[0].value", unique(f.place$geoname)[6]),
+               args = list("transforms[0].value", unique(f.place$geoname)[7]),
                label = unique(f.place$geoname)[7])
       )
   )))

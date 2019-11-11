@@ -13,7 +13,7 @@ povertyPRO <- function(lvl,listID, ACS,PreACS,curYr,tabtype){
   # Collecting List of Counties
 
  f.povertycty <- codemog_api(data="b17024",db=ACS,sumlev="50",geography="sumlev",meta="no")
- f.povertycty[,8:138] <- sapply(f.povertycty[,8:138],as.numeric)
+ f.povertycty[,c(3,8:138)] <- sapply(f.povertycty[,c(3,8:138)],as.numeric)
  
   ctyfips <- as.character(as.numeric(substr(listID$list1,3,5)))
   
@@ -107,7 +107,7 @@ povertyPRO <- function(lvl,listID, ACS,PreACS,curYr,tabtype){
               TOT.POP.PCT = 1)
      
   f.povertyagyVAL$geoname <- listID$plName1  
-  f.povertyagyVAL$county <- "1000"
+  f.povertyagyVAL$county <- 0
 
   f.povertyagyVAL <- f.povertyagyVAL[,c("geoname", "county", "POV.LT50", "POV.5074", "POV.7599",
                                     "POV.100124", "POV.125149", "POV.150174", "POV.175199",
@@ -128,7 +128,7 @@ f.povertycty_PL <- f.povertycty_P %>%
         gather(POV.LEVEL,value,POV.LT50.PCT:TOT.POP.PCT,factor_key=TRUE) %>%
         arrange(POV.LEVEL)
 
-f.povertycty_PL <- f.povertycty_PL[which(f.povertycty_PL$POV.LEVEL != "TOT.POP.PCT"),]
+f.povertycty_PL <- f.povertycty_PL[which(f.povertycty_PL$POV.LEVEL != "TOT.POP.PCT"),] %>% arrange(county, POV.LEVEL)
 
 f.povertycty_PL$POV.LEVEL <- plyr::revalue(f.povertycty_PL$POV.LEVEL,
                                 c("POV.LT50.PCT" = "Less than 50%","POV.5074.PCT" = "50 to 74%",
@@ -188,7 +188,7 @@ POVPlot <- f.povertycty_PL %>%
                args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[6]),
                label = unique(f.povertycty_PL$geoname)[6]),
           list(method = "restyle",
-               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[6]),
+               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[7]),
                label = unique(f.povertycty_PL$geoname)[7])
       )
   )))
@@ -597,7 +597,7 @@ f.povertyagysum <- f.povertyagyVAL2 %>%
 
 f.povertyagyVAL3  <- bind_rows(f.povertyagyVAL2,f.povertyagysum) %>%
                    mutate(geoname = listID$plName1, 
-                          county = "1000") %>%
+                          county = 0) %>%
                    arrange(county) %>%
                    group_by(geoname, county, POV.LEVEL) %>%
                    mutate(nLE05.PCT	 =	nLE05.TOT/nAGE.TOT,
@@ -730,7 +730,7 @@ if(length(ctyfips) > 1) {
              select(ACS:ageGE55.FPL.PCT)
      
          f.povertyagyVAL$geoname <- listID$plName1  
-         f.povertyagyVAL$county <- "1000"
+         f.povertyagyVAL$county <- 0
 
   f.povertyagyVAL <- f.povertyagyVAL[,c("geoname", "county", "ACS", "TOT.POP.TOT",
                                         "age0017.TOT.TOT", "age0017.FPL.TOT", "age0017.FPL.PCT",
@@ -746,7 +746,7 @@ if(length(ctyfips) > 1) {
  # Previous Period data
 
   f.povertyctyPRE <- codemog_api(data="b17024",db=PreACS,sumlev="50",geography="sumlev",meta="no")
-  f.povertyctyPRE[,8:138] <- sapply(f.povertyctyPRE[,8:138],as.numeric)
+  f.povertyctyPRE[,c(3,8:138)] <- sapply(f.povertyctyPRE[,c(3,8:138)],as.numeric)
  
   f.povertyctyPREVAL <- f.povertyctyPRE %>%  filter(county %in% ctyfips) 
     
@@ -799,7 +799,7 @@ if(length(ctyfips) > 1) {
              select(ACS:ageGE55.FPL.PCT)
      
          f.povertyagyVALPRE$geoname <- listID$plName1  
-         f.povertyagyVALPRE$county <- "1000"
+         f.povertyagyVALPRE$county <- 0
 
   f.povertyagyVALPRE <- f.povertyagyVALPRE[,c("geoname", "county", "ACS", "TOT.POP.TOT",
                                         "age0017.TOT.TOT", "age0017.FPL.TOT", "age0017.FPL.PCT",
@@ -878,7 +878,7 @@ POVPlot <- f.povertycty_PL %>%
                args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[6]),
                label = unique(f.povertycty_PL$geoname)[6]),
           list(method = "restyle",
-               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[6]),
+               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[7]),
                label = unique(f.povertycty_PL$geoname)[7])
       )
   )))
@@ -918,7 +918,7 @@ POVPlot <- f.povertycty_PL %>%
   
     f.povtabPRE_FPLW <- inner_join(f.povtabPRE_FPLW,f.povtabPRE_TOT, by=c("county","age_cat")) 
     f.povtabCUR_FPLW <- inner_join(f.povtabCUR_FPLW,f.povtabCUR_TOT, by=c("county","age_cat")) 
- 
+
     f.povertycty_tab <- bind_rows(f.povtabPRE_FPLW,f.povtabCUR_FPLW) %>% arrange(county,ACS.x, age_cat)
     f.povertycty_tab <-f.povertycty_tab[,c(1,3,4,6,7,12)]
     

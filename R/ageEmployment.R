@@ -16,7 +16,7 @@ ageEmployment <- function(lvl,listID, ACS,curYr) {
     ctyfips <- as.character(as.numeric(substr(listID$list1,3,5)))
    
    f.ctyEMP <- codemog_api(data="b23001",db=ACS,sumlev="50",geography="sumlev",meta="no")
-   f.ctyEMP[,8:180] <- sapply(f.ctyEMP[,8:180],as.numeric)
+   f.ctyEMP[,c(3,8:180)] <- sapply(f.ctyEMP[,c(3,8:180)],as.numeric)
 
    f.ctyEMP_cty <- f.ctyEMP %>%
              filter(county %in% ctyfips) %>%
@@ -224,7 +224,7 @@ if(length(ctyfips) > 1) {
               NLF.75P = NLF.75/TOT.75       )
      
     f.ctyEMP_agy$geoname <- listID$plName1
-    f.ctyEMP_agy$county <- "1000"
+    f.ctyEMP_agy$county <- 0
 
     f.ctyEMP_agy <- f.ctyEMP_agy[,c("geoname", "county", "TOT.1619", "LF.1619", "CIVIL.1619", "EMP.1619", "UNEMP.1619", "NLF.1619", 
                                 "LF.1619P", "EMP.1619P", "UNEMP.1619P", "NLF.1619P", "TOT.2024", "LF.2024", "CIVIL.2024", "EMP.2024", 
@@ -242,8 +242,8 @@ if(length(ctyfips) > 1) {
    
 }
  f.ctyEMP_cty$geoname <- sub(", Colorado","",f.ctyEMP_cty$geoname)  
- 
- ctyList <- as.list(unique(f.ctyEMP_cty$geoname))
+
+ ctyList <- as.list(unique(sort(f.ctyEMP_cty$county)))
    
  # preparing files
      f.ctyEMP_tot <- f.ctyEMP_cty[, c(1,2, 3:8,  13:18, 23:28, 33:38, 43:48, 53:58, 63:68, 73:78)]
@@ -297,15 +297,15 @@ if(length(ctyfips) > 1) {
   
 
     # Plotly  
-    f.ctyEMPL_LF <- f.ctyEMPL_pct[which(f.ctyEMPL_pct$type == "In Labor Force"),]
+    f.ctyEMPL_LF <- f.ctyEMPL_pct[which(f.ctyEMPL_pct$type == "In Labor Force"),] %>% arrange(factor(county, levels = ctyList))
     
     f.ctyEMPL_LF$indText  <- paste0( f.ctyEMPL_LF$geoname," Age Category: ", f.ctyEMPL_LF$age_cat," ",percent( f.ctyEMPL_LF$pct * 100))  
     grTitleLF <- paste0("Table 2a: Age Distribution by Percentage in Labor Force, ",listID$plName1)
+ 
+ f.ctyEMPL_plt <- f.ctyEMPL_pct[which(f.ctyEMPL_pct$type == "Unemployed"),] %>% arrange(county)
     
-    f.ctyEMPL_plt <- f.ctyEMPL_pct[which(f.ctyEMPL_pct$type == "Unemployed"),]
-    
-     f.ctyEMPL_plt$indText  <- paste0( f.ctyEMPL_plt$geoname," Age Category: ", f.ctyEMPL_plt$age_cat," ",percent( f.ctyEMPL_plt$pct * 100))  
-    grTitle <- paste0("Table 2b: Age Distribution by Percentage Unemployed, ",listID$plName1)
+ f.ctyEMPL_plt$indText  <- paste0( f.ctyEMPL_plt$geoname," Age Category: ", f.ctyEMPL_plt$age_cat," ",percent( f.ctyEMPL_plt$pct * 100))  
+ grTitle <- paste0("Table 2b: Age Distribution by Percentage Unemployed, ",listID$plName1)
 
 # People in Labor Force
 if(length(ctyfips) > 1 ){
@@ -350,7 +350,7 @@ if(length(ctyfips) > 1 ){
                args = list("transforms[0].value", unique(f.ctyEMPL_LF$geoname)[6]),
                label = unique(f.ctyEMPL_LF$geoname)[6]),
           list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyEMPL_LF$geoname)[6]),
+               args = list("transforms[0].value", unique(f.ctyEMPL_LF$geoname)[7]),
                label = unique(f.ctyEMPL_LF$geoname)[7])
       )
   )))
@@ -381,7 +381,7 @@ if(length(ctyfips) > 1 ){
     type = 'bar', 
     x = ~age_cat, 
     y = ~pct,
-   # color=~type,
+  #  color=~type,
     text = ~indText,
     hoverinfo = 'text',
     transforms = list(
@@ -389,7 +389,7 @@ if(length(ctyfips) > 1 ){
         type = 'filter',
         target = ~geoname,
         operation = '=',
-        value = unique(f.ctyEMPL_pct$geoname)[1]
+        value = unique(f.ctyEMPL_plt$geoname)[1]
       )
   )) %>% layout( title=grTitle, yaxis = list(title = 'Percent',tickformat = "%"), xaxis=list(title='Age Category'),
           showlegend = FALSE,
@@ -399,26 +399,26 @@ if(length(ctyfips) > 1 ){
         active = 0,
         buttons = list(
           list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyEMPL_pct$geoname)[1]),
-               label = unique(f.ctyEMPL_pct$geoname)[1]),
+               args = list("transforms[0].value", unique(f.ctyEMPL_plt$geoname)[1]),
+               label = unique(f.ctyEMPL_plt$geoname)[1]),
           list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyEMPL_pct$geoname)[2]),
-               label = unique(f.ctyEMPL_pct$geoname)[2]),
+               args = list("transforms[0].value", unique(f.ctyEMPL_plt$geoname)[2]),
+               label = unique(f.ctyEMPL_plt$geoname)[2]),
           list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyEMPL_pct$geoname)[3]),
-               label = unique(f.ctyEMPL_pct$geoname)[3]),
+               args = list("transforms[0].value", unique(f.ctyEMPL_plt$geoname)[3]),
+               label = unique(f.ctyEMPL_plt$geoname)[3]),
           list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyEMPL_pct$geoname)[4]),
-               label = unique(f.ctyEMPL_pct$geoname)[4]),
+               args = list("transforms[0].value", unique(f.ctyEMPL_plt$geoname)[4]),
+               label = unique(f.ctyEMPL_plt$geoname)[4]),
           list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyEMPL_pct$geoname)[5]),
-               label = unique(f.ctyEMPL_pct$geoname)[5]),
+               args = list("transforms[0].value", unique(f.ctyEMPL_plt$geoname)[5]),
+               label = unique(f.ctyEMPL_plt$geoname)[5]),
           list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyEMPL_pct$geoname)[6]),
-               label = unique(f.ctyEMPL_pct$geoname)[6]),
+               args = list("transforms[0].value", unique(f.ctyEMPL_plt$geoname)[6]),
+               label = unique(f.ctyEMPL_plt$geoname)[6]),
           list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyEMPL_pct$geoname)[6]),
-               label = unique(f.ctyEMPL_pct$geoname)[7])
+               args = list("transforms[0].value", unique(f.ctyEMPL_plt$geoname)[7]),
+               label = unique(f.ctyEMPL_plt$geoname)[7])
       )
   )))
 } else {
@@ -435,11 +435,11 @@ if(length(ctyfips) > 1 ){
         type = 'filter',
         target = ~geoname,
         operation = '=',
-        value = unique(f.ctyEMPL_pct$geoname)[1]
+        value = unique(f.ctyEMPL_plt$geoname)[1]
       )
-  ))   %>% layout( title=grTitle, yaxis = list(title = 'Percent',tickformat = "%"), xaxis=list(title='Age Category'),
+  ))   %>% layout( title=grTitleLF, yaxis = list(title = 'Percent',tickformat = "%"), xaxis=list(title='Age Category'),
           showlegend = FALSE)
-}
+}    
 
    
     # flex Table and output data file
@@ -458,10 +458,10 @@ if(length(ctyfips) > 1 ){
     f.ctyEMP_Count <-  f.ctyEMPL_tot %>% spread(age_cat,count)
     f.ctyEMP_Percent <-  f.ctyEMPL_pct %>% spread(age_cat,pct)
     
-    f.ctyEMP_tab <- bind_rows(f.ctyEMP_Count,f.ctyEMP_Percent)
+    f.ctyEMP_tab <- bind_rows(f.ctyEMP_Count,f.ctyEMP_Percent)  
     # reordering Records for Table
     
-    f.ctyEMP_tab  <- f.ctyEMP_tab %>% arrange(factor(geoname, levels = ctyList),  
+    f.ctyEMP_tab  <- f.ctyEMP_tab %>% arrange(factor(county, levels = ctyList),  
                                               factor(type, levels = typeList), desc(type2))
     
     f.ctyEMP_tab$type <- ifelse(lag(f.ctyEMP_tab$type) == f.ctyEMP_tab$type,"",f.ctyEMP_tab$type)
