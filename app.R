@@ -532,7 +532,7 @@ server <- function(input, output, session) {
           outtabpov3 <- pov3_list$data
           
           output$POVTabOut3 <- DT::renderDataTable(outtabpov3,
-                                                   options = list(pageLength = 10,
+                                                   options = list(pageLength = 6,
                                                                   autowidth= TRUE,
                                                                   scrollX = TRUE, scrollY=TRUE),
                                                                   rownames = FALSE,
