@@ -128,7 +128,7 @@ educPRO <- function(lvl,listID, ACS,curYr){
  
 
  # Creating Plot data file
- browser()
+
  f.educctyPlot <- bind_rows(f.educctyPovP,f.educctyTotP)  %>% arrange(as.numeric(county))
  f.educctyPlot <- f.educctyPlot[which(f.educctyPlot$educatt != "TOT"),]
 
