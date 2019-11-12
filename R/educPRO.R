@@ -107,59 +107,62 @@ educPRO <- function(lvl,listID, ACS,curYr){
 
  f.educctyPovC <- f.educctyVAL[,c("county", "LTHS.POV", "HSGRAD.POV", "COLL.POV", "BA.POV", "TOT.POV")] %>%
                  gather(var,value,LTHS.POV:TOT.POV) %>%
-                 separate(var,c("educatt","level"))
+                 separate(var,c("educatt","lvl"))
  
  f.educctyPovP <- f.educctyVAL[,c("geoname", "county", "LTHS.POV.P", "HSGRAD.POV.P", "COLL.POV.P", "BA.POV.P", "TOT.POV.P")] %>%
               gather(var,value,LTHS.POV.P:TOT.POV.P)  %>%
-                 separate(var,c("educatt","level","type"))
+                 separate(var,c("educatt","lvl","type"))
     
  f.educctyTotC <- f.educctyVAL[,c("county", "LTHS.TOT", "HSGRAD.TOT", "COLL.TOT", "BA.TOT", "TOT.TOT")] %>%
               gather(var,value,LTHS.TOT:TOT.TOT) %>%
-                 separate(var,c("educatt","level"))
+                 separate(var,c("educatt","lvl"))
  
  f.educctyTotP <- f.educctyVAL[,c("geoname","county", "LTHS.TOT.P", "HSGRAD.TOT.P", "COLL.TOT.P", "BA.TOT.P", "TOT.TOT.P")] %>%
                gather(var,value,LTHS.TOT.P:TOT.TOT.P) %>%
-                 separate(var,c("educatt","level","type"))
+                 separate(var,c("educatt","lvl","type"))
  
  f.educctyRow <- f.educctyVAL[,c("county", "LTHS.POV.PCT", "HSGRAD.POV.PCT", "COLL.POV.PCT", 
                                  "BA.POV.PCT", "TOT.POV.PCT")] %>%
                  gather(var,value,LTHS.POV.PCT:TOT.POV.PCT) %>%
-                 separate(var,c("educatt","level","type"))
+                 separate(var,c("educatt","lvl","type"))
  
 
  # Creating Plot data file
 
  f.educctyPlot <- bind_rows(f.educctyPovP,f.educctyTotP)  %>% arrange(as.numeric(county))
- f.educctyPlot <- f.educctyPlot[which(f.educctyPlot$educatt != "TOT"),]
+ f.educctyPlot <- f.educctyPlot[which(f.educctyPlot$educatt != "TOT"),] 
 
+ 
  
   f.educctyPlot$educatt <- plyr::revalue(f.educctyPlot$educatt,  c("LTHS"="Less Than High School",
                          "HSGRAD" = "High School Graduate",
                          "COLL" = "Some College, Associates Degree",
                          "BA" = "Bachelor's Degree or Higher"))
   
-  f.educctyPlot$educatt <- factor(f.educctyPlot$educatt, 
-                                  levels= c("Less Than High School",
-                                           "High School Graduate",
-                                           "Some College, Associates Degree",
-                                           "Bachelor's Degree or Higher")) 
+ f.educctyPlot$educatt <-  factor(f.educctyPlot$educatt, levels=c("Less Than High School",
+                 "High School Graduate",
+                  "Some College, Associates Degree",
+                    "Bachelor's Degree or Higher")) 
   
- f.educctyPlot$level <- ifelse(f.educctyPlot$level == "POV","Persons Below FPL","All Persons")
- f.educctyPlot$level <- factor(f.educctyPlot$level,
-                                levels= c("Persons Below FPL","All Persons"))
+ f.educctyPlot$lvl <- ifelse(f.educctyPlot$lvl == "POV","Persons Below FPL","All Persons")
+ f.educctyPlot$lvl <- factor(f.educctyPlot$lvl, levels = c("Persons Below FPL","All Persons"))
+
+ f.educctyPlot <-  f.educctyPlot %>% arrange(educatt,lvl,county)
  
+ 
+
  # Plotly plot
   f.educctyPlot$indText  <- paste0( f.educctyPlot$geoname," Educational Attainment: ", f.educctyPlot$educatt," ",percent( f.educctyPlot$value * 100)) 
     grTitle <- paste0("Table 4: Educational Attainment by Federal Poverty Level, ",listID$plName1,"\nPersons Age 25 and Older")
 
 
 if(length(ctyfips) > 1 ){
- EDUCPlot <- f.educctyPlot %>%
+EDUCPlot <- f.educctyPlot %>%
   plot_ly(
     type = 'bar', 
     x = ~educatt, 
     y = ~value,
-    color=~level,
+    color= ~lvl,
     text = ~indText,
     hoverinfo = 'text',
     transforms = list(
@@ -170,7 +173,7 @@ if(length(ctyfips) > 1 ){
         value = unique(f.educctyPlot$geoname)[1]
       )
   )) %>% layout( title=grTitle, yaxis = list(title = 'Percent',tickformat = "%"), xaxis=list(title='Educational Attainment'),
-          showlegend = FALSE,
+          showlegend = TRUE,
     updatemenus = list(
       list(
         type = 'dropdown',
@@ -201,11 +204,11 @@ if(length(ctyfips) > 1 ){
   )))
 } else {
    EDUCPlot <- f.educctyPlot %>%
-  plot_ly(
+     plot_ly(
     type = 'bar', 
     x = ~educatt, 
     y = ~value,
-    color=~level,
+    color = ~lvl,
     text = ~indText,
     hoverinfo = 'text',
     transforms = list(
@@ -215,8 +218,8 @@ if(length(ctyfips) > 1 ){
         operation = '=',
         value = unique(f.educctyPlot$geoname)[1]
       )
-  ))   %>% layout( title=grTitleLF, yaxis = list(title = 'Percent',tickformat = "%"), xaxis=list(title='Educational Attainment'),
-          showlegend = FALSE)
+  ))   %>% layout( title=grTitle, yaxis = list(title = 'Percent',tickformat = "%"), xaxis=list(title='Educational Attainment'),
+          showlegend = TRUE)
 }    
  
  #Creating Table data file
