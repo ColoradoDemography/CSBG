@@ -51,49 +51,25 @@ source("R/boxContent.R")
 source("R/captionSrc.R")
 source("R/chkID.R")
 source("R/clrGeoname.R")
-source("R/cocPlot.R")
 source("R/codemog_cdp.r")
 source("R/CountyName.R")
-source("R/dashboardMAP.R")
 source("R/downloadObj.R")
 source("R/downloadObjUI.R")
 source("R/educPRO.R")
-source("R/GenerateVenn.R")
-source("R/houseEstPRO.R")
-source("R/housePRO.R")
-source("R/HouseVal.R")
-source("R/incomePRO.R")
-source("R/incomeSrc.R")
-source("R/jobMigration.R")
-source("R/jobsByIndustry.R")
-source("R/jobsPlot.R")
-source("R/jobsPopForecast.R")
 source("R/listTofips.R")
-source("R/medianAgeTab.R")
-source("R/migbyagePRO.R")
 source("R/NumFmt.R")
-source("R/HousingUnits.R")
 source("R/percent.R")
-source("R/pop_timeseries.R")
-source("R/popForecast.R")
 source("R/popPlace.R")
 source("R/popTable.R")
 source("R/povertyPRO.R")
-source("R/raceTab1.R")
-source("R/raceTab2.R")
-source("R/residentialLF.R")
+source("R/povertyT6.R")
 source("R/roundUpNice.R")
-source("R/setAxis.R")
-source("R/setYrRange.R")
-source("R/simpleCap.R")
-source("R/statsTable1.R")
 source("R/submitPush.R")
 source("R/submitReport.R")
 source("R/tabList.R")
 source("R/tabTitle.R")
 source("R/TempFil.R")
-source("R/weeklyWages.R")
-source("R/unemployment.R")
+
 
 
 
@@ -117,7 +93,6 @@ source("R/unemployment.R")
 
 # Current ACS database
 curACS <- "acs1317"
-preACS <- "acs0812"
 curYr <- 2017
 fipslist <<- ""
 
@@ -149,10 +124,10 @@ fixPath <- function(inPath){
   return(outPath)
 }
 
-#Table 1: Age Distribution
+#Table 1: Population by Age
 age.list <<- list()
 
-# Table 2: Age Distribution by Employment Status
+# Table 2: Population by Age by Employment Status
 emp.list <<- list()
 
 #Population Forecast
@@ -242,7 +217,7 @@ ui <-
                                    ),
                                    #Output Content Checkboxes
                                    checkboxGroupInput("outChk", "Select the Data Elements to display:",
-                                                      choices = c("Table 1: Age Distribution" = "age",
+                                                      choices = c("Table 1: Population by Age" = "age",
                                                                   "Table 2: Age by Employment Status" = "ageemp",
                                                                   "Table 3: Population by Federal Poverty Level" = "pov",
                                                                   "Table 4: Educational Attainment by Federal Poverty Level" = "educatt",
@@ -446,9 +421,9 @@ server <- function(input, output, session) {
         ln1 <- tags$h1(placeName)
         
         
-        #Table 1 Age Distribution  and Age by Poverty Status
+        #Table 1 Population by Age  and Age by Poverty Status
         if("age" %in% input$outChk) {
-          age_text <- tags$h2("Table 1: Age Distribution")
+          age_text <- tags$h2("Table 1: Population by Age")
           age_list <- agePlotPRO(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
           
           outplotp1 <- age_list$plot
@@ -459,10 +434,10 @@ server <- function(input, output, session) {
                                                                   autowidth= TRUE,
                                                                   scrollX = TRUE, scrollY=TRUE),
                                                                   rownames = FALSE,
-                                                                  caption = paste0("Table 1: Age Distribution: ",input$level))
+                                                                  caption = paste0("Table 1: Population by Age: ",input$level))
 
           
-          popa1.info <- tags$div(boxContent(title= "Table 1: Age Distribution",
+          popa1.info <- tags$div(boxContent(title= "Table 1: Population by Age",
                                               description = "The Population by Age Plot displays age categories for a single year.",
                                               MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
                                               urlList = list(c("American Community Survey, Table B01001","https://data.census.gov")) ),
@@ -485,7 +460,7 @@ server <- function(input, output, session) {
 
         #Table 2 Age by Employment Status
         if("ageemp" %in% input$outChk) {
-          emp_text <- tags$h2("Table 2: Age Distribution by Employment Status")
+          emp_text <- tags$h2("Table 2: Age by Employment Status")
           emp_list <- ageEmployment(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
 
           outplote1 <- emp_list$LFPlot
@@ -497,7 +472,7 @@ server <- function(input, output, session) {
                                                                   autowidth= TRUE,
                                                                   scrollX = TRUE, scrollY=TRUE),
                                                                   rownames = FALSE,
-                                                                  caption = paste0("Table 2: Age Distribution by Employment Status: ",input$level))
+                                                                  caption = paste0("Table 2: Age by Employment Status: ",input$level))
 
           
           pope1.info <- tags$div(boxContent(title= "Table 2: Age by Employment Status",
@@ -636,13 +611,13 @@ server <- function(input, output, session) {
         #Table 6: Percent Below Federal Poverty Level by Age Trend
         if("povagetr" %in% input$outChk) {
           pov6_text <- tags$h2("Table 6: Percent Below Federal Poverty Level by Age Trend")
-          pov6_list <- povertyPRO(lvl=input$level,listID=fipslist,ACS=curACS,PreACS = preACS,curYr=curYr,tabtype = 6)
+          pov6_list <- povertyT6(DBPool=DOLAPool,lvl=input$level,listID=fipslist)
 
           outplotpov6 <- pov6_list$plot
           outtabpov6 <- pov6_list$data
           
           output$POVTabOut6 <- DT::renderDataTable(outtabpov6,
-                                                   options = list(pageLength = 6,
+                                                   options = list(pageLength = 12,
                                                                   autowidth= TRUE,
                                                                   scrollX = TRUE, scrollY=TRUE),
                                                                   rownames = FALSE,
