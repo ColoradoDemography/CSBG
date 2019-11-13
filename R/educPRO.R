@@ -248,7 +248,14 @@ EDUCPlot <- f.educctyPlot %>%
   f.educctyTab$value.y <- format(round(f.educctyTab$value.y ,digits=0),  big.mark=",")
   f.educctyTab$value.y.y <- format(round(f.educctyTab$value.y.y ,digits=0),  big.mark=",")
   
-  f.educctyTab <- clrGeoname(f.educctyTab,ctyfips,5)
+   #Clearing geoname
+    if(length(ctyfips) == 1) {
+      npanel1 <- 1
+    } else {
+      npanel1 = length(ctyfips) + 1
+    }
+  
+  f.educctyTab <- clrGeoname(f.educctyTab,"geoname",npanel1,5)
   
   names(f.educctyTab) <- c("Agency/County","Educational Attainment","Percent Below FPL", "Number Below FPL",
                            "Percent of Total","Total","Percent of Total Below FPL")

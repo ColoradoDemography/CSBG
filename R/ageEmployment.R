@@ -468,7 +468,13 @@ if(length(ctyfips) > 1 ){
     f.ctyEMP_tab$type <- ifelse(is.na(f.ctyEMP_tab$type),"In Labor Force",f.ctyEMP_tab$type)
     
     #Clearing geoname
-    f.ctyEMP_tab <- clrGeoname(f.ctyEMP_tab,ctyfips,10)
+    if(length(ctyfips) == 1) {
+      npanel1 <- 1
+    } else {
+      npanel1 = length(ctyfips) + 1
+    }
+    
+    f.ctyEMP_tab <- clrGeoname(f.ctyEMP_tab,"geoname",npanel1,10)
      
     names(f.ctyEMP_tab)[1] <- "Agency/County"
     names(f.ctyEMP_tab)[3] <- "Employment Status"

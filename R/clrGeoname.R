@@ -7,19 +7,14 @@
 #' @export
 #'
 
-clrGeoname <- function(inDF,fipsList,posIncr) {
+clrGeoname <- function(inDF,inVar,npanel,posIncr) {
 
-#Clearing geoname
-    if(length(fipsList) > 1) {
-      NLoop <- length(fipsList) + 1
-    } else {
-      NLoop <- length(fipsList)
-    }
+#Clearing selected vars
      
      startPos <- 2
      endPos <- startPos + (posIncr - 2)
-    for(i in 1:NLoop) {
-     inDF[c(startPos:endPos),1] <- ""
+    for(i in 1:npanel) {
+     inDF[c(startPos:endPos),inVar] <- ""
       startPos <- startPos + posIncr
       endPos <- endPos + posIncr
     }

@@ -144,7 +144,7 @@ agePlotPRO  <- function(lvl,listID,ACS,curYr) {
   #Preparing Plot
   f.place <- f.place[which(f.place$age_cat != "Total"),] %>% arrange(county)
   f.place$indText  <- paste0(f.place$geoname," Age Category: ",f.place$age_cat," ",percent(f.place$age_pct * 100))  
-  grTitle <- paste0("Table 1: Age Distribution, ",listID$plName1)
+  grTitle <- paste0("Table 1: Population by Age, ",listID$plName1)
 
 if(length(ctyfips) > 1 ){
  AgePlot <- f.place %>%
@@ -214,7 +214,7 @@ if(length(ctyfips) > 1 ){
  
  #Producing Flextable
  
- tab_head <- paste0("Table 1: Age Distribution, ",listID$plName1)
+ tab_head <- paste0("Table 1: Population by age, ",listID$plName1)
  
  f.flexage <- flextable(
        f.place_tab,

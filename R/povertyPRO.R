@@ -4,8 +4,8 @@
 #'
 #' @param lvl is the data type ("Regional Summary" or "Counties)
 #' @param listID is the list of selected county codes
-#' @param ACS and PreACS Specify the vintage of the ACS 5-year file
-#' @param tabtype is the table type (3  = Poverty, 5 = Poverty by age 6 =poverty age trend)
+#' @param ACS and PreACS Specify the vintage of the ACS 5-year file 
+#' @param tabtype is the table type (3  = Poverty, 5 = Poverty by age)
 #' @return plotly graphic, data table and data file
 #' @export
 povertyPRO <- function(lvl,listID, ACS,PreACS,curYr,tabtype){
@@ -231,7 +231,16 @@ POVPlot <- f.povertycty_PL %>%
                                    "POV.GE300","TOT.POP")
  
  f.povertycty_tab <- bind_rows(f.povertycty_C,f.povertycty_P) %>% arrange(county,desc(type))
-f.povertycty_tab <- clrGeoname( f.povertycty_tab,ctyfips,2)
+ 
+ 
+  #Clearing geoname
+    if(length(ctyfips) == 1) {
+      npanel1 <- 1
+    } else {
+      npanel1 = length(ctyfips) + 1
+    }
+ 
+f.povertycty_tab <- clrGeoname( f.povertycty_tab,"geoname",npanel1,2)
 f.povertycty_tab <- f.povertycty_tab[,c(1,3:13)]
 
 names(f.povertycty_tab) <- c("Agency/County","Value","Less than 50%", "50 to 74%",
@@ -654,7 +663,15 @@ f.povertycty_P <-  f.povertyctyVAL3[,c(1:3,15:25)]
                                    "300% and Higher","Total"), desc(type)))
  
  f.povertycty_tab <- f.povertycty_tab[,c(1,3:15)]
- f.povertycty_tab <- clrGeoname(f.povertycty_tab,ctyfips,20)
+ 
+  #Clearing geoname
+    if(length(ctyfips) == 1) {
+      npanel1 <- 1
+    } else {
+      npanel1 = length(ctyfips) + 1
+    }
+ 
+ f.povertycty_tab <- clrGeoname(f.povertycty_tab,"geoname",npanel1,20)
  f.povertycty_tab$POV.LEVEL <- ifelse(f.povertycty_tab$type == "Count","",f.povertycty_tab$POV.LEVEL)
  
  names(f.povertycty_tab) <- c("Agency/County","Poverty Level","Value","Under 6","6 to 11","12 to 17",
@@ -677,278 +694,6 @@ f.povertycty_P <-  f.povertyctyVAL3[,c(1:3,15:25)]
 POVPlot <- list()
 
 }  # tabtype == 5
-  
- if(tabtype == 6) {
-
- # Creating first year table
-   f.povertyctyVAL <- f.povertyctydat %>%
-            group_by(geoname, county) %>% 
-            mutate( ACS = ACS,
-              TOT.POP.TOT = b17024001,
-             age0017.TOT.TOT = sum(b17024002, b17024015, b17024028),
-             age0017.FPL.TOT = sum(b17024003, b17024004, b17024005, 
-                               b17024016, b17024017, b17024018, 
-                               b17024029, b17024030, b17024031),
-             age1854.TOT.TOT = sum(b17024041, b17024054, b17024067, b17024080),
-             age1854.FPL.TOT = sum(b17024042, b17024043, b17024044, b17024055,
-                               b17024056, b17024057, b17024068, b17024069,
-                               b17024070, b17024081, b17024082, b17024083),
-             ageGE55.TOT.TOT = sum(b17024093, b17024106, b17024119),
-             ageGE55.FPL.TOT = sum(b17024094, b17024095, b17024096,
-                               b17024107, b17024108, b17024109,
-                               b17024120, b17024121, b17024122),
-             age0017.FPL.PCT = age0017.FPL.TOT/age0017.TOT.TOT,
-             age1854.FPL.PCT = age1854.FPL.TOT/age1854.TOT.TOT,
-             ageGE55.FPL.PCT = ageGE55.FPL.TOT/ageGE55.TOT.TOT) 
-     
-    f.povertyctyVAL <- f.povertyctyVAL[,c("geoname", "county", "ACS", "TOT.POP.TOT",
-                                        "age0017.TOT.TOT", "age0017.FPL.TOT", "age0017.FPL.PCT",
-                                        "age1854.TOT.TOT", "age1854.FPL.TOT", "age1854.FPL.PCT",
-                                        "ageGE55.TOT.TOT", "ageGE55.FPL.TOT", "ageGE55.FPL.PCT")] 
-   
-   
-   
-if(length(ctyfips) > 1) {
-     f.povertyagyVAL <- f.povertyctydat %>%
-           summarize( ACS = ACS,
-             TOT.POP.TOT = sum(b17024001),
-             age0017.TOT.TOT = sum(b17024002 + b17024015 + b17024028),
-             age0017.FPL.TOT = sum(b17024003 + b17024004 + b17024005 + 
-                               b17024016 + b17024017 + b17024018 + 
-                               b17024029 + b17024030 + b17024031),
-             age1854.TOT.TOT = sum(b17024041 + b17024054 + b17024067 + b17024080),
-             age1854.FPL.TOT = sum(b17024042 + b17024043 + b17024044 + b17024055,
-                               b17024056 + b17024057 + b17024068 + b17024069,
-                               b17024070 + b17024081 + b17024082 + b17024083),
-             ageGE55.TOT.TOT = sum(b17024093 + b17024106 + b17024119),
-             ageGE55.FPL.TOT = sum(b17024094 + b17024095 + b17024096,
-                               b17024107 + b17024108 + b17024109,
-                               b17024120 + b17024121 +b17024122)) %>%
-             mutate( age0017.FPL.PCT = age0017.FPL.TOT/age0017.TOT.TOT,
-                     age1854.FPL.PCT = age1854.FPL.TOT/age1854.TOT.TOT,
-                     ageGE55.FPL.PCT = ageGE55.FPL.TOT/ageGE55.TOT.TOT) %>%
-             select(ACS:ageGE55.FPL.PCT)
-     
-         f.povertyagyVAL$geoname <- listID$plName1  
-         f.povertyagyVAL$county <- 0
-
-  f.povertyagyVAL <- f.povertyagyVAL[,c("geoname", "county", "ACS", "TOT.POP.TOT",
-                                        "age0017.TOT.TOT", "age0017.FPL.TOT", "age0017.FPL.PCT",
-                                        "age1854.TOT.TOT", "age1854.FPL.TOT", "age1854.FPL.PCT",
-                                        "ageGE55.TOT.TOT", "ageGE55.FPL.TOT", "ageGE55.FPL.PCT")]  
-   
-   f.povertyctyVAL <- bind_rows(f.povertyagyVAL,f.povertyctyVAL)
-     
-     
-}
-   
-
- # Previous Period data
-
-  f.povertyctyPRE <- codemog_api(data="b17024",db=PreACS,sumlev="50",geography="sumlev",meta="no")
-  f.povertyctyPRE[,c(3,8:138)] <- sapply(f.povertyctyPRE[,c(3,8:138)],as.numeric)
- 
-  f.povertyctyPREVAL <- f.povertyctyPRE %>%  filter(county %in% ctyfips) 
-    
-  f.povertyctyPREVAL$geoname <- sub(", Colorado","", f.povertyctyPREVAL$geoname) 
-  
-  f.povertyctyVALPRE <- f.povertyctyPREVAL %>%
-             group_by(geoname, county) %>% 
-            mutate( ACS = PreACS,
-              TOT.POP.TOT = b17024001,
-             age0017.TOT.TOT = sum(b17024002, b17024015, b17024028),
-             age0017.FPL.TOT = sum(b17024003, b17024004, b17024005, 
-                               b17024016, b17024017, b17024018, 
-                               b17024029, b17024030, b17024031),
-             age1854.TOT.TOT = sum(b17024041, b17024054, b17024067, b17024080),
-             age1854.FPL.TOT = sum(b17024042, b17024043, b17024044, b17024055,
-                               b17024056, b17024057, b17024068, b17024069,
-                               b17024070, b17024081, b17024082, b17024083),
-             ageGE55.TOT.TOT = sum(b17024093, b17024106, b17024119),
-             ageGE55.FPL.TOT = sum(b17024094, b17024095, b17024096,
-                               b17024107, b17024108, b17024109,
-                               b17024120, b17024121, b17024122),
-             age0017.FPL.PCT = age0017.FPL.TOT/age0017.TOT.TOT,
-             age1854.FPL.PCT = age1854.FPL.TOT/age1854.TOT.TOT,
-             ageGE55.FPL.PCT = ageGE55.FPL.TOT/ageGE55.TOT.TOT) 
-     
-    f.povertyctyVALPRE <- f.povertyctyVALPRE[,c("geoname", "county", "ACS", "TOT.POP.TOT",
-                                        "age0017.TOT.TOT", "age0017.FPL.TOT", "age0017.FPL.PCT",
-                                        "age1854.TOT.TOT", "age1854.FPL.TOT", "age1854.FPL.PCT",
-                                        "ageGE55.TOT.TOT", "ageGE55.FPL.TOT", "ageGE55.FPL.PCT")]
-  
-if(length(ctyfips) > 1) {
-     f.povertyagyVALPRE <- f.povertyctyPREVAL %>%
-            summarize( ACS = PreACS,
-             TOT.POP.TOT = sum(b17024001),
-             age0017.TOT.TOT = sum(b17024002 + b17024015 + b17024028),
-             age0017.FPL.TOT = sum(b17024003 + b17024004 + b17024005 + 
-                               b17024016 + b17024017 + b17024018 + 
-                               b17024029 + b17024030 + b17024031),
-             age1854.TOT.TOT = sum(b17024041 + b17024054 + b17024067 + b17024080),
-             age1854.FPL.TOT = sum(b17024042 + b17024043 + b17024044 + b17024055,
-                               b17024056 + b17024057 + b17024068 + b17024069,
-                               b17024070 + b17024081 + b17024082 + b17024083),
-             ageGE55.TOT.TOT = sum(b17024093 + b17024106 + b17024119),
-             ageGE55.FPL.TOT = sum(b17024094 + b17024095 + b17024096,
-                               b17024107 + b17024108 + b17024109,
-                               b17024120 + b17024121 +b17024122)) %>%
-             mutate( age0017.FPL.PCT = age0017.FPL.TOT/age0017.TOT.TOT,
-                     age1854.FPL.PCT = age1854.FPL.TOT/age1854.TOT.TOT,
-                     ageGE55.FPL.PCT = ageGE55.FPL.TOT/ageGE55.TOT.TOT) %>%
-             select(ACS:ageGE55.FPL.PCT)
-     
-         f.povertyagyVALPRE$geoname <- listID$plName1  
-         f.povertyagyVALPRE$county <- 0
-
-  f.povertyagyVALPRE <- f.povertyagyVALPRE[,c("geoname", "county", "ACS", "TOT.POP.TOT",
-                                        "age0017.TOT.TOT", "age0017.FPL.TOT", "age0017.FPL.PCT",
-                                        "age1854.TOT.TOT", "age1854.FPL.TOT", "age1854.FPL.PCT",
-                                        "ageGE55.TOT.TOT", "ageGE55.FPL.TOT", "ageGE55.FPL.PCT")] 
-   
-   f.povertyctyVALPRE <- bind_rows(f.povertyagyVALPRE,f.povertyctyVALPRE)  
-}
-
-
-    f.povertycty_t <- bind_rows(f.povertyctyVALPRE, f.povertyctyVAL) %>%
-         gather(POV.LEVEL,value,TOT.POP.TOT:ageGE55.FPL.PCT,factor_key=TRUE) %>%
-         separate(POV.LEVEL,c("age_cat","scope","measure")) 
-   
-    f.povtabPRE_TOT <- f.povertycty_t[which(f.povertycty_t$ACS == PreACS & f.povertycty_t$scope == "TOT" & f.povertycty_t$measure == "TOT"),]
-    f.povtabPRE_FPL <-  f.povertycty_t[which(f.povertycty_t$ACS == PreACS & f.povertycty_t$scope == "FPL"),]
-    
-    
-    f.povtabCUR_TOT <- f.povertycty_t[which(f.povertycty_t$ACS == ACS & f.povertycty_t$scope == "TOT" & f.povertycty_t$measure == "TOT"),]
-    f.povtabCUR_FPL <-  f.povertycty_t[which(f.povertycty_t$ACS == ACS & f.povertycty_t$scope == "FPL"),]
-    
-# creating Plotly Chart
-
-f.povertycty_PL <- bind_rows(f.povtabPRE_FPL,  f.povtabCUR_FPL) %>% filter(measure == "PCT")
-f.povertycty_PL$age_cat <- ifelse(f.povertycty_PL$age_cat == "age0017", "0 to 17",
-                                ifelse(f.povertycty_PL$age_cat == "age1854", "18 to 54","55 and Older"))
-f.povertycty_PL$age_cat <- factor(f.povertycty_PL$age_cat, 
-                                  levels = c("0 to 17", "18 to 54", "55 and Older"))
-f.povertycty_PL$ACS <- paste0(substr(f.povertycty_PL$ACS,4,5) ,"-",substr(f.povertycty_PL$ACS,6,7))
-
-   
-  
-    f.povertycty_PL$indText  <- paste0( f.povertycty_PL$geoname," Period: ",f.povertycty_PL$ACS," Percent of Age Category, ", f.povertycty_PL$age_cat,": ", percent( f.povertycty_PL$value * 100))  
-    grTitle <- paste0("Table 6: Percent Below Federal Poverty Level by Age Trend, ",listID$plName1)
-
-
-if(length(ctyfips) > 1 ){
-POVPlot <- f.povertycty_PL %>%
-  plot_ly(
-    type = 'bar', 
-    x = ~age_cat, 
-    y = ~value,
-    color= ~ACS,
-    text = ~indText,
-    hoverinfo = 'text',
-    transforms = list(
-      list(
-        type = 'filter',
-        target = ~geoname,
-        operation = '=',
-        value = unique(f.povertycty_PL$geoname)[1]
-      )
-  )) %>% layout( title=grTitle, yaxis = list(title = 'Percent',tickformat = "%"), xaxis=list(title='Percent Below Federal Poverty Level'),
-          showlegend = TRUE,
-    updatemenus = list(
-      list(
-        type = 'dropdown',
-        active = 0,
-        buttons = list(
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[1]),
-               label = unique(f.povertycty_PL$geoname)[1]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[2]),
-               label = unique(f.povertycty_PL$geoname)[2]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[3]),
-               label = unique(f.povertycty_PL$geoname)[3]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[4]),
-               label = unique(f.povertycty_PL$geoname)[4]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[5]),
-               label = unique(f.povertycty_PL$geoname)[5]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[6]),
-               label = unique(f.povertycty_PL$geoname)[6]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[7]),
-               label = unique(f.povertycty_PL$geoname)[7])
-      )
-  )))
-} else {
-   POVPlot <- f.povertycty_PL %>%
-     plot_ly(
-    type = 'bar', 
-    x = ~age_cat, 
-    y = ~value,
-    color = ~ACS,
-    text = ~indText,
-    hoverinfo = 'text',
-    transforms = list(
-      list(
-        type = 'filter',
-        target = ~geoname,
-        operation = '=',
-        value = unique(f.povertycty_PL$geoname)[1]
-      )
-  ))   %>% layout( title=grTitle, yaxis = list(title = 'Percent',tickformat = "%"), xaxis=list(title='Percent Below Federal Poverty Level'),
-          showlegend = TRUE)
-   
-}
-    
-# Creating Table data file
-    #Formatting
-    f.povtabPRE_TOT$value <- NumFmt(f.povtabPRE_TOT$value)
-    f.povtabPRE_FPL$value <- ifelse(f.povtabPRE_FPL$measure == "TOT", NumFmt(f.povtabPRE_FPL$value),percent(f.povtabPRE_FPL$value*100))
-    f.povtabCUR_TOT$value <- NumFmt(f.povtabCUR_TOT$value)
-    f.povtabCUR_FPL$value <- ifelse(f.povtabCUR_FPL$measure == "TOT", NumFmt(f.povtabCUR_FPL$value),percent(f.povtabCUR_FPL$value * 100))
-    
-    f.povtabPRE_FPLW <- spread(f.povtabPRE_FPL,measure,value)
-    f.povtabCUR_FPLW <- spread(f.povtabCUR_FPL,measure,value)
-    
-    names(f.povtabPRE_TOT)[7] <- "valueTOT"
-    names(f.povtabCUR_TOT)[7] <- "valueTOT"
-  
-    f.povtabPRE_FPLW <- inner_join(f.povtabPRE_FPLW,f.povtabPRE_TOT, by=c("county","age_cat")) 
-    f.povtabCUR_FPLW <- inner_join(f.povtabCUR_FPLW,f.povtabCUR_TOT, by=c("county","age_cat")) 
-
-    f.povertycty_tab <- bind_rows(f.povtabPRE_FPLW,f.povtabCUR_FPLW) %>% arrange(county,ACS.x, age_cat)
-    f.povertycty_tab <-f.povertycty_tab[,c(1,3,4,6,7,12)]
-    
-    f.povertycty_tab <- clrGeoname(f.povertycty_tab,ctyfips,6)
-    f.povertycty_tab$age_cat <- ifelse(f.povertycty_tab$age_cat == "age0017", "0 to 17",
-                                ifelse(f.povertycty_tab$age_cat == "age1854", "18 to 54","55 and Older"))
-    
-  names(f.povertycty_tab) <- c("V1","V2","V3","V4","V5","V6")
-    
-    f.povertycty_tab$V2 <- paste0(substr(f.povertycty_tab$V2,4,5) ,"-",substr(f.povertycty_tab$V2,6,7))
-
-    
- # Flex Table
-  tab_head <- paste0("Table 6: Percent Below Federal Poverty Level by Age Trend, ",listID$plName1)
-  
-  
-  f.povFlex <- flextable(
-       f.povertycty_tab,
-       col_keys = names(f.povertycty_tab)) %>%
-       set_header_labels(V1 = "Agency/County", V2= "Period", V3 = "Age Category", V4 = "Percent Below FPL",
-                         V5 = "Persons Below FPL", V6 = "Total Persons") %>%
-       add_header_row(values=tab_head,top=TRUE,colwidths=6) %>%
-       add_footer_row(values=captionSrc("ACS",ACS,"B17024"),top=FALSE,colwidths=6) 
-      
-
-  names(f.povertycty_tab) <- c("Agency/County", "Period", "Age Category", "Percent Below FPL",
-                         "Persons Below FPL", "Total Persons")  
-    
-    
-} #tabtype = 6
   
 
   #bind list
