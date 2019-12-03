@@ -8,9 +8,7 @@ library(tidyverse, quietly=TRUE)
 library(readr)
 library(readxl, quietly=TRUE)
 library(scales, quietly=TRUE)
-library(codemogAPI, quietly=TRUE)
-library(codemogProfile, quietly=TRUE)
-library(codemogLib)
+
 library(knitr, quietly=TRUE)
 library(kableExtra, quietly=TRUE)
 library(RPostgreSQL)
@@ -35,6 +33,7 @@ library(htmltools)
 library(mapview)
 library(DT)
 library(plotly)
+library(tidycensus)
 
 # Additions for Database pool
 library('pool') 
@@ -42,33 +41,44 @@ library('DBI')
 library('stringr')
 library('config')
 
-
+source("R/bldCaption.R")
+source("R/ageEmployment.R")
 source("R/ageForecastPRO.R")
 source("R/agePlotPRO.R")
-source("R/ageEmployment.R")
 source("R/agePoverty.R")
 source("R/boxContent.R")
 source("R/captionSrc.R")
 source("R/chkID.R")
 source("R/clrGeoname.R")
-source("R/codemog_cdp.r")
+source("R/codemog_api.r")
 source("R/CountyName.R")
+source("R/disabilityPRO.R")
 source("R/downloadObj.R")
 source("R/downloadObjUI.R")
 source("R/educPRO.R")
+source("R/familiesPRO.R")
+source("R/graph_objects.R")
+source("R/insurance.R")
+source("R/housingPRO.R")
 source("R/listTofips.R")
 source("R/NumFmt.R")
 source("R/percent.R")
 source("R/popPlace.R")
 source("R/popTable.R")
 source("R/povertyPRO.R")
-source("R/povertyT6.R")
+source("R/povertyPRO2.R")
+source("R/povertyTrend.R")
 source("R/roundUpNice.R")
+source("R/RTHouse.R")
 source("R/submitPush.R")
 source("R/submitReport.R")
 source("R/tabList.R")
 source("R/tabTitle.R")
 source("R/TempFil.R")
+source("R/simpleCap.R")
+source("R/snap.R")
+source("R/wic.R")
+
 
 
 
@@ -217,21 +227,24 @@ ui <-
                                    ),
                                    #Output Content Checkboxes
                                    checkboxGroupInput("outChk", "Select the Data Elements to display:",
-                                                      choices = c("Table 1: Population by Age" = "age",
-                                                                  "Table 2: Age by Employment Status" = "ageemp",
-                                                                  "Table 3: Population by Federal Poverty Level" = "pov",
-                                                                  "Table 4: Educational Attainment by Federal Poverty Level" = "educatt",
-                                                                  "Table 5: Age by Federal Poverty Level" = "povage",
-                                                                  "Table 6: Age by Federal Poverty Level Trend" = "povagetr",
-                                                                  "Table 7: Age by Federal Poverty Level for Persons with Disabilities" = "povagedis",
-                                                                  "Table 8: Households by Occupancy" = "hhpov",
-                                                                  "Table 9: Health Insurance by Source" = "insurance",
-                                                                  "Table 10: Housing Tenure by Poverty" = "tenure"
+                                                      choices = c("Population by Age" = "age",
+                                                                  "Age by Employment Status" = "ageemp",
+                                                                  "Population by Federal Poverty Level" = "pov",
+                                                                  "Educational Attainment by Federal Poverty Level" = "educatt",
+                                                                  "Age by Federal Poverty Level" = "povage",
+                                                                  "Age by Federal Poverty Level Trend" = "povagetr",
+                                                                  "Age by Federal Poverty Level for Persons with Disabilities" = "povagedis",
+                                                                  "Families by Type and Poverty Status" = "hhpov",
+                                                                  "Housing Tenure by Poverty Status" = "tenure",
+                                                                  "Supplemental Nutrition Assistance Program (SNAP)" = "snap",
+                                                                  "Women, Infants and Children (WIC)" = "wic",
+                                                                  "Health Insurance by Source" = "insurance"
+                                                                  
 
                                                       ),
                                                       selected =  c("age","ageemp","pov", "educatt","povage",
                                                                     "povagetr","povagedis","hhpov","hspov",
-                                                                    "insurance","tenure")
+                                                                    "tenure", "snap", "wic", "insurance")
                                    ),
                                    
                                    #Action Button
@@ -421,23 +434,32 @@ server <- function(input, output, session) {
         ln1 <- tags$h1(placeName)
         
         
-        #Table 1 Population by Age  and Age by Poverty Status
+        #Population by Age  and Age by Poverty Status
         if("age" %in% input$outChk) {
-          age_text <- tags$h2("Table 1: Population by Age")
+          age_text <- tags$h2("Population by Age")
           age_list <- agePlotPRO(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
           
           outplotp1 <- age_list$plot
           outtabp1 <- age_list$table
+          outCaption1 <- age_list$caption
           
-          output$AgeTabOut <- DT::renderDataTable(outtabp1,
-                                                   options = list(pageLength = 12,
-                                                                  autowidth= TRUE,
-                                                                  scrollX = TRUE, scrollY=TRUE),
-                                                                  rownames = FALSE,
-                                                                  caption = paste0("Table 1: Population by Age: ",input$level))
+          sketch1 <- htmltools::withTags(table(
+                    tableHeader(outtabp1),
+                    tableFooter(outCaption1)
+                    ))
 
           
-          popa1.info <- tags$div(boxContent(title= "Table 1: Population by Age",
+          AgeTabOut <- datatable(outtabp1, 
+                                 container = sketch1,
+                                 rownames = FALSE,
+                                 caption = paste0("Population by Age: ",input$level),
+                                 options = list(pageLength = 12,
+                                 autowidth= TRUE,
+                                columnDefs = list(list(width = '300px', targets = "_all"))))
+                                                                 
+
+          
+          popa1.info <- tags$div(boxContent(title= "Population by Age",
                                               description = "The Population by Age Plot displays age categories for a single year.",
                                               MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
                                               urlList = list(c("American Community Survey, Table B01001","https://data.census.gov")) ),
@@ -448,7 +470,7 @@ server <- function(input, output, session) {
           age.box1 <- tabBox(width=12, height=500,
                                tabPanel("Plot",renderPlotly({outplotp1})))
           age.box2 <- tabBox(width=12, height=500,
-                               tabPanel("Table",DT::dataTableOutput("AgeTabOut")),
+                               tabPanel("Table",DT::renderDataTable(AgeTabOut)),
                                tabPanel("Sources and Downloads",popa1.info))
           
           
@@ -458,24 +480,33 @@ server <- function(input, output, session) {
           incProgress()
         }
 
-        #Table 2 Age by Employment Status
+        #Age by Employment Status
         if("ageemp" %in% input$outChk) {
-          emp_text <- tags$h2("Table 2: Age by Employment Status")
+          emp_text <- tags$h2("Age by Employment Status")
           emp_list <- ageEmployment(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
 
           outplote1 <- emp_list$LFPlot
           outplote2 <- emp_list$UEMPPlot
           outtabe1 <- emp_list$data
+          outCaption2 <- emp_list$caption
           
-          output$EMPTabOut <- DT::renderDataTable(outtabe1,
-                                                   options = list(pageLength = 10,
-                                                                  autowidth= TRUE,
-                                                                  scrollX = TRUE, scrollY=TRUE),
-                                                                  rownames = FALSE,
-                                                                  caption = paste0("Table 2: Age by Employment Status: ",input$level))
+          sketch2 <- htmltools::withTags(table(
+                    tableHeader(outtabe1),
+                    tableFooter(outCaption2)
+                    ))
+          
+          
+          EMPTabOut <- datatable(outtabe1,
+                       container = sketch2,
+                       rownames = FALSE,
+                      caption = paste0("Age by Employment Status: ",input$level),
+                      options = list(pageLength = 12,
+                      autowidth= TRUE,
+                     columnDefs = list(list(width = '300px', targets = "_all"))))
+                      
 
           
-          pope1.info <- tags$div(boxContent(title= "Table 2: Age by Employment Status",
+          pope1.info <- tags$div(boxContent(title= "Age by Employment Status",
                                               description = "The Age  by Employment Status outputs show 1) the proportion of individuals in the labor force, and the proportion of civilians in the labor force who are unemployed.",
                                               MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
                                               urlList = list(c("American Community Survey, Table B23001","https://data.census.gov")) ),
@@ -488,7 +519,7 @@ server <- function(input, output, session) {
           emp.box2 <- tabBox(width=12, height=500,
                                tabPanel("Plot",renderPlotly({outplote2})))
           emp.box3 <- tabBox(width=12, height=500,
-                               tabPanel("Table",DT::dataTableOutput("EMPTabOut")),
+                               tabPanel("Table",DT::renderDataTable(EMPTabOut)),
                                tabPanel("Sources and Downloads",pope1.info))
           
           
@@ -498,23 +529,32 @@ server <- function(input, output, session) {
           incProgress()
         }  
         
-  #Table 3: Federal Poverty Level
+  #Federal Poverty Level
         if("pov" %in% input$outChk) {
-          pov3_text <- tags$h2("Table 3: Population by Federal Poverty Level")
-          pov3_list <- povertyPRO(lvl=input$level,listID=fipslist,ACS=curACS,PreACS = "",curYr=curYr,tabtype = 3)
+          pov3_text <- tags$h2("Population by Federal Poverty Level")
+          pov3_list <- povertyPRO(lvl=input$level,listID=fipslist,ACS=curACS,PreACS = "",curYr=curYr)
 
           outplotpov3 <- pov3_list$plot
           outtabpov3 <- pov3_list$data
+          outCaption3 <- pov3_list$caption
           
-          output$POVTabOut3 <- DT::renderDataTable(outtabpov3,
-                                                   options = list(pageLength = 6,
-                                                                  autowidth= TRUE,
-                                                                  scrollX = TRUE, scrollY=TRUE),
-                                                                  rownames = FALSE,
-                                                                  caption = paste0("Table 3: Population by Federal Poverty Level ",input$level))
+          sketch3 <- htmltools::withTags(table(
+                    tableHeader(outtabpov3),
+                    tableFooter(outCaption3)
+                    ))
+         
+          
+          POVTabOut3 <- datatable(outtabpov3,
+                                  container = sketch3,
+                                  rownames = FALSE,
+                                  caption = paste0("Population by Federal Poverty Level: ",input$level),
+                                  options = list(pageLength = 6,
+                                                 autowidth= TRUE,
+                                                columnDefs = list(list(width = '300px', targets = "_all"))))
+                                                                  
 
           
-          povpp3.info <- tags$div(boxContent(title= "Table 3: Population by Federal Poverty Level",
+          povpp3.info <- tags$div(boxContent(title= "Population by Federal Poverty Level",
                                               description = "The Federal Poverty Level plots and tables show the population distribution by the Federal Poverty level for the selected agency.",
                                               MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
                                               urlList = list(c("American Community Survey, Table B17024","https://data.census.gov")) ),
@@ -525,7 +565,7 @@ server <- function(input, output, session) {
           pov3.box1 <- tabBox(width=12, height=500,
                                tabPanel("Plot",renderPlotly({outplotpov3})))
           pov3.box2 <- tabBox(width=12, height=500,
-                               tabPanel("Table",DT::dataTableOutput("POVTabOut3")),
+                               tabPanel("Table",DT::renderDataTable(POVTabOut3)),
                                tabPanel("Sources and Downloads",povpp3.info))
           
           
@@ -535,23 +575,31 @@ server <- function(input, output, session) {
           incProgress()
         }                       
         
-      #Table 4: Educational Attainment by Federal Poverty Level
+      #Educational Attainment by Federal Poverty Level
         if("educatt" %in% input$outChk) {
-          educatt_text <- tags$h2("Table 4: Educational Attainment by Federal Poverty Level")
+          educatt_text <- tags$h2("Educational Attainment by Federal Poverty Level")
           educatt_list <- educPRO(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
 
           outploted1 <- educatt_list$plot
           outtabed1 <- educatt_list$data
+          outCaption4 <- educatt_list$caption
+         
+          sketch4 <- htmltools::withTags(table(
+                    tableHeader(outtabed1),
+                    tableFooter(outCaption4)
+                    ))
           
-          output$EDUCTabOut <- DT::renderDataTable(outtabed1,
+          EDUCTabOut <- datatable(outtabed1, 
+                                  container = sketch4,
+                                  rownames = FALSE,
+                                  caption = paste0("Educational Attainment by Federal Poverty Level: ",input$level),
                                                    options = list(pageLength = 10,
                                                                   autowidth= TRUE,
-                                                                  scrollX = TRUE, scrollY=TRUE),
-                                                                  rownames = FALSE,
-                                                                  caption = paste0("Table 4: Educational Attainment by Federal Poverty Level: ",input$level))
-
+                                                                  columnDefs = list(list(width = '300px', targets = "_all"))))
+                                                                  
+                                                                  
           
-          poped1.info <- tags$div(boxContent(title= "Table 4: Educational Attainment by Federal Poverty Level",
+          poped1.info <- tags$div(boxContent(title= "Educational Attainment by Federal Poverty Level",
                                               description = "Educational Attainment by Federal Poverty Level plots and tables show Educational Attainment by the Federal Poverty level for persons age 25 and older.",
                                               MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
                                               urlList = list(c("American Community Survey, Table B17003","https://data.census.gov")) ),
@@ -562,7 +610,7 @@ server <- function(input, output, session) {
           educ.box1 <- tabBox(width=12, height=500,
                                tabPanel("Plot",renderPlotly({outploted1})))
           educ.box2 <- tabBox(width=12, height=500,
-                               tabPanel("Table",DT::dataTableOutput("EDUCTabOut")),
+                               tabPanel("Table",DT::renderDataTable(EDUCTabOut)),
                                tabPanel("Sources and Downloads",poped1.info))
           
           
@@ -572,62 +620,80 @@ server <- function(input, output, session) {
           incProgress()
         }
         
-   # Table 5: Age by Federal Poverty Level
+   # Age by Federal Poverty Level
         if("povage" %in% input$outChk) {
-          pov5_text <- tags$h2("Table 5: Age by Federal Poverty Level")
-          pov5_list <- povertyPRO(lvl=input$level,listID=fipslist,ACS=curACS,PreACS="",curYr=curYr,tabtype = 5)
+          pov5_text <- tags$h2("Age by Federal Poverty Level")
+          pov5_list <- povertyPRO2(DBPool=DOLAPool,lvl=input$level,listID=fipslist,curYR=curYr)
 
-          
+          outplotpov5 <- pov5_list$plot
           outtabpov5 <- pov5_list$data
+          outCaption5 <- pov5_list$caption
+         
+          sketch5 <- htmltools::withTags(table(
+                    tableHeader(outtabpov5),
+                    tableFooter(outCaption5)
+                    ))
+        
           
-          output$POVTabOut5 <- DT::renderDataTable(outtabpov5,
-                                                   options = list(pageLength = 20,
-                                                                  autowidth= TRUE,
-                                                                  scrollX = TRUE, scrollY=TRUE),
-                                                                  rownames = FALSE,
-                                                                  caption = paste0("Table 5: Age by Federal Poverty Level",input$level))
+          POVTabOut5 <- datatable(outtabpov5,
+                                  container = sketch5,
+                                  rownames = FALSE,
+                                  caption = paste0("Age by Federal Poverty Level: ",input$level, " ",curYr),
+                                  options = list(pageLength = 9,
+                                  autowidth= TRUE, 
+                                 columnDefs = list(list(width = '300px', targets = "_all"))))
 
           
-          povpp5.info <- tags$div(boxContent(title= "Table 5: Age by Federal Poverty Level",
+          povpp5.info <- tags$div(boxContent(title= "Age by Federal Poverty Level",
                                               description = "The Age by Federal Poverty Level plots and tables show the distribution of age categoeries by the Federal Poverty level for the selected agency.",
                                               MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
-                                              urlList = list(c("American Community Survey, Table B17024","https://data.census.gov")) ),
+                                              urlList = list(c("Small Area Income and Poverty Estimates (SAIPE) Program","https://www.census.gov/data-tools/demo/saipe/#/?map_geoSelector=aa_c")) ),
                                    tags$br(),
                                    downloadObjUI("povpp5tabl"), downloadObjUI("povpp5data"))
 
           pov5.box0 <- box(width=12,pov5_text)
-          
           pov5.box1 <- tabBox(width=12, height=500,
-                               tabPanel("Table",DT::dataTableOutput("POVTabOut5")),
+                               tabPanel("Plot",renderPlotly({outplotpov5})))
+          pov5.box2 <- tabBox(width=12, height=500,
+                               tabPanel("Table",DT::renderDataTable(POVTabOut5)),
                                tabPanel("Sources and Downloads",povpp5.info))
           
           
           #building List
-          pov5.list <<- list(pov5.box0, pov5.box1)
+          pov5.list <<- list(pov5.box0, pov5.box1, pov5.box2)
           
           incProgress()
         }   
         
-        #Table 6: Percent Below Federal Poverty Level by Age Trend
+        #Percent Below Federal Poverty Level by Age Trend
         if("povagetr" %in% input$outChk) {
-          pov6_text <- tags$h2("Table 6: Percent Below Federal Poverty Level by Age Trend")
-          pov6_list <- povertyT6(DBPool=DOLAPool,lvl=input$level,listID=fipslist)
+          pov6_text <- tags$h2("Percent Below Federal Poverty Level by Age Trend")
+          pov6_list <- povertyTrend(DBPool=DOLAPool,lvl=input$level,listID=fipslist)
 
           outplotpov6 <- pov6_list$plot
           outtabpov6 <- pov6_list$data
+          outCaption6 <- pov6_list$caption
+    
+          sketch6 <- htmltools::withTags(
+            table(
+                  tableHeader(outtabpov6),
+                  tableFooter(outCaption6)
+                    ))
           
-          output$POVTabOut6 <- DT::renderDataTable(outtabpov6,
-                                                   options = list(pageLength = 12,
-                                                                  autowidth= TRUE,
-                                                                  scrollX = TRUE, scrollY=TRUE),
-                                                                  rownames = FALSE,
-                                                                  caption = paste0("Table 6: Percent Below Federal Poverty Level by Age Trend",input$level))
+          POVTabOut6 <-datatable(outtabpov6,
+                                 container = sketch6,
+                                 rownames = FALSE,
+                                 caption = paste0("Percent Below Federal Poverty Level by Age Trend: ",input$level),
+                                 options = list(pageLength = 12,
+                                               autowidth= TRUE,
+                                               columnDefs = list(list(width = '300px', targets = "_all"))))
+                                                                 
 
           
-          povpp6.info <- tags$div(boxContent(title= "Table 6: Percent Below Federal Poverty Level by Age Trend",
-                                              description = "Percent Below Federal Poverty Level by Age Trend plot and table show the th percent below the Federal Poverty level by age for the selected agency for two ACS data periods.",
+          povpp6.info <- tags$div(boxContent(title= "Percent Below Federal Poverty Level by Age Trend",
+                                              description = "Percent Below Federal Poverty Level by Age Trend plot and table show the percentage of persons below the Federal Poverty Level for a 10-year period.",
                                               MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
-                                              urlList = list(c("American Community Survey, Table B17024","https://data.census.gov")) ),
+                                              urlList = list(c("Small Area Income and Poverty Estimates (SAIPE) Program","https://www.census.gov/data-tools/demo/saipe/#/?map_geoSelector=aa_c")) ),
                                    tags$br(),
                                    downloadObjUI("povpp6tabl"), downloadObjUI("povpp6data"))
 
@@ -635,7 +701,7 @@ server <- function(input, output, session) {
           pov6.box1 <- tabBox(width=12, height=500,
                                tabPanel("Plot",renderPlotly({outplotpov6})))
           pov6.box2 <- tabBox(width=12, height=500,
-                               tabPanel("Table",DT::dataTableOutput("POVTabOut6")),
+                               tabPanel("Table",DT::renderDataTable(POVTabOut6)),
                                tabPanel("Sources and Downloads",povpp6.info))
           
           
@@ -644,7 +710,284 @@ server <- function(input, output, session) {
           
           incProgress()
         }
-      }) #Progress Bar
+
+        #Age by Federal Poverty Level for Persons with Disabilities
+        if("povagedis" %in% input$outChk) {
+          dis7_text <- tags$h2("Age by Federal Poverty Level for Persons with Disabilities")
+          dis7_list <- disabilityPRO(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
+
+          outplotdis7 <- dis7_list$plot
+          outtabdis7 <- dis7_list$data
+          outCaption7 <- dis7_list$caption
+  
+          sketch7 <- htmltools::withTags(
+            table(
+                  tableHeader(outtabdis7),
+                  tableFooter(outCaption7)
+                    ))
+          
+          DISTabOut7 <-datatable(outtabdis7,
+                                 container = sketch7,
+                                 rownames = FALSE,
+                                 caption = paste0("Age by Federal Poverty Level for Persons with Disabilities: ",input$level),
+                                 options = list(pageLength = 6,
+                                               autowidth= TRUE,
+                                               columnDefs = list(list(width = '300px', targets = "_all"))))
+                                                                 
+
+          
+          dispp7.info <- tags$div(boxContent(title= "Age by Federal Poverty Level for Persons with Disabilities",
+                                              description = "Age by Federal Poverty Level for Persons with Disabilities plot and table show the percentage of persons with Disabilities below the Federal Poverty Level.",
+                                              MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
+                                              urlList = list(c("American Community Survey, Table B18131","https://data.census.gov")) ),
+                                   tags$br(),
+                                   downloadObjUI("dispp7tabl"), downloadObjUI("dispp7data"))
+
+          dis7.box0 <- box(width=12,dis7_text)
+          dis7.box1 <- tabBox(width=12, height=500,
+                               tabPanel("Plot",renderPlotly({outplotdis7})))
+          dis7.box2 <- tabBox(width=12, height=500,
+                               tabPanel("Table",DT::renderDataTable(DISTabOut7)),
+                               tabPanel("Sources and Downloads",dispp7.info))
+          
+          
+          #building List
+          dis7.list <<- list(dis7.box0, dis7.box1, dis7.box2)
+          
+          incProgress()
+        }
+ 
+       #Families by Type and Poverty Status
+        if("hhpov" %in% input$outChk) {
+          fam8_text <- tags$h2("Table 8: Families by Type and Poverty Status")
+          fam8_list <- familiesPRO(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
+
+          outplotfam8 <- fam8_list$plot
+          outtabfam8 <- fam8_list$data
+          outCaption8 <- fam8_list$caption
+  
+          sketch8 <- htmltools::withTags(
+            table(
+                  tableHeader(outtabfam8),
+                  tableFooter(outCaption8)
+                    ))
+          
+          DISTabOut8 <-datatable(outtabfam8,
+                                 container = sketch8,
+                                 rownames = FALSE,
+                                 caption = paste0("Families by Type and Poverty Status: ",input$level),
+                                 options = list(pageLength = 24,
+                                               autowidth= TRUE,
+                                               columnDefs = list(list(width = '300px', targets = "_all"))))
+                                                                 
+
+          
+          dispp8.info <- tags$div(boxContent(title= "Families by Type and Poverty Status",
+                                              description = "Families by Type and Poverty Status plot and table show the percentage of families by type above and velow the Federal Poverty level.",
+                                              MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
+                                              urlList = list(c("American Community Survey, Table B18131","https://data.census.gov")) ),
+                                   tags$br(),
+                                   downloadObjUI("fampv8tabl"), downloadObjUI("fampv8data"))
+
+          fam8.box0 <- box(width=12,fam8_text)
+          fam8.box1 <- tabBox(width=12, height=500,
+                               tabPanel("Plot",renderPlotly({outplotfam8})))
+          fam8.box2 <- tabBox(width=12, height=500,
+                               tabPanel("Table",DT::renderDataTable(DISTabOut8)),
+                               tabPanel("Sources and Downloads",dispp8.info))
+          
+          
+          #building List
+          fam8.list <<- list(fam8.box0, fam8.box1, fam8.box2)
+          
+          incProgress()
+        }       
+ 
+       #Housing Tenure by Poverty Status
+        if("tenure" %in% input$outChk) {
+          hh9_text <- tags$h2("Housing Tenure by Poverty Status")
+          hh9_list <- housingPRO(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
+
+          outplothh9 <- hh9_list$plot
+          outtabhh9 <- hh9_list$data
+          outCaption9 <- hh9_list$caption
+  
+          sketch9 <- htmltools::withTags(
+            table(
+                  tableHeader(outtabhh9),
+                  tableFooter(outCaption9)
+                    ))
+          
+          HHTabOut9 <-datatable(outtabhh9,
+                                 container = sketch9,
+                                 rownames = FALSE,
+                                 caption = paste0("Housing Tenure by Poverty Status: ",input$level),
+                                 options = list(pageLength = 24,
+                                               autowidth= TRUE,
+                                               columnDefs = list(list(width = '300px', targets = "_all"))))
+                                                                 
+
+          
+          hh9.info <- tags$div(boxContent(title= "Housing Tenure by Poverty Status",
+                                              description = "Housing Tenure by Family Type and Poverty Status plot and table show the percentage of Housing Tenure by type above and velow the Federal Poverty level.",
+                                              MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
+                                              urlList = list(c("American Community Survey, Table B18131","https://data.census.gov")) ),
+                                   tags$br(),
+                                   downloadObjUI("house9tabl"), downloadObjUI("house9data"))
+
+          hh9.box0 <- box(width=12,hh9_text)
+          hh9.box1 <- tabBox(width=12, height=500,
+                               tabPanel("Plot",renderPlotly({outplothh9})))
+          hh9.box2 <- tabBox(width=12, height=500,
+                               tabPanel("Table",DT::renderDataTable(HHTabOut9)),
+                               tabPanel("Sources and Downloads",hh9.info))
+          
+          
+          #building List
+          hh9.list <<- list(hh9.box0, hh9.box1, hh9.box2)
+          
+          incProgress()
+        }    
+        
+       #Supplemental Nutrition Assistance Program (SNAP)
+        if("snap" %in% input$outChk) {
+          snap_text <- tags$h2("Supplemental Nutrition Assistance Program (SNAP)")
+          snap_list <- snap(DBPool=DOLAPool,lvl=input$level,listID=fipslist,curYR=curYr)
+
+          outplotsnap <- snap_list$plot
+          outtabsnap <- snap_list$data
+          outCaption10 <- snap_list$caption
+  
+          sketch10 <- htmltools::withTags(
+            table(
+                  tableHeader(outtabsnap),
+                  tableFooter(outCaption10)
+                    ))
+          
+          snapTabOut <-datatable(outtabsnap,
+                                 container = sketch10,
+                                 rownames = FALSE,
+                                 caption = paste0("Supplemental Nutrition Assistance Program (SNAP): ",input$level),
+                                 options = list(pageLength = 10,
+                                               autowidth= TRUE,
+                                               columnDefs = list(list(width = '300px', targets = "_all"))))
+                                                                 
+
+          
+          snap.info <- tags$div(boxContent(title= "Supplemental Nutrition Assistance Program (SNAP)",
+                                              description = "The Supplemental Nutrition Assistance Program (SNAP) Tables display eligibiliity for the Supplemental Nutrition Assistance Program (SNAP) program from Hunger Free Colorado",
+                                              MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
+                                              urlList = list(c("Hunger Free Colorado SNAP Impact Reports","https://www.hungerfreecolorado.org/impact-reports/")) ),
+                                   tags$br(),
+                                   downloadObjUI("snap10tabl"), downloadObjUI("snap10data"))
+
+          snap.box0 <- box(width=12,snap_text)
+          snap.box1 <- tabBox(width=12, height=500,
+                               tabPanel("Plot",renderPlotly({outplotsnap})))
+          snap.box2 <- tabBox(width=12, height=500,
+                               tabPanel("Table",DT::renderDataTable(snapTabOut)),
+                               tabPanel("Sources and Downloads",snap.info))
+          
+          
+          #building List
+          snap10.list <<- list(snap.box0, snap.box1, snap.box2)
+          
+          incProgress()
+        }   
+        
+        #Women, Infants and Children (WIC)
+        if("wic" %in% input$outChk) {
+          wic_text <- tags$h2("Women, Infants and Children (WIC)")
+          wic_list <- wic(DBPool=DOLAPool,lvl=input$level,listID=fipslist,curYR=curYr)
+
+          outplotwic <- wic_list$plot
+          outtabwic <- wic_list$data
+          outCaption11 <- wic_list$caption
+  
+          sketch11 <- htmltools::withTags(
+            table(
+                  tableHeader(outtabwic),
+                  tableFooter(outCaption11)
+                    ))
+          
+          wicTabOut <-datatable(outtabwic,
+                                 container = sketch11,
+                                 rownames = FALSE,
+                                 caption = paste0("Women, Infants and Children (WIC): ",input$level),
+                                 options = list(pageLength = 10,
+                                               autowidth= TRUE,
+                                               columnDefs = list(list(width = '300px', targets = "_all"))))
+                                                                 
+
+          
+          wic.info <- tags$div(boxContent(title= "Women, Infants and Children (WIC)",
+                                              description = "The Women, Infants and Children (WIC) Tables display eligibiliity for the Women, Infants and Children program (WIC) program from the Annie E. Casey Kids Count Data Center",
+                                              MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
+                                              urlList = list(c("Annie E. Casey Kids Count Data Center","https://datacenter.kidscount.org/data#CO/2/0/char/0")) ),
+                                   tags$br(),
+                                   downloadObjUI("wic11tabl"), downloadObjUI("wic11data"))
+
+          wic.box0 <- box(width=12,wic_text)
+          wic.box1 <- tabBox(width=12, height=500,
+                               tabPanel("Plot",renderPlotly({outplotwic})))
+          wic.box2 <- tabBox(width=12, height=500,
+                               tabPanel("Table",DT::renderDataTable(wicTabOut)),
+                               tabPanel("Sources and Downloads",wic.info))
+          
+          
+          #building List
+          wic11.list <<- list(wic.box0, wic.box1, wic.box2)
+          
+          incProgress()
+        }  
+        
+        
+        #Health Insurance by Source
+        if("insurance" %in% input$outChk) {
+          insurance_text <- tags$h2("Health Insurance by Source")
+          insurance_list <- insurance(DBPool=DOLAPool,lvl=input$level,listID=fipslist,curYR=curYr)
+
+          outplotinsurance <- insurance_list$plot
+          outtabinsurance <- insurance_list$data
+          outCaption12 <- insurance_list$caption
+  
+          sketch12 <- htmltools::withTags(
+            table(
+                  tableHeader(outtabinsurance),
+                  tableFooter(outCaption12)
+                    ))
+          
+          insuranceTabOut <-datatable(outtabinsurance,
+                                 container = sketch12,
+                                 rownames = FALSE,
+                                 caption = paste0("Health Insurance by Source: ",input$level),
+                                 options = list(pageLength = 10,
+                                               autowidth= TRUE,
+                                               columnDefs = list(list(width = '300px', targets = "_all"))))
+                                                                 
+
+          
+          insurance.info <- tags$div(boxContent(title= "Health Insurance by Source",
+                                              description = "The Health Insurance by Source Tables display Health Insturance by Source data compiled by the Colorado Health Institute",
+                                              MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
+                                              urlList = list(c("Coloeado Health Institute Regional Data Workbook","https://www.coloradohealthinstitute.org/data/%7B%22field_category%22:[%2298%22]%7D")) ),
+                                   tags$br(),
+                                   downloadObjUI("ins12tabl"), downloadObjUI("ins12data"))
+
+          insurance.box0 <- box(width=12,insurance_text)
+          insurance.box1 <- tabBox(width=12, height=500,
+                               tabPanel("Plot",renderPlotly({outplotinsurance})))
+          insurance.box2 <- tabBox(width=12, height=500,
+                               tabPanel("Table",DT::renderDataTable(insuranceTabOut)),
+                               tabPanel("Sources and Downloads",insurance.info))
+          
+          
+          #building List
+          ins12.list <<- list(insurance.box0, insurance.box1, insurance.box2)
+          
+          incProgress()
+        } 
+        }) #Progress Bar
     }#if input$unit == ""
     
     # Output UI...
@@ -662,75 +1005,80 @@ server <- function(input, output, session) {
     }
     output$ui  <- renderUI({ do.call(tabsetPanel, tabs) }) #renderUI
     
-    #Event to output PDF documents
-    
-    output$outputPDF <- downloadHandler(
-      
-      filename <- function() {
-        paste0(input$unit," Community Profile Report ",as.character(Sys.Date()),".pdf")
-      },
-      content <- function(file) {
-        #Generate Report
-        #knitting file and copy to final document
-        
-        tempRMD <- fixPath(fileMat[88])  #Testing
-        tempPDF <- fixPath(fileMat[89]) 
-        
-    #     tempRMD <- fileMat[88]  
-    #     tempPDF <- fileMat[89] 
-        
-        
-        rmarkdown::render(input= tempRMD, output_file = tempPDF,
-                          params =  list(outChk = input$outChk,
-                                         olistID = idList,
-                                         olevel = input$level,
-                                         filemat = fileMat),
-                          run_pandoc = TRUE)
-        
-        file.rename(tempPDF, file) # move pdf to file for downloading
-      } #Content
-    ) #Download Handler
-    
-    
-    
+ 
     #Event to outload plots and data files
     
-    #Table 1 Age
+    # Age
     if("age" %in% input$outChk){
     callModule(downloadObj, id = "popa1tabl", simpleCap(input$level),"popa1tabl", age_list$FlexTable)
     callModule(downloadObj, id = "popa1data", simpleCap(input$level),"popa1data", age_list$table)
     }
     
-   #Table 2 Age by Employment  
+   #Age by Employment  
     if("ageemp" %in% input$outChk){
     callModule(downloadObj, id = "pope1tabl", simpleCap(input$level),"pope1tabl", emp_list$FlexTable)
     callModule(downloadObj, id = "pope1data", simpleCap(input$level),"pope1data", emp_list$data)
     }
 
-   #Table 3: Federal Poverty Level
+   #Federal Poverty Level
    if("pov" %in% input$outChk){
     callModule(downloadObj, id = "povpp3tabl", simpleCap(input$level),"povpp3tabl", pov3_list$FlexTable)
     callModule(downloadObj, id = "povpp3data", simpleCap(input$level),"povpp3data", pov3_list$data)
      }
     
-   #Table 4: Educational Attainment by Federal Poverty Level
+   #Educational Attainment by Federal Poverty Level
    if("educatt" %in% input$outChk){
     callModule(downloadObj, id = "poped1tabl", simpleCap(input$level),"poped1tabl", educatt_list$FlexTable)
     callModule(downloadObj, id = "poped1data", simpleCap(input$level),"poped1data", educatt_list$data)
    }
   
-   #Table 5: Age by Federal Poverty Level
+   #Age by Federal Poverty Level
    if("povage" %in% input$outChk){
     callModule(downloadObj, id = "povpp5tabl", simpleCap(input$level),"povpp5tabl", pov5_list$FlexTable)
     callModule(downloadObj, id = "povpp5data", simpleCap(input$level),"povpp5data", pov5_list$data)
    }
   
-  #Table 6: Age by Federal Poverty Level Trend
+  #Age by Federal Poverty Level Trend
    if("povagetr" %in% input$outChk){
     callModule(downloadObj, id = "povpp6tabl", simpleCap(input$level),"povpp6tabl", pov6_list$FlexTable)
     callModule(downloadObj, id = "povpp6data", simpleCap(input$level),"povpp6data", pov6_list$data)
      }
     
+   #Age by Federal Poverty Level for Persons with Disabilities
+   if("povagedis" %in% input$outChk){
+    callModule(downloadObj, id = "dispp7tabl", simpleCap(input$level),"dispp7tabl", dis7_list$FlexTable)
+    callModule(downloadObj, id = "dispp7data", simpleCap(input$level),"dispp7data", dis7_list$data)
+   }
+    
+    #Families by Type and Poverty Status
+    if("hhpov" %in% input$outChk){
+    callModule(downloadObj, id = "fampv8tabl", simpleCap(input$level),"fampv8tabl", fam8_list$FlexTable)
+    callModule(downloadObj, id = "fampv8data", simpleCap(input$level),"fampv8data", fam8_list$data)
+    }
+    
+   #Housing Tenure by Poverty Status
+    if("tenure" %in% input$outChk) {
+    callModule(downloadObj, id = "house9tabl", simpleCap(input$level),"house9tabl", hh9_list$FlexTable)
+    callModule(downloadObj, id = "house9data", simpleCap(input$level),"house9data", hh9_list$data)
+    }
+    
+    #Supplemental Nutrition Assistance Program (SNAP)
+    if("snap" %in% input$outChk) {
+    callModule(downloadObj, id = "snap10tabl", simpleCap(input$level),"snap10tabl", snap_list$FlexTable)
+    callModule(downloadObj, id = "snap10data", simpleCap(input$level),"snap10data", snap_list$data)
+    }
+    
+    #Womens Infants and Children (WIC)
+    if("wic" %in% input$outChk) {
+    callModule(downloadObj, id = "wic11tabl", simpleCap(input$level),"wic11tabl", wic_list$FlexTable)
+    callModule(downloadObj, id = "wic11data", simpleCap(input$level),"wic11data", wic_list$data)
+    }
+    
+    #health Insurance by Source
+    if("insurance" %in% input$outChk) {
+    callModule(downloadObj, id = "ins12tabl", simpleCap(input$level),"ins12tabl", insurance_list$FlexTable)
+    callModule(downloadObj, id = "ins12data", simpleCap(input$level),"ins12data", insurance_list$data)
+    }
   }) #observeEvent input$profile
   
   
