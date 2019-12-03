@@ -69,7 +69,7 @@ povertyPRO2 <- function(DBPool,lvl,listID,curYR){
                                                               "18 and Older", "All Persons"))
   
     f.saipecty_PL$indText  <- paste0( f.saipectyVAL$geoname," Year: ",f.saipecty_PL$year," Ages: ",f.saipecty_PL$age_cat,", Percent in Poverty: ", percent( f.saipecty_PL$value * 100))  
-    grTitle <- paste0("Table 5: Percent Below Federal Poverty Level, ",listID$plName1," ",curYR)
+    grTitle <- paste0("Percent Below Federal Poverty Level, ",listID$plName1," ",curYR)
     outCap <- captionSrc("SAIPE","","")
     xAxis <- list(title = "Age Category")
     yAxis <- list(title = 'Percent',tickformat = "%")
@@ -185,7 +185,7 @@ POVPlot <- plot_ly(f.saipecty_PL,
     names(f.saipecty_tabW)[2] <- "Data Type"
 
  # Flex Table
-  tab_head <- paste0("Table 5: Percent Below Federal Poverty Level, ",listID$plName1, " ",curYR)
+  tab_head <- paste0("Percent Below Federal Poverty Level, ",listID$plName1, " ",curYR)
   
   
   f.povFlex <- flextable(

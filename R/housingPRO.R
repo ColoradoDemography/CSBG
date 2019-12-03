@@ -303,7 +303,7 @@ if(length(ctyfips) > 1) {
                                                             "Married Couple", "All Families"))                                                           
     
     f.ctyHHL_PLT$indText  <- paste0( f.ctyHHL_PLT$geoname," Family Type: ", f.ctyHHL_PLT$famtype," ",percent(f.ctyHHL_PLT$pct * 100))  
-    grTitle <- paste0("Table 9: Housing Tenure, Below FPL, ",listID$plName1)
+    grTitle <- paste0("Housing Tenure, Below FPL, ",listID$plName1)
     outCap <- captionSrc("ACS",ACS,"B17010") 
     xAxis <- list(title = "Family Type")
     yAxis <- list(title = 'Percent',tickformat = "%")
@@ -432,7 +432,7 @@ if(length(ctyfips) > 1 ){
     
      #Producing Flextable
  
- tab_head <- paste0("Table 9: Housing Tenure by Poverty Status, ",listID$plName1)
+ tab_head <- paste0("Housing Tenure by Poverty Status, ",listID$plName1)
 
  f.ctyHH_tab <-  f.ctyHH_tab[,c(1,4,3,5,7,8,6)]
  names(f.ctyHH_tab) <- c("Agency/County","Family Type","Poverty Level","Value","Own","Rent","All Household")

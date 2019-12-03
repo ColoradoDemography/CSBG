@@ -157,7 +157,7 @@ agePlotPRO  <- function(lvl,listID,ACS,curYr) {
   #Preparing Plot
   f.place <- f.place[which(f.place$age_cat != "Total"),] %>% arrange(county)
   f.place$indText  <- paste0(f.place$geoname," Age Category: ",f.place$age_cat," ",percent(f.place$age_pct * 100))  
-  grTitle <- paste0("Table 1: Population by Age, ",listID$plName1)
+  grTitle <- paste0("Population by Age, ",listID$plName1)
   xAxis <- list(title='Age Category')
   yAxis <- list(title = 'Percent',tickformat = "%")
 
@@ -242,7 +242,7 @@ if(length(ctyfips) > 1 ){
  
 f.place_tab <- clrGeoname( f.place_tab,"County",npanel1,2)
  
- tab_head <- paste0("Table 1: Potion by age, ",listID$plName1)
+ tab_head <- paste0("Population by age, ",listID$plName1)
 
  
  f.flexage <- flextable(

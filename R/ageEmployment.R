@@ -264,12 +264,12 @@ if(length(ctyfips) > 1) {
     f.ctyEMPL_LF <- f.ctyEMPL_pct[which(f.ctyEMPL_pct$type == "In Civilian Labor Force"),] %>% arrange(factor(county, levels = ctyList))
     
     f.ctyEMPL_LF$indText  <- paste0( f.ctyEMPL_LF$geoname," Age Category: ", f.ctyEMPL_LF$age_cat," ",percent( f.ctyEMPL_LF$pct * 100))  
-    grTitleLF <- paste0("Table 2a: Age Distribution by Percentage in Civilian Labor Force, ",listID$plName1)
+    grTitleLF <- paste0("Age Distribution by Percentage in Civilian Labor Force, ",listID$plName1)
  
  f.ctyEMPL_plt <- f.ctyEMPL_pct[which(f.ctyEMPL_pct$type == "Unemployed"),] %>% arrange(county)
     
  f.ctyEMPL_plt$indText  <- paste0( f.ctyEMPL_plt$geoname," Age Category: ", f.ctyEMPL_plt$age_cat," ",percent( f.ctyEMPL_plt$pct * 100))  
- grTitle <- paste0("Table 2b: Age Distribution by Percentage Unemployed, ",listID$plName1)
+ grTitle <- paste0("Age Distribution by Percentage Unemployed, ",listID$plName1)
  xAxis <- list(title= "age category")
  yAxis <- list(title = 'Percent',tickformat = "%")
  
@@ -457,7 +457,7 @@ if(length(ctyfips) > 1 ){
     
      #Producing Flextable
  
- tab_head <- paste0("Table 2: Age Distribution by Employment Status, ",listID$plName1)
+ tab_head <- paste0("Age Distribution by Employment Status, ",listID$plName1)
  
  f.ctyEMP_tab <-  f.ctyEMP_tab[,c(1,3:7)]
 

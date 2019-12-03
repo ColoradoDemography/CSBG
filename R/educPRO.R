@@ -153,7 +153,7 @@ educPRO <- function(lvl,listID, ACS,curYr){
 
  # Plotly plot
   f.educctyPlot$indText  <- paste0( f.educctyPlot$geoname," Educational Attainment: ", f.educctyPlot$educatt," ",percent( f.educctyPlot$value * 100)) 
-    grTitle <- paste0("Table 4: Educational Attainment by Federal Poverty Level, ",listID$plName1,"\nPersons Age 25 and Older")
+    grTitle <- paste0("Educational Attainment by Federal Poverty Level, ",listID$plName1,"\nPersons Age 25 and Older")
     xAxis <- list(title='Educational Attainment')
     yAxis <- list(title = 'Percent',tickformat = "%")
 
@@ -266,7 +266,7 @@ EDUCPlot <- f.educctyPlot %>%
                            "Percent of Total","Total","Percent of Total Below FPL")
 
   # Flex Table
-  tab_head <- paste0("Table 4: Educational Attainment by Federal Poverty Level, ",listID$plName1,"\nPersons Age 25 and Older")
+  tab_head <- paste0("Educational Attainment by Federal Poverty Level, ",listID$plName1,"\nPersons Age 25 and Older")
   
     f.edFlex <- flextable(
       f.educctyTab,

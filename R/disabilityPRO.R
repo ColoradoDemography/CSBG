@@ -158,7 +158,7 @@ if(length(ctyfips) > 1) {
                                          f.ctyDISL_pct$meas == "Below Poverty Level"),] %>% arrange(factor(county, levels = ctyList))
     
     f.ctyDISL_PLT$indText  <- paste0( f.ctyDISL_PLT$geoname," Age Category: ", f.ctyDISL_PLT$age_cat," ",percent( f.ctyDISL_PLT$pct * 100))  
-    grTitle <- paste0("Table 7: Persons with Disabilities Below the Poverty Level, ",listID$plName1)
+    grTitle <- paste0("Persons with Disabilities Below the Poverty Level, ",listID$plName1)
     outCap <- captionSrc("ACS",ACS,"C18130") 
     xAxis <- list(title = "Age Category")
     yAxis <- list(title = 'Percent',tickformat = "%")
@@ -286,7 +286,7 @@ if(length(ctyfips) > 1 ){
     
      #Producing Flextable
  
- tab_head <- paste0("Table 7: Persons with Disabilities Below the Poverty Level, ",listID$plName1)
+ tab_head <- paste0("Persons with Disabilities Below the Poverty Level, ",listID$plName1)
 
  f.ctyDIS_tab <-  f.ctyDIS_tab[,c(1,3,4,5,8,6,7)]
  names(f.ctyDIS_tab) <- c("Agency/County","Population","Poverty Level","Value","Under 18","18 to 64","65+")

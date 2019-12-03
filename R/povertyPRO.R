@@ -122,7 +122,7 @@ f.povertycty_PL$POV.LEVEL <- plyr::revalue(f.povertycty_PL$POV.LEVEL,
                                    "125 to 199%", "200% and Higher"))
  # Plotly plot
   f.povertycty_PL$indText  <- paste0( f.povertycty_PL$geoname," Percent of Federal Poverty Level, ", f.povertycty_PL$POV.LEVEL,": ", percent( f.povertycty_PL$value * 100))  
-    grTitle <- paste0("Table 3: Population by Percentage of Federal Poverty Level, ",listID$plName1)
+    grTitle <- paste0("Population by Percentage of Federal Poverty Level, ",listID$plName1)
   xAxis <- list(title='Percentage of Federal Poverty Level')
   yAxis <- list(title = 'Percent',tickformat = "%")
   
@@ -228,7 +228,7 @@ names(f.povertycty_tab) <- c("Agency/County","Value","Less than 50%", "50 to 124
 
 
 # Flex Table
-  tab_head <- paste0("Table 3: Population by Percentage of Federal Poverty Level, ",listID$plName1)
+  tab_head <- paste0("Population by Percentage of Federal Poverty Level, ",listID$plName1)
 
     f.povFlex <- flextable(
       f.povertycty_tab,
