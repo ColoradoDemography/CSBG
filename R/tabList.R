@@ -26,17 +26,23 @@ tabList <- function(item){
    if(item == "povagetr") {
     outList <- pov6.list
   }
-  if(item == "housing") {
-    outList <- poph.list
+  if(item == "povagedis") {
+    outList <- dis7.list
   }
-  if(item == "comm") {
-    outList <- popt.list
+  if(item == "hhpov") {
+    outList <- fam8.list
   }
-  if(item == "emplind") {
-    outList <- popei.list
+  if(item == "tenure") {
+    outList <- hh9.list
   }
-  if(item == "emply") {
-    outList <- popem.list
+  if(item == "snap") {
+    outList <- snap10.list
+  }
+   if(item == "wic") {
+    outList <- wic11.list
+  }
+  if(item == "insurance") {
+    outList <- ins12.list
   }
   return(outList)
 }

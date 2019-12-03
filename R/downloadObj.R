@@ -21,12 +21,18 @@ downloadObj <- function(input, output, session, place, oname, dobj) {
 
 
   prefix <- switch(dname,
-                   "popa1" = " Table 1 Age Distribution",
-                   "pope1" = " Table 2 Age by Employment Status",
-                   "povpp3" = " Table 3 Population by Federal Poverty Level",
-                   "poped1" = " Table 4 Educational Attainment by Fed Poverty Level",
-                   "povpp5" = " Table 5: Age by Federal Poverty Level",
-                   "povpp6" = " Table 6: Age by Federal Poverty Level Trend"
+                   "popa1" = " Age Distribution",
+                   "pope1" = " Age by Employment Status",
+                   "povpp3" = " Population by Federal Poverty Level",
+                   "poped1" = " Educational Attainment by Fed Poverty Level",
+                   "povpp5" = " Age by Federal Poverty Level",
+                   "povpp6" = " Age by Federal Poverty Level Trend",
+                   "dispp7" = " Age by Federal Poverty Level for Persons with Disabilities",
+                   "fampv8" = " Families by Type and Poverty Status",
+                   "house9" = " Housing Tenure by Poverty",
+                   "snap10" = " Supplemental Nutrition Assistance Program", 
+                   "wic11"  = " Women Infants and Children",
+                   "ins12" = " Health Insurance by Source"
   )
 
   suffix <- ifelse(dtype == "data"," Data.csv"," Table.docx")

@@ -11,7 +11,7 @@
 educPRO <- function(lvl,listID, ACS,curYr){
 
   # Collecting List of Counties
-
+ outCap <- captionSrc("ACS",ACS,"B17003")
  f.educcty <- codemog_api(data="b17003",db=ACS,sumlev="50",geography="sumlev",meta="no")
  f.educcty[,c(3,8:30)] <- sapply(f.educcty[,c(3,8:30)],as.numeric)
  
@@ -154,7 +154,8 @@ educPRO <- function(lvl,listID, ACS,curYr){
  # Plotly plot
   f.educctyPlot$indText  <- paste0( f.educctyPlot$geoname," Educational Attainment: ", f.educctyPlot$educatt," ",percent( f.educctyPlot$value * 100)) 
     grTitle <- paste0("Table 4: Educational Attainment by Federal Poverty Level, ",listID$plName1,"\nPersons Age 25 and Older")
-
+    xAxis <- list(title='Educational Attainment')
+    yAxis <- list(title = 'Percent',tickformat = "%")
 
 if(length(ctyfips) > 1 ){
 EDUCPlot <- f.educctyPlot %>%
@@ -172,8 +173,10 @@ EDUCPlot <- f.educctyPlot %>%
         operation = '=',
         value = unique(f.educctyPlot$geoname)[1]
       )
-  )) %>% layout( title=grTitle, yaxis = list(title = 'Percent',tickformat = "%"), xaxis=list(title='Educational Attainment'),
-          showlegend = TRUE,
+  )) %>% layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
+          showlegend = TRUE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
+                      annotations = list(text = outCap,
+                      font = list(size = 12), showarrow = FALSE, xref = 'paper', x = 0, yref = 'paper', y = -0.4),
     updatemenus = list(
       list(
         type = 'dropdown',
@@ -218,8 +221,10 @@ EDUCPlot <- f.educctyPlot %>%
         operation = '=',
         value = unique(f.educctyPlot$geoname)[1]
       )
-  ))   %>% layout( title=grTitle, yaxis = list(title = 'Percent',tickformat = "%"), xaxis=list(title='Educational Attainment'),
-          showlegend = TRUE)
+  ))   %>% layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
+          showlegend = TRUE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
+                      annotations = list(text = outCap,
+                      font = list(size = 12), showarrow = FALSE, xref = 'paper', x = 0, yref = 'paper', y = -0.4))
 }    
  
  #Creating Table data file
@@ -267,12 +272,12 @@ EDUCPlot <- f.educctyPlot %>%
       f.educctyTab,
        col_keys = names(f.educctyTab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
-       add_footer_row(values=captionSrc("ACS",ACS,"B17003"),top=FALSE,colwidths=7) %>%
+       add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
        align(j=1:2, align="left", part="body") 
   
  
   #bind list
-  outList <- list("plot"= EDUCPlot, "data" =  f.educctyTab, "FlexTable" = f.edFlex)
+  outList <- list("plot"= EDUCPlot, "data" =  f.educctyTab, "FlexTable" = f.edFlex, "caption" = outCap)
   
   return(outList)
 }

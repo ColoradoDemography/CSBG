@@ -6,16 +6,19 @@
 #'
 tabTitle <-function(item) {
   outTitle <- switch(item,
-                      "age" = "Table 1: Population by Age",
-                     "ageemp" = "Table 2: Age by Employment Status ",
-                     "pov" = "Table 3: Population by Federal Poverty Level ",
-                     "educatt" = "Table 4: Educational Attainment by Federal Poverty Level ",
-                     "povage" = "Table 5: Age by Federal Poverty Level ",
-                     "povagetr" = "Table 6: Age by Federal Poverty Level Trend ",
-                     "povagedis" = "Table 7: Age by Federal Poverty Level for Persons with Disabilities ",
-                     "hhpov" = "Table 8: Households by Occupancy ",
-                     "insurance" = "Table 9: Health Insurance by Source ",
-                     "tenure" = "Table 10: Housing Tenure by Poverty "
+                      "age" = "Population by Age",
+                     "ageemp" = "Age by Employment Status",
+                     "pov" = "Population by Federal Poverty Level",
+                     "educatt" = "Educational Attainment by Federal Poverty Level",
+                     "povage" = "Age by Federal Poverty Level",
+                     "povagetr" = "Age by Federal Poverty Level Trend",
+                     "povagedis" = "Age by Federal Poverty Level for Persons with Disabilities",
+                     "hhpov" = "Families by type and Poverty Status",
+                     "tenure" = "Housing Tenure by Poverty Status",
+                     "snap" = "Supplemental Nutrition Assistance Program (SNAP)",
+                     "wic" = "Women, Infants and Children (WIC)",
+                     "insurance" = "Health Insurance by Source"
+                     
 
 )
   return(outTitle)

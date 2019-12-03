@@ -1,8 +1,9 @@
 #'clrGeoname A utility program clearing out the geoname variable for a selected DF
 #'
 #' @param inDF the dataframe to be processed
-#' @param fipsList the list of fips codes in inDF
-#' @param posIncr The number of rows in each section of inDF 
+#' @param inVar variable to be cleared
+#' @param npanel number of panels
+#' @param posIncr The number of rows in each panel of inDF 
 #' @return formatted datafile
 #' @export
 #'
