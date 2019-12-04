@@ -35,7 +35,7 @@ captionSrc <- function(type, dataSrc,tab) {
   if(type =="ACS") {
     byr <- paste0("20",substr(dataSrc,4,5))
     eyr <- paste0("20",substr(dataSrc,6,7))
-    srcStr <- paste0("Source: U.S. Census Bureau, ",byr,"-",eyr," American Community Survey, Table Number ", tab," ",dateStr)
+    srcStr <- paste0("Source: U.S. Census Bureau, ",byr,"-",eyr," American Community Survey, Table Number ",tab,dateStr)
     
   }
   return(srcStr)
