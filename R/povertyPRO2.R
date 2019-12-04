@@ -178,9 +178,9 @@ POVPlot <- plot_ly(f.saipecty_PL,
     } else {
       npanel1 = length(ctyfips) + 1
     }
-    
+ 
     f.saipecty_tabW <- clrGeoname(f.saipecty_tabW,"geoname",npanel1,3)
-    f.saipecty_tabW <- f.saipecty_tabW[,c(2:6)]
+    f.saipecty_tabW <- f.saipecty_tabW[,c(2,3,5,4,6)]
     names(f.saipecty_tabW)[1] <- "Agency/County"
     names(f.saipecty_tabW)[2] <- "Data Type"
 

@@ -270,7 +270,7 @@ if(length(ctyfips) > 1) {
     
  f.ctyEMPL_plt$indText  <- paste0( f.ctyEMPL_plt$geoname," Age Category: ", f.ctyEMPL_plt$age_cat," ",percent( f.ctyEMPL_plt$pct * 100))  
  grTitle <- paste0("Age Distribution by Percentage Unemployed, ",listID$plName1)
- xAxis <- list(title= "age category")
+ xAxis <- list(title= "Age Category")
  yAxis <- list(title = 'Percent',tickformat = "%")
  
  
@@ -416,7 +416,7 @@ if(length(ctyfips) > 1 ){
                       font = list(size = 12), showarrow = FALSE, xref = 'paper', x = 0, yref = 'paper', y = -0.4))
 }    
 
-   
+ 
     # flex Table and output data file
     typeList <- c("In Labor Force",
                   "In Civilian Labor Force",
