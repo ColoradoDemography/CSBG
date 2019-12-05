@@ -13,7 +13,7 @@ tabTitle <-function(item) {
                      "povage" = "Age by Federal Poverty Level",
                      "povagetr" = "Age by Federal Poverty Level Trend",
                      "povagedis" = "Age by Federal Poverty Level for Persons with Disabilities",
-                     "hhpov" = "Families by type and Poverty Status",
+                     "hhpov" = "Families by Type and Poverty Status",
                      "tenure" = "Housing Tenure by Poverty Status",
                      "snap" = "Supplemental Nutrition Assistance Program (SNAP)",
                      "wic" = "Women, Infants and Children (WIC)",
