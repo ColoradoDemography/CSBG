@@ -295,7 +295,9 @@ if(length(ctyfips) > 1) {
                                                              
 
     # Plotly 
-
+   
+   
+   
     f.ctyHHL_PLT <- f.ctyHHL_pct[which(f.ctyHHL_pct$pov == "Below Poverty Level" &
                                        f.ctyHHL_pct$tenure != "All Households"),] %>% arrange(famtype,tenure,county)
     f.ctyHHL_PLT$famtype <- factor(f.ctyHHL_PLT$famtype,c( "Female Householder",

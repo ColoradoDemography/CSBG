@@ -103,8 +103,21 @@ povertyPRO <- function(lvl,listID, ACS,PreACS,curYr){
    f.povertyctyVAL <- bind_rows(f.povertyagyVAL,f.povertyctyVAL)
  } 
 
-  
-f.povertycty_C <-  f.povertyctyVAL[,1:7] 
+ 
+ f.povertycty_C <-  f.povertyctyVAL[,1:7] 
+
+ f.povertycty_CL <- f.povertycty_C %>% 
+        gather(POV.LEVEL,count,POV.LT50:TOT.POP,factor_key=TRUE) %>%
+        arrange(POV.LEVEL)
+
+ f.povertycty_CL <- f.povertycty_CL[which(f.povertycty_CL$POV.LEVEL != "TOT.POP"),] %>% arrange(county, POV.LEVEL)
+
+ f.povertycty_CL$POV.LEVEL <- plyr::revalue(f.povertycty_CL$POV.LEVEL,
+                                c("POV.LT50" = "Less than 50%","POV.50124" = "50 to 124%",
+                                  "POV.125199" = "125 to 199%", "POV.GE200" = "200% and Higher"))
+ f.povertycty_CL$POV.LEVEL <- factor(f.povertycty_CL$POV.LEVEL, 
+                                      levels = c("Less than 50%", "50 to 124%",
+                                   "125 to 199%", "200% and Higher"))
 
 f.povertycty_P <- f.povertyctyVAL[,c(1,2,8:12)] 
 
@@ -120,14 +133,16 @@ f.povertycty_PL$POV.LEVEL <- plyr::revalue(f.povertycty_PL$POV.LEVEL,
  f.povertycty_PL$POV.LEVEL <- factor(f.povertycty_PL$POV.LEVEL, 
                                       levels = c("Less than 50%", "50 to 124%",
                                    "125 to 199%", "200% and Higher"))
+
  # Plotly plot
-  f.povertycty_PL$indText  <- paste0( f.povertycty_PL$geoname," Percent of Federal Poverty Level, ", f.povertycty_PL$POV.LEVEL,": ", percent( f.povertycty_PL$value * 100))  
-    grTitle <- paste0("Population by Percentage of Federal Poverty Level, ",listID$plName1)
+  f.povertycty_PLOT <- inner_join(f.povertycty_PL, f.povertycty_CL[,2:4], by= c("county","POV.LEVEL"))
+  f.povertycty_PLOT$indText  <- paste0( f.povertycty_PLOT$geoname," Percent of Federal Poverty Level, ", f.povertycty_PLOT$POV.LEVEL,": Percentage: ", percent(f.povertycty_PLOT$value * 100)," Count: ",NumFmt(f.povertycty_PLOT$count))  
+  grTitle <- paste0("Population by Percentage of Federal Poverty Level, ",listID$plName1)
   xAxis <- list(title='Percentage of Federal Poverty Level')
   yAxis <- list(title = 'Percent',tickformat = "%")
   
 if(length(ctyfips) > 1 ){
-POVPlot <- f.povertycty_PL %>%
+POVPlot <- f.povertycty_PLOT %>%
   plot_ly(
     type = 'bar', 
     x = ~POV.LEVEL, 
@@ -174,7 +189,7 @@ POVPlot <- f.povertycty_PL %>%
       )
   )))
 } else {
-   POVPlot <- f.povertycty_PL %>%
+   POVPlot <- f.povertycty_PLOT %>%
      plot_ly(
     type = 'bar', 
     x = ~POV.LEVEL, 
@@ -203,7 +218,7 @@ POVPlot <- f.povertycty_PL %>%
  f.povertycty_C[,4:8] <- sapply(f.povertycty_C[,4:8],NumFmt)
 
 
-  f.povertycty_P$type <- "Percentage"
+ f.povertycty_P$type <- "Percentage"
  f.povertycty_P <- f.povertycty_P[,c(1,2,8,3:7)]
  f.povertycty_P[,4:8] <- lapply(f.povertycty_P[,4:8], function(x) x * 100)
  f.povertycty_P[,4:8] <- sapply(f.povertycty_P[,4:8],percent)

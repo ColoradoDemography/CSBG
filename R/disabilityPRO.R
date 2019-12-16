@@ -13,8 +13,15 @@
 disabilityPRO <- function(lvl,listID, ACS,curYr) {
   # Collecting place ids from  idList, setting default values
 
- 
+
     ctyfips <- as.character(as.numeric(substr(listID$list1,3,5)))
+    f.ctyList <- data.frame(geoname = listID$plName2,
+                            county = as.numeric(ctyfips))
+# ctyList for marginal table    
+    if(nrow(f.ctyList) > 1) {
+      agy <- data.frame(geoname = listID$plName1, county = 0)
+      f.ctyList <- bind_rows(agy,f.ctyList)
+    }
 
   # Extracting data from tidycensus 
   f.ctyDIS <- codemog_api(data="c18130",db=ACS,sumlev="50",geography="sumlev",meta="no")
@@ -120,10 +127,35 @@ if(length(ctyfips) > 1) {
           gather(var, count, DIS.0017.TOT:DIS.GE65.NPOV, factor_key=TRUE) %>%
           separate(var,c("type","age_cat","meas")) %>% arrange(age_cat)
      
+     
+     
       f.ctyDISL_pct <- f.ctyDIS_pct %>% 
           gather(var, pct, DIS.0017.POV.PCT:DIS.GE65.TOT.PCT, factor_key=TRUE) %>%
           separate(var,c("type","age_cat","meas",NA)) %>% arrange(age_cat)
 
+# Calculating Marginal total
+      f.ctyDISL_Mar <- f.ctyDISL_tot %>%
+            group_by(county, meas) %>%
+             summarize(tcount = sum(count))
+      
+      tcount <- f.ctyDISL_Mar[which(f.ctyDISL_Mar$meas == "TOT"),]
+      names(tcount)[3] <- "sumcount"
+          
+      f.ctyDISL_Mar1 <- inner_join(f.ctyDISL_Mar,tcount,by="county")
+      f.ctyDISL_Mar1 <-  f.ctyDISL_Mar1 %>% mutate(pct = tcount/sumcount) 
+      f.ctyDISL_Mar1$age_cat <- "TOT"
+      f.ctyDISL_Mar1$type <- "DIS"
+      f.ctyDISL_Mar1 <- f.ctyDISL_Mar1[,c(1,8,7,2,3,6)]
+      f.ctyDISL_Mar2 <- inner_join(f.ctyList,f.ctyDISL_Mar1,by="county")
+      names(f.ctyDISL_Mar2) <- c("geoname","county","type","age_cat","meas","count","pct")
+      
+      
+      
+      f.ctyDISL_MarT <- f.ctyDISL_Mar2[,c(1:6)]
+      f.ctyDISL_MarP <- f.ctyDISL_Mar2[,c(1:5,7)]
+      
+      f.ctyDISL_tot <- bind_rows(f.ctyDISL_tot,f.ctyDISL_MarT)
+      f.ctyDISL_pct <- bind_rows(f.ctyDISL_pct,f.ctyDISL_MarP)
       
 # Revising Type 
     f.ctyDISL_tot$type <- "Persons with Disabilities"
@@ -136,13 +168,16 @@ if(length(ctyfips) > 1) {
 # revising Age Cat
    f.ctyDISL_tot$age_cat <-plyr::revalue(f.ctyDISL_tot$age_cat, c("0017" = "Under 18",
                              "1864" = "18 to 64",
-                             "GE65" = "65+"))
+                             "GE65" = "65+",
+                             "TOT" = "Total"))
     
   f.ctyDISL_pct$age_cat <-plyr::revalue(f.ctyDISL_pct$age_cat, c("0017" = "Under 18",
                              "1864" = "18 to 64",
-                             "GE65" = "65+"))
-    
-  f.ctyDISL_pct$age_cat <- factor( f.ctyDISL_pct$age_cat,levels= c("Under 18","18 to 64","65+")) 
+                             "GE65" = "65+",
+                             "TOT" = "Total"))
+  
+  f.ctyDISL_tot$age_cat <- factor(f.ctyDISL_tot$age_cat,levels= c("Under 18","18 to 64","65+","Total"))     
+  f.ctyDISL_pct$age_cat <- factor(f.ctyDISL_pct$age_cat,levels= c("Under 18","18 to 64","65+","Total")) 
 
 # revising measure
    f.ctyDISL_tot$meas <-plyr::revalue(f.ctyDISL_tot$meas, c("POV" = "Below Poverty Level",
@@ -152,18 +187,20 @@ if(length(ctyfips) > 1) {
   f.ctyDISL_pct$meas <-plyr::revalue(f.ctyDISL_pct$meas, c("POV" = "Below Poverty Level",
                              "NPOV" = "Above Poverty Level",
                              "TOT" = "Total"))
-
+ 
+  f.ctyDISL_tot$meas <- factor(f.ctyDISL_tot$meas,levels= c("Below Poverty Level","Above Poverty Level","Total"))     
+  f.ctyDISL_pct$meas <- factor(f.ctyDISL_pct$meas,levels= c("Below Poverty Level","Above Poverty Level","Total")) 
+  
+    f.ctyDISL_PLT <- inner_join(f.ctyDISL_pct,  f.ctyDISL_tot[,2:6],by=c("county","age_cat","meas"))
     # Plotly  
-    f.ctyDISL_PLT <- f.ctyDISL_pct[which(f.ctyDISL_pct$type == "Persons with Disabilities" &
-                                         f.ctyDISL_pct$meas == "Below Poverty Level"),] %>% arrange(factor(county, levels = ctyList))
+    f.ctyDISL_PLT <- f.ctyDISL_PLT[which(f.ctyDISL_PLT$meas == "Below Poverty Level"),] %>% arrange(factor(county, levels = ctyList))
     
-    f.ctyDISL_PLT$indText  <- paste0( f.ctyDISL_PLT$geoname," Age Category: ", f.ctyDISL_PLT$age_cat," ",percent( f.ctyDISL_PLT$pct * 100))  
+    f.ctyDISL_PLT$indText  <- paste0( f.ctyDISL_PLT$geoname," Age Category: ", f.ctyDISL_PLT$age_cat," Percentage: ",percent(f.ctyDISL_PLT$pct * 100)," Count: ",NumFmt(f.ctyDISL_PLT$count))  
     grTitle <- paste0("Persons with Disabilities Below the Poverty Level, ",listID$plName1)
     outCap <- captionSrc("ACS",ACS,"C18130") 
     xAxis <- list(title = "Age Category")
     yAxis <- list(title = 'Percent',tickformat = "%")
     
- 
  
 # % persons in poverty with Disabilities
 if(length(ctyfips) > 1 ){
@@ -239,19 +276,19 @@ if(length(ctyfips) > 1 ){
 
   
     # flex Table and output data file
+   ageList <- c("Under 18","18 to 64","65+","Total")
    
-    measList <- c("Below Poverty Level",
-                  "Above Poverty Level",
-                  "Total")
-                       
-    f.ctyDISL_tot$count <- format(round(f.ctyDISL_tot$count ,digits=0),  big.mark=",")
+                      
+    f.ctyDISL_tot$count <- NumFmt(f.ctyDISL_tot$count)
     f.ctyDISL_pct$pct <- percent(f.ctyDISL_pct$pct * 100)
     
-     f.ctyDISL_tot$type2 <- "Count"
-     f.ctyDISL_pct$type2 <- "Percentage"
+   
     
-    f.ctyDIS_Count <-  f.ctyDISL_tot %>% spread(age_cat,count)
-    f.ctyDIS_Percent <-  f.ctyDISL_pct %>% spread(age_cat,pct)
+    f.ctyDIS_Count <-  f.ctyDISL_tot %>% spread(meas,count)
+    f.ctyDIS_Percent <-  f.ctyDISL_pct %>% spread(meas,pct)
+    
+    f.ctyDIS_Count$Value <- "Count"
+     f.ctyDIS_Percent$Value <- "Percentage"
    
     f.ctyDIS_tab <- bind_rows(f.ctyDIS_Count,f.ctyDIS_Percent)  
     
@@ -259,9 +296,10 @@ if(length(ctyfips) > 1 ){
     # reordering Records for Table
     
     f.ctyDIS_tab  <- f.ctyDIS_tab %>% arrange(factor(county, levels = ctyList),  
-                                              factor(meas, levels = measList), desc(type2))
+                                              factor(age_cat, levels = ageList), desc(Value))
     
-    
+    f.ctyDIS_tab <- f.ctyDIS_tab[,c(1,4,8,6,5,7)]
+     f.ctyDIS_tab$age_cat <- as.character(f.ctyDIS_tab$age_cat)
   
     #Clearing geoname
     if(length(ctyfips) == 1) {
@@ -269,14 +307,13 @@ if(length(ctyfips) > 1 ){
     } else {
       npanel1 = length(ctyfips) + 1
     }
+  
+    f.ctyDIS_tab <- clrGeoname(f.ctyDIS_tab,"geoname",npanel1,8)
     
-    f.ctyDIS_tab <- clrGeoname(f.ctyDIS_tab,"geoname",npanel1,6)
-    f.ctyDIS_tab <- clrGeoname(f.ctyDIS_tab,"type",npanel1,6)
-   
     
     for(i in 1:nrow(f.ctyDIS_tab)){
       if(i %% 2 == 0){
-        f.ctyDIS_tab[i,4] <- ""
+        f.ctyDIS_tab[i,2] <- ""
       } 
     }
     
@@ -288,15 +325,15 @@ if(length(ctyfips) > 1 ){
  
  tab_head <- paste0("Persons with Disabilities Below the Poverty Level, ",listID$plName1)
 
- f.ctyDIS_tab <-  f.ctyDIS_tab[,c(1,3,4,5,8,6,7)]
- names(f.ctyDIS_tab) <- c("Agency/County","Population","Poverty Level","Value","Under 18","18 to 64","65+")
+
+ names(f.ctyDIS_tab) <- c("Agency/County","Value","Age Category","Below Poverty Level","Above Poverty Level","Total")
 
    
    f.flexDIS <- flextable(
        f.ctyDIS_tab,
        col_keys = names(f.ctyDIS_tab)) %>%
-       add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
-       add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
+       add_header_row(values=tab_head,top=TRUE,colwidths=6) %>%
+       add_footer_row(values=outCap,top=FALSE,colwidths=6) %>%
        align(j=1:2, align="left", part="body") 
  
 

@@ -156,7 +156,7 @@ agePlotPRO  <- function(lvl,listID,ACS,curYr) {
 
   #Preparing Plot
   f.place <- f.place[which(f.place$age_cat != "Total"),] %>% arrange(county)
-  f.place$indText  <- paste0(f.place$geoname," Age Category: ",f.place$age_cat," ",percent(f.place$age_pct * 100))  
+  f.place$indText  <- paste0(f.place$geoname," Age Category: ",f.place$age_cat," Percentage: ",percent(f.place$age_pct * 100)," Count: ",NumFmt(f.place$cat_pop))  
   grTitle <- paste0("Population by Age, ",listID$plName1)
   xAxis <- list(title='Age Category')
   yAxis <- list(title = 'Percent',tickformat = "%")

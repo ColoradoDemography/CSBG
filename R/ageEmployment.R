@@ -46,8 +46,9 @@ ageEmployment <- function(lvl,listID, ACS,curYr) {
             LF.1619.F =	b23001090,
             CIVIL.1619.F = 	b23001092,
             EMP.1619.F =	b23001093,
-            NLF.1619.F = 	b23001094,
-            UNEMP.1619.F = 	b23001095,
+            UNEMP.1619.F = 	b23001094,
+            NLF.1619.F = 	b23001095,
+            
             
             TOT.2064.F = 	b23001096 + b23001103 + b23001110 + b23001117 + b23001124 + b23001131 + b23001138 + b23001145 + b23001152,
             LF.2064.F =	b23001097 + b23001104 + b23001111 + b23001118 + b23001125 + b23001132 + b23001139 + b23001146 + b23001153,
@@ -62,56 +63,57 @@ ageEmployment <- function(lvl,listID, ACS,curYr) {
             UNEMP.65.F = 	b23001162+ b23001167 + b23001172,
             NLF.65.F = 	b23001163+ b23001168 + b23001173,
             
-            TOT.1619 = 	TOT.1619.M + 	TOT.1619.F , 
-            LF.1619 =	LF.1619.M +	LF.1619.F ,
-            CIVIL.1619 = 	CIVIL.1619.M + 	CIVIL.1619.F , 
-            EMP.1619 =	EMP.1619.M +	EMP.1619.F ,
-            UNEMP.1619 = 	UNEMP.1619.M + 	UNEMP.1619.F , 
-            NLF.1619 = 	NLF.1619.M + 	NLF.1619.F , 
-            		
-            TOT.2064 = 	TOT.2064.M + 	TOT.2064.F , 
-            LF.2064 =	LF.2064.M +	LF.2064.F ,
-            CIVIL.2064 = 	CIVIL.2064.M + 	CIVIL.2064.F , 
-            EMP.2064 =	EMP.2064.M +	EMP.2064.F ,
-            UNEMP.2064 = 	UNEMP.2064.M + 	UNEMP.2064.F , 
-            NLF.2064 = 	NLF.2064.M + 	NLF.2064.F , 
-            		
-            TOT.65 =	TOT.65.M +	TOT.65.F ,
-            LF.65 = 	LF.65.M + 	LF.65.F ,
-            CIVIL.65 = LF.65.M + 	LF.65.F ,
-            EMP.65 = 	EMP.65.M + 	EMP.65.F , 
-            UNEMP.65 = 	UNEMP.65.M + 	UNEMP.65.F , 
-            NLF.65 = 	NLF.65.M + 	NLF.65.F , 
-            		
-            TOT.1619.P =  	TOT.1619/TOT.1619,
-            LF.1619.P = 	LF.1619/TOT.1619,
-            CIVIL.1619.P =  	CIVIL.1619/TOT.1619,
-            EMP.1619.P = 	EMP.1619/CIVIL.1619,
-            UNEMP.1619.P =  	UNEMP.1619/CIVIL.1619,
-            NLF.1619.P =  	NLF.1619/TOT.1619,
-            		
-            TOT.2064.P =  	TOT.2064/TOT.2064,
-            LF.2064.P = 	LF.2064/TOT.2064,
-            CIVIL.2064.P =  	CIVIL.2064/TOT.2064,
-            EMP.2064.P = 	EMP.2064/CIVIL.2064,
-            UNEMP.2064.P =  	UNEMP.2064/CIVIL.2064,
-            NLF.2064.P =  	NLF.2064/TOT.2064,
-            		
-            TOT.65.P = 	TOT.65/TOT.65,
-            LF.65.P =  	LF.65/TOT.65,
-            CIVIL.65.P = 	CIVIL.65/TOT.65,
-            EMP.65.P =  	EMP.65/CIVIL.65,
-            UNEMP.65.P =  	UNEMP.65/CIVIL.65,
-            NLF.65.P =  	NLF.65/TOT.65
+            LF.1619	 = LF.1619.M + LF.1619.F,
+            NLF.1619	 = NLF.1619.M + NLF.1619.F,
+            TOT.1619 = TOT.1619.M + TOT.1619.F,
+            EMP.1619	 = EMP.1619.M + EMP.1619.F,
+            UNEMP.1619	 = UNEMP.1619.M + UNEMP.1619.F,
+            CIVIL.1619	 = CIVIL.1619.M + CIVIL.1619.F,
+            
+            LF.2064	 = LF.2064.M + LF.2064.F,
+            NLF.2064	 = NLF.2064.M + NLF.2064.F,
+            TOT.2064 = TOT.2064.M + TOT.2064.F,
+            EMP.2064	 = EMP.2064.M + EMP.2064.F,
+            UNEMP.2064	 = UNEMP.2064.M + UNEMP.2064.F,
+            CIVIL.2064	 = CIVIL.2064.M + CIVIL.2064.F,
+            
+            LF.65	 = LF.65.M + LF.65.F,
+            NLF.65	 = NLF.65.M + NLF.65.F,
+            TOT.65 = TOT.65.M + TOT.65.F,
+            EMP.65	 = EMP.65.M + EMP.65.F,
+            UNEMP.65	 = UNEMP.65.M + UNEMP.65.F,
+            CIVIL.65	 = LF.65,
+            
+            LF.1619.P	 = LF.1619/TOT.1619,
+            NLF.1619.P	 = NLF.1619/TOT.1619,
+            TOT.1619.P = TOT.1619/TOT.1619,
+            EMP.1619.P	 = EMP.1619/CIVIL.1619,
+            UNEMP.1619.P	 = UNEMP.1619/CIVIL.1619,
+            CIVIL.1619.P	 = CIVIL.1619/TOT.1619,
+
+            LF.2064.P	 = LF.2064/TOT.2064,
+            NLF.2064.P	 = NLF.2064/TOT.2064,
+            TOT.2064.P = TOT.2064/TOT.2064,
+            EMP.2064.P	 = EMP.2064/CIVIL.2064,
+            UNEMP.2064.P	 = UNEMP.2064/CIVIL.2064,
+            CIVIL.2064.P	 = CIVIL.2064/TOT.2064,
+            
+            LF.65.P	 = LF.65/TOT.65,
+            NLF.65.P	 = NLF.65/TOT.65,
+            TOT.65.P = TOT.65/TOT.65,
+            EMP.65.P	 = EMP.65/CIVIL.65,
+            UNEMP.65.P	 = UNEMP.65/CIVIL.65,
+            CIVIL.65.P	 = CIVIL.65/TOT.65
+ 
  )
-   
+ 
    f.ctyEMP_cty <- f.ctyEMP_cty[,c("geoname",	"county",				
-                      "TOT.1619",	"LF.1619",	"CIVIL.1619",	"EMP.1619",	"UNEMP.1619",	"NLF.1619",
-                      "TOT.2064",	"LF.2064",	"CIVIL.2064",	"EMP.2064",	"UNEMP.2064",	"NLF.2064",
-                      "TOT.65",	"LF.65", "CIVIL.65",	"EMP.65",	"UNEMP.65",	"NLF.65",	
-                      "TOT.1619.P",	"LF.1619.P",	"CIVIL.1619.P",	"EMP.1619.P",	"UNEMP.1619.P",	"NLF.1619.P",
-                      "TOT.2064.P",	"LF.2064.P",	"CIVIL.2064.P",	"EMP.2064.P",	"UNEMP.2064.P",	"NLF.2064.P",
-                      "TOT.65.P",	"LF.65.P",	"CIVIL.65.P", "EMP.65.P",	"UNEMP.65.P",	"NLF.65.P")]
+                      "LF.1619", "NLF.1619", "TOT.1619", "EMP.1619", "UNEMP.1619", "CIVIL.1619",
+                     "LF.2064", "NLF.2064", "TOT.2064", "EMP.2064", "UNEMP.2064", "CIVIL.2064",
+                      "LF.65", "NLF.65", "TOT.65", "EMP.65", "UNEMP.65", "CIVIL.65",
+                      "LF.1619.P", "NLF.1619.P", "TOT.1619.P", "EMP.1619.P", "UNEMP.1619.P", "CIVIL.1619.P",
+                      "LF.2064.P", "NLF.2064.P", "TOT.2064.P", "EMP.2064.P", "UNEMP.2064.P", "CIVIL.2064.P",
+                      "LF.65.P", "NLF.65.P", "TOT.65.P", "EMP.65.P", "UNEMP.65.P", "CIVIL.65.P")]
  
 if(length(ctyfips) > 1) {
      f.ctyEMP_agy <- f.ctyEMP %>%
@@ -158,58 +160,58 @@ if(length(ctyfips) > 1) {
                   UNEMP.65.F = sum(b23001162, b23001167, b23001172),
                   NLF.65.F = sum(b23001163, b23001168, b23001173) ) %>%
            mutate(
-            TOT.1619 = 	TOT.1619.M + 	TOT.1619.F , 
-            LF.1619 =	LF.1619.M +	LF.1619.F ,
-            CIVIL.1619 = 	CIVIL.1619.M + 	CIVIL.1619.F , 
-            EMP.1619 =	EMP.1619.M +	EMP.1619.F ,
-            UNEMP.1619 = 	UNEMP.1619.M + 	UNEMP.1619.F , 
-            NLF.1619 = 	NLF.1619.M + 	NLF.1619.F , 
-            		
-            TOT.2064 = 	TOT.2064.M + 	TOT.2064.F , 
-            LF.2064 =	LF.2064.M +	LF.2064.F ,
-            CIVIL.2064 = 	CIVIL.2064.M + 	CIVIL.2064.F , 
-            EMP.2064 =	EMP.2064.M +	EMP.2064.F ,
-            UNEMP.2064 = 	UNEMP.2064.M + 	UNEMP.2064.F , 
-            NLF.2064 = 	NLF.2064.M + 	NLF.2064.F , 
-            		
-            TOT.65 =	TOT.65.M +	TOT.65.F ,
-            LF.65 = 	LF.65.M + 	LF.65.F , 
-            CIVIL.65 =LF.65.M + 	LF.65.F , 
-            EMP.65 = 	EMP.65.M + 	EMP.65.F , 
-            UNEMP.65 = 	UNEMP.65.M + 	UNEMP.65.F , 
-            NLF.65 = 	NLF.65.M + 	NLF.65.F , 
-            		
-            TOT.1619.P =  	TOT.1619/TOT.1619,
-            LF.1619.P = 	LF.1619/TOT.1619,
-            CIVIL.1619.P =  	CIVIL.1619/TOT.1619,
-            EMP.1619.P = 	EMP.1619/CIVIL.1619,
-            UNEMP.1619.P =  	UNEMP.1619/CIVIL.1619,
-            NLF.1619.P =  	NLF.1619/TOT.1619,
-            		
-            TOT.2064.P =  	TOT.2064/TOT.2064,
-            LF.2064.P = 	LF.2064/TOT.2064,
-            CIVIL.2064.P =  	CIVIL.2064/TOT.2064,
-            EMP.2064.P = 	EMP.2064/CIVIL.2064,
-            UNEMP.2064.P =  	UNEMP.2064/CIVIL.2064,
-            NLF.2064.P =  	NLF.2064/TOT.2064,
-            		
-            TOT.65.P = 	TOT.65/TOT.65,
-            LF.65.P =  	LF.65/TOT.65,
-            CIVIL.65.P =  	CIVIL.65/TOT.65,
-            EMP.65.P =  	EMP.65/CIVIL.65,
-            UNEMP.65.P =  	UNEMP.65/CIVIL.65,
-            NLF.65.P =  	NLF.65/TOT.65 )  
+            LF.1619	 = LF.1619.M + LF.1619.F,
+            NLF.1619	 = NLF.1619.M + NLF.1619.F,
+            TOT.1619 = TOT.1619.M + TOT.1619.F,
+            EMP.1619	 = EMP.1619.M + EMP.1619.F,
+            UNEMP.1619	 = UNEMP.1619.M + UNEMP.1619.F,
+            CIVIL.1619	 = CIVIL.1619.M + CIVIL.1619.F,
+            
+            LF.2064	 = LF.2064.M + LF.2064.F,
+            NLF.2064	 = NLF.2064.M + NLF.2064.F,
+            TOT.2064 = TOT.2064.M + TOT.2064.F,
+            EMP.2064	 = EMP.2064.M + EMP.2064.F,
+            UNEMP.2064	 = UNEMP.2064.M + UNEMP.2064.F,
+            CIVIL.2064	 = CIVIL.2064.M + CIVIL.2064.F,
+            
+            LF.65	 = LF.65.M + LF.65.F,
+            NLF.65	 = NLF.65.M + NLF.65.F,
+            TOT.65 = TOT.65.M + TOT.65.F,
+            EMP.65	 = EMP.65.M + EMP.65.F,
+            UNEMP.65	 = UNEMP.65.M + UNEMP.65.F,
+            CIVIL.65	 = LF.65,
+            
+            LF.1619.P	 = LF.1619/TOT.1619,
+            NLF.1619.P	 = NLF.1619/TOT.1619,
+            TOT.1619.P = TOT.1619/TOT.1619,
+            EMP.1619.P	 = EMP.1619/CIVIL.1619,
+            UNEMP.1619.P	 = UNEMP.1619/CIVIL.1619,
+            CIVIL.1619.P	 = CIVIL.1619/TOT.1619,
+
+            LF.2064.P	 = LF.2064/TOT.2064,
+            NLF.2064.P	 = NLF.2064/TOT.2064,
+            TOT.2064.P = TOT.2064/TOT.2064,
+            EMP.2064.P	 = EMP.2064/CIVIL.2064,
+            UNEMP.2064.P	 = UNEMP.2064/CIVIL.2064,
+            CIVIL.2064.P	 = CIVIL.2064/TOT.2064,
+            
+            LF.65.P	 = LF.65/TOT.65,
+            NLF.65.P	 = NLF.65/TOT.65,
+            TOT.65.P = TOT.65/TOT.65,
+            EMP.65.P	 = EMP.65/CIVIL.65,
+            UNEMP.65.P	 = UNEMP.65/CIVIL.65,
+            CIVIL.65.P	 = CIVIL.65/TOT.65)
      
     f.ctyEMP_agy$geoname <- listID$plName1
     f.ctyEMP_agy$county <- 0
 
    f.ctyEMP_agy <- f.ctyEMP_agy[,c("geoname",	"county",				
-                      "TOT.1619",	"LF.1619",	"CIVIL.1619",	"EMP.1619",	"UNEMP.1619",	"NLF.1619",
-                      "TOT.2064",	"LF.2064",	"CIVIL.2064",	"EMP.2064",	"UNEMP.2064",	"NLF.2064",
-                      "TOT.65",	"LF.65",	"CIVIL.65", "EMP.65",	"UNEMP.65",	"NLF.65",	
-                      "TOT.1619.P",	"LF.1619.P",	"CIVIL.1619.P",	"EMP.1619.P",	"UNEMP.1619.P",	"NLF.1619.P",
-                      "TOT.2064.P",	"LF.2064.P",	"CIVIL.2064.P",	"EMP.2064.P",	"UNEMP.2064.P",	"NLF.2064.P",
-                      "TOT.65.P",	"LF.65.P",	"CIVIL.65.P", "EMP.65.P",	"UNEMP.65.P",	"NLF.65.P")]
+                      "LF.1619", "NLF.1619", "TOT.1619", "EMP.1619", "UNEMP.1619", "CIVIL.1619",
+                     "LF.2064", "NLF.2064", "TOT.2064", "EMP.2064", "UNEMP.2064", "CIVIL.2064",
+                      "LF.65", "NLF.65", "TOT.65", "EMP.65", "UNEMP.65", "CIVIL.65",
+                      "LF.1619.P", "NLF.1619.P", "TOT.1619.P", "EMP.1619.P", "UNEMP.1619.P", "CIVIL.1619.P",
+                      "LF.2064.P", "NLF.2064.P", "TOT.2064.P", "EMP.2064.P", "UNEMP.2064.P", "CIVIL.2064.P",
+                      "LF.65.P", "NLF.65.P", "TOT.65.P", "EMP.65.P", "UNEMP.65.P", "CIVIL.65.P")]
     
    f.ctyEMP_cty <- bind_rows(f.ctyEMP_agy, f.ctyEMP_cty)
    
@@ -223,12 +225,12 @@ if(length(ctyfips) > 1) {
      f.ctyEMP_pct <- f.ctyEMP_cty[,c(1, 2, 21:38)]
      
      f.ctyEMPL_tot <- f.ctyEMP_tot %>% 
-          gather(var, count, TOT.1619:NLF.65, factor_key=TRUE) %>%
-          separate(var,c("type","age_cat")) %>% arrange(age_cat)
+          gather(var, count, LF.1619:CIVIL.65, factor_key=TRUE) %>%
+          separate(var,c("type","age_cat"))
      
       f.ctyEMPL_pct <- f.ctyEMP_pct %>% 
-          gather(var, pct, TOT.1619.P:NLF.65.P, factor_key=TRUE) %>%
-          separate(var,c("type","age_cat",NA)) %>% arrange(age_cat)
+          gather(var, pct, LF.1619.P:CIVIL.65.P, factor_key=TRUE) %>%
+          separate(var,c("type","age_cat",NA))
 
 # Revising Type 
     f.ctyEMPL_tot$type <- plyr::revalue(f.ctyEMPL_tot$type,  c("LF"="In Labor Force",
@@ -261,14 +263,17 @@ if(length(ctyfips) > 1) {
   
 
     # Plotly  
-    f.ctyEMPL_LF <- f.ctyEMPL_pct[which(f.ctyEMPL_pct$type == "In Civilian Labor Force"),] %>% arrange(factor(county, levels = ctyList))
+    f.ctyEMPL_PLOT <- full_join(f.ctyEMPL_tot,f.ctyEMPL_pct[,2:5],by=c("county","type","age_cat"))
+    f.ctyEMPL_LF <- f.ctyEMPL_PLOT[which(f.ctyEMPL_PLOT$type == "In Civilian Labor Force" & f.ctyEMPL_PLOT$age_cat != "Total"),] %>%
+         arrange(factor(county, levels = ctyList))
     
-    f.ctyEMPL_LF$indText  <- paste0( f.ctyEMPL_LF$geoname," Age Category: ", f.ctyEMPL_LF$age_cat," ",percent( f.ctyEMPL_LF$pct * 100))  
+    f.ctyEMPL_LF$indText  <- paste0( f.ctyEMPL_LF$geoname," Age Category: ", f.ctyEMPL_LF$age_cat," Percentage: ",percent(f.ctyEMPL_LF$pct * 100)," Count: ",NumFmt(f.ctyEMPL_LF$count))  
     grTitleLF <- paste0("Age Distribution by Percentage in Civilian Labor Force, ",listID$plName1)
  
- f.ctyEMPL_plt <- f.ctyEMPL_pct[which(f.ctyEMPL_pct$type == "Unemployed"),] %>% arrange(county)
+ f.ctyEMPL_plt <- f.ctyEMPL_PLOT[which(f.ctyEMPL_PLOT$type == "Unemployed"& f.ctyEMPL_PLOT$age_cat != "Total"),] %>%
+           arrange(factor(county, levels = ctyList))
     
- f.ctyEMPL_plt$indText  <- paste0( f.ctyEMPL_plt$geoname," Age Category: ", f.ctyEMPL_plt$age_cat," ",percent( f.ctyEMPL_plt$pct * 100))  
+ f.ctyEMPL_plt$indText  <- paste0( f.ctyEMPL_plt$geoname," Age Category: ", f.ctyEMPL_plt$age_cat," Percentage: ",percent(f.ctyEMPL_plt$pct * 100)," Count: ",NumFmt(f.ctyEMPL_plt$count))  
  grTitle <- paste0("Age Distribution by Percentage Unemployed, ",listID$plName1)
  xAxis <- list(title= "Age Category")
  yAxis <- list(title = 'Percent',tickformat = "%")
@@ -291,7 +296,7 @@ if(length(ctyfips) > 1 ){
         operation = '=',
         value = unique(f.ctyEMPL_LF$geoname)[1]
       )
-  )) %>% layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
+  )) %>% layout( title=grTitleLF, yaxis = yAxis, xaxis=xAxis,
           showlegend = FALSE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
                       annotations = list(text = outCap,
                       font = list(size = 12), showarrow = FALSE, xref = 'paper', x = 0, yref = 'paper', y = -0.4) ,
@@ -339,7 +344,7 @@ if(length(ctyfips) > 1 ){
         operation = '=',
         value = unique(f.ctyEMPL_LF$geoname)[1]
       )
-  ))   %>% layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
+  ))   %>% layout( title=grTitleLF, yaxis = yAxis, xaxis=xAxis,
           showlegend = FALSE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
                       annotations = list(text = outCap,
                       font = list(size = 12), showarrow = FALSE, xref = 'paper', x = 0, yref = 'paper', y = -0.4))
@@ -418,11 +423,7 @@ if(length(ctyfips) > 1 ){
 
  
     # flex Table and output data file
-    typeList <- c("In Labor Force",
-                  "In Civilian Labor Force",
-                   "Employed",
-                   "Unemployed",
-                   "Not in Labor Force", "Total")
+ 
                        
     f.ctyEMPL_tot$count <- format(round(f.ctyEMPL_tot$count ,digits=0),  big.mark=",")
     f.ctyEMPL_pct$pct <- percent(f.ctyEMPL_pct$pct * 100)
@@ -430,17 +431,17 @@ if(length(ctyfips) > 1 ){
      f.ctyEMPL_tot$type2 <- "Count"
      f.ctyEMPL_pct$type2 <- "Percentage"
     
-    f.ctyEMP_Count <-  f.ctyEMPL_tot %>% spread(age_cat,count)
-    f.ctyEMP_Percent <-  f.ctyEMPL_pct %>% spread(age_cat,pct)
+    f.ctyEMP_Count <-  f.ctyEMPL_tot %>% spread(type,count)
+    f.ctyEMP_Percent <-  f.ctyEMPL_pct %>% spread(type,pct)
    
     f.ctyEMP_tab <- bind_rows(f.ctyEMP_Count,f.ctyEMP_Percent)  
     # reordering Records for Table
     
-    f.ctyEMP_tab  <- f.ctyEMP_tab %>% arrange(factor(county, levels = ctyList),  
-                                              factor(type, levels = typeList), desc(type2))
+    f.ctyEMP_tab  <- f.ctyEMP_tab[,c(1:4,7:9,5,10,6)] %>% arrange(factor(county, levels = ctyList),  
+                                              age_cat, desc(type2))
     
-    f.ctyEMP_tab$type <- ifelse(lag(f.ctyEMP_tab$type) == f.ctyEMP_tab$type,"",f.ctyEMP_tab$type)
-    f.ctyEMP_tab$type <- ifelse(is.na(f.ctyEMP_tab$type),"In Labor Force",f.ctyEMP_tab$type)
+    
+
     
     #Clearing geoname
     if(length(ctyfips) == 1) {
@@ -449,24 +450,31 @@ if(length(ctyfips) > 1 ){
       npanel1 = length(ctyfips) + 1
     }
     
-    f.ctyEMP_tab <- clrGeoname(f.ctyEMP_tab,"geoname",npanel1,12)
+    f.ctyEMP_tab <- clrGeoname(f.ctyEMP_tab,"geoname",npanel1,6)
+      for(i in 1:nrow(f.ctyEMP_tab)){
+      if(i %% 2 == 0){
+        f.ctyEMP_tab[i,3] <- ""
+      } 
+      }
+    
+    f.ctyEMP_tab<- f.ctyEMP_tab[,c(1,3:10)]
      
     names(f.ctyEMP_tab)[1] <- "Agency/County"
-    names(f.ctyEMP_tab)[3] <- "Employment Status"
-    names(f.ctyEMP_tab)[4] <- "Value"
+    names(f.ctyEMP_tab)[2] <- "Age Category"
+    names(f.ctyEMP_tab)[3] <- "Value"
     
      #Producing Flextable
  
  tab_head <- paste0("Age Distribution by Employment Status, ",listID$plName1)
+
  
- f.ctyEMP_tab <-  f.ctyEMP_tab[,c(1,3:7)]
 
    
    f.flexEMP <- flextable(
        f.ctyEMP_tab,
        col_keys = names(f.ctyEMP_tab)) %>%
-       add_header_row(values=tab_head,top=TRUE,colwidths=6) %>%
-       add_footer_row(values=outCap,top=FALSE,colwidths=6) %>%
+       add_header_row(values=tab_head,top=TRUE,colwidths=9) %>%
+       add_footer_row(values=outCap,top=FALSE,colwidths=9) %>%
        align(j=1:2, align="left", part="body") 
  
 
