@@ -34,6 +34,7 @@ library(mapview)
 library(DT)
 library(plotly)
 library(tidycensus)
+library(saipeAPI)  # Installed 2019
 
 # Additions for Database pool
 library('pool') 
@@ -105,7 +106,7 @@ source("R/wic.R")
 curACS <- "acs1317"
 curYr <- 2017
 fipslist <<- ""
-
+censAPI <- "08fe07c2a7bf781b7771d7cccb264fe7ff8965ce"
 # Set up database pool 1/23/19
 
 config <- get("database")
@@ -191,38 +192,38 @@ ui <-
                                    # data level Drop down
                                    selectInput("level", "Select an Agency" ,
                                                choices=c("Select an Agency",
-                                                         "Adams County",
-                                                          "Arapahoe County",
-                                                          "Baca County",
-                                                          "Boulder County",
-                                                          "Broomfield, City and County",
+                                                         "Adams County MCSA",
+                                                          "Arapahoe County MCSA",
+                                                          "Baca County MCSA",
+                                                          "Boulder County MCSA",
+                                                          "Broomfield, City and County MCSA",
                                                           "Colorado East Community Action Agency",
-                                                          "Delta County",
-                                                          "Denver, City and County",
-                                                          "Douglas County",
-                                                          "Eagle County",
-                                                          "El Paso County",
-                                                          "Garfield County",
-                                                          "Gunnison County",
+                                                          "Delta County MCSA",
+                                                          "Denver, City and County MCSA",
+                                                          "Douglas County MCSA",
+                                                          "Eagle County MCSA",
+                                                          "El Paso County MCSA",
+                                                          "Garfield County MCSA",
+                                                          "Gunnison County MCSA",
                                                           "Housing Solutions for the Southwest",
-                                                          "Jefferson County",
-                                                          "Kiowa County",
-                                                          "Larimer County",
+                                                          "Jefferson County MCSA",
+                                                          "Kiowa County MCSA",
+                                                          "Larimer County MCSA",
                                                           "MADA",
-                                                          "Mesa County",
+                                                          "Mesa County MCSA",
                                                           "Moffat County United Way",
                                                           "Mountain Family Center",
                                                           "Northeastern Colorado Association of Local Governments",
-                                                          "Otero County",
-                                                          "Prowers County",
-                                                          "Pueblo County",
-                                                          "Rio Blanco County",
-                                                          "Routt County",
+                                                          "Otero County MCSA",
+                                                          "Prowers County MCSA",
+                                                          "Pueblo County MCSA",
+                                                          "Rio Blanco County MCSA",
+                                                          "Routt County MCSA",
                                                           "San Luis Valley Community Action Agency",
                                                           "South Central Council of Governments",
-                                                          "Summit County",
+                                                          "Summit County MCSA",
                                                           "Upper Arkansas Area Council of Governments",
-                                                          "Weld County"
+                                                          "Weld County MCSA"
                                                           )  #Enabled in V1
                                    ),
                                    #Output Content Checkboxes
@@ -406,9 +407,6 @@ server <- function(input, output, session) {
   # Event for click on profile button
   observeEvent(input$profile,  {
  
-    shinyjs::hide("outputPDF")
-    
-  
     
 
  #   dLout <- submitPush(input$level,input$unit,input$outChk)  # Generate dataLayer Command
@@ -593,7 +591,7 @@ server <- function(input, output, session) {
                                   container = sketch4,
                                   rownames = FALSE,
                                   caption = paste0("Educational Attainment by Federal Poverty Level: ",input$level),
-                                                   options = list(pageLength = 10,
+                                                   options = list(pageLength = 8,
                                                                   autowidth= TRUE,
                                                                   columnDefs = list(list(width = '300px', targets = "_all"))))
                                                                   
@@ -623,7 +621,7 @@ server <- function(input, output, session) {
    # Age by Federal Poverty Level
         if("povage" %in% input$outChk) {
           pov5_text <- tags$h2("Age by Federal Poverty Level")
-          pov5_list <- povertyPRO2(DBPool=DOLAPool,lvl=input$level,listID=fipslist,curYR=curYr)
+          pov5_list <- povertyPRO2(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr,censKey=censAPI)
 
           outplotpov5 <- pov5_list$plot
           outtabpov5 <- pov5_list$data
@@ -668,7 +666,7 @@ server <- function(input, output, session) {
         #Percent Below Federal Poverty Level by Age Trend
         if("povagetr" %in% input$outChk) {
           pov6_text <- tags$h2("Percent Below Federal Poverty Level by Age Trend")
-          pov6_list <- povertyTrend(DBPool=DOLAPool,lvl=input$level,listID=fipslist)
+          pov6_list <- povertyTrend(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr,censKey=censAPI)
 
           outplotpov6 <- pov6_list$plot
           outtabpov6 <- pov6_list$data
@@ -730,7 +728,7 @@ server <- function(input, output, session) {
                                  container = sketch7,
                                  rownames = FALSE,
                                  caption = paste0("Age by Federal Poverty Level for Persons with Disabilities: ",input$level),
-                                 options = list(pageLength = 6,
+                                 options = list(pageLength = 8,
                                                autowidth= TRUE,
                                                columnDefs = list(list(width = '300px', targets = "_all"))))
                                                                  
