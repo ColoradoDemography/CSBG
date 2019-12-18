@@ -54,14 +54,25 @@ wic <- function(DBPool,lvl,listID,curYR){
 
     
 # creating Plotly Chart
-    f.WICcty_PL <-   gather(f.WICctyVAL,WIC,value,c(wicpartpct,wicnonpartpct), factor_key=TRUE)
-    f.WICcty_PL$WIC <- plyr::revalue(f.WICcty_PL$WIC, c("wicpartpct" = "Participating",
-                                                        "wicnonpartpct" = "Not Participating"))
-    f.WICcty_PL$WIC <- factor(f.WICcty_PL$WIC, levels = c("Participating",
+
+     f.WICcty_tot <- gather(f.WICctyVAL,WIC,count,c(wicpart,wicnonpart), factor_key=TRUE)
+     f.WICcty_pct <- gather(f.WICctyVAL,WIC,pct,c(wicpartpct,wicnonpartpct), factor_key=TRUE)
+
+    f.WICcty_tot$WIC <- plyr::revalue(f.WICcty_tot$WIC, c("wicpart" = "Participating",
+                                                              "wicnonpart" = "Not Participating"))
+    f.WICcty_tot$WIC <- factor(f.WICcty_tot$WIC, levels = c("Participating",
                                                               "Not Participating"))
-   
+
+        
+    f.WICcty_pct$WIC <- plyr::revalue(f.WICcty_pct$WIC, c("wicpartpct" = "Participating",
+                                                              "wicnonpartpct" = "Not Participating"))
+    f.WICcty_pct$WIC <- factor(f.WICcty_pct$WIC, levels = c("Participating",
+                                                              "Not Participating"))
     
-    f.WICcty_PL$indText  <- paste0( f.WICctyVAL$county," Participation: ",f.WICcty_PL$WIC,", Percent: ", percent(f.WICcty_PL$value * 100))  
+    f.WICcty_PL <- inner_join(f.WICcty_pct,f.WICcty_tot[,c(1,7,8)], by=c("fips","WIC"))
+
+   
+    f.WICcty_PL$indText  <- paste0( f.WICctyVAL$county," Participation: ",f.WICcty_PL$WIC,", Percent: ", percent(f.WICcty_PL$pct * 100)," Count: ",NumFmt(f.WICcty_PL$count))  
     grTitle <- paste0("Women, Infants and Children (WIC) Participation, ",listID$plName1," ",curYR)
     outCap <- captionSrc("WIC","","")
     xAxis <- list(title = "Participation")
@@ -71,7 +82,7 @@ wic <- function(DBPool,lvl,listID,curYR){
 if(length(ctyfips) > 1 ){
 WICPlot <- plot_ly(f.WICcty_PL, 
                    x = ~WIC, 
-                   y = ~value, 
+                   y = ~pct, 
                    type = 'bar', text = ~indText, hoverinfo = 'text',
                    transforms = list(
                       list(
@@ -113,7 +124,7 @@ WICPlot <- plot_ly(f.WICcty_PL,
         )))
 } else {
    WICPlot <- plot_ly(f.WICcty_PL, 
-                      x = ~WIC, y = ~value,  type = 'bar',
+                      x = ~WIC, y = ~pct,  type = 'bar',
                       text = ~indText, hoverinfo = 'text') %>%
     layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
           showlegend = FALSE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
@@ -171,7 +182,7 @@ WICPlot <- plot_ly(f.WICcty_PL,
 
 
   #bind list
-  outList <- list("plot"= WICPlot, "data" = f.WICcty_tab, "FlexTable" = f.WICFlex,"caption" = outCap)
+  outList <- list("plot"= WICPlot,  "data" = f.WICcty_PL, "table" = f.WICcty_tab, "FlexTable" = f.WICFlex,"caption" = outCap)
   
   return(outList)
 }

@@ -56,16 +56,27 @@ snap <- function(DBPool,lvl,listID,curYR){
 
    }
 
-    
+ 
+ f.SNAPctyVAL$county <- sub("County County","County",f.SNAPctyVAL$county)
 # creating Plotly Chart
 
-    f.SNAPcty_PL <- gather(f.SNAPctyVAL,SNAP,value,c(snappct,snapnonpct), factor_key=TRUE) 
-    f.SNAPcty_PL$SNAP <- plyr::revalue(f.SNAPcty_PL$SNAP, c("snappct" = "Participating",
-                                                              "snapnonpct" = "Not Participating"))
-    f.SNAPcty_PL$SNAP <- factor(f.SNAPcty_PL$SNAP, levels = c("Participating",
+     f.SNAPcty_tot <- gather(f.SNAPctyVAL,SNAP,count,c(snappart,snapnonpart), factor_key=TRUE)
+     f.SNAPcty_pct <- gather(f.SNAPctyVAL,SNAP,pct,c(snappct,snapnonpct), factor_key=TRUE)
+
+    f.SNAPcty_tot$SNAP <- plyr::revalue(f.SNAPcty_tot$SNAP, c("snappart" = "Participating",
+                                                              "snapnonpart" = "Not Participating"))
+    f.SNAPcty_tot$SNAP <- factor(f.SNAPcty_tot$SNAP, levels = c("Participating",
                                                               "Not Participating"))
+
+        
+    f.SNAPcty_pct$SNAP <- plyr::revalue(f.SNAPcty_pct$SNAP, c("snappct" = "Participating",
+                                                              "snapnonpct" = "Not Participating"))
+    f.SNAPcty_pct$SNAP <- factor(f.SNAPcty_pct$SNAP, levels = c("Participating",
+                                                              "Not Participating"))
+    
+    f.SNAPcty_PL <- inner_join(f.SNAPcty_pct,f.SNAPcty_tot[,c(1,7,8)], by=c("fips","SNAP"))
   
-    f.SNAPcty_PL$indText  <- paste0( f.SNAPctyVAL$county," Year: ",f.SNAPcty_PL$year," Participation: ",f.SNAPcty_PL$SNAP,", Percent: ", percent( f.SNAPcty_PL$value * 100))  
+    f.SNAPcty_PL$indText  <- paste0( f.SNAPctyVAL$county," Year: ",f.SNAPcty_PL$year," Participation: ",f.SNAPcty_PL$SNAP,", Percent: ", percent(f.SNAPcty_PL$pct * 100)," Count: ",NumFmt(f.SNAPcty_PL$count))  
     grTitle <- paste0("Supplemental Nutrition Assistance Program (SNAP) Participation, ",listID$plName1," ",curYR)
     outCap <- captionSrc("SNAP","","")
     xAxis <- list(title = "Participation")
@@ -74,7 +85,7 @@ snap <- function(DBPool,lvl,listID,curYR){
 if(length(ctyfips) > 1 ){
 SNAPPlot <- plot_ly(f.SNAPcty_PL, 
                    x = ~SNAP, 
-                   y = ~value, 
+                   y = ~pct, 
                    type = 'bar', text = ~indText, hoverinfo = 'text',
                    transforms = list(
                       list(
@@ -116,7 +127,7 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
         )))
 } else {
    SNAPPlot <- plot_ly(f.SNAPcty_PL, 
-                      x = ~SNAP, y = ~value,  type = 'bar',
+                      x = ~SNAP, y = ~pct,  type = 'bar',
                       text = ~indText, hoverinfo = 'text') %>%
     layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
           showlegend = FALSE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
@@ -180,7 +191,7 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
   
 
   #bind list
-  outList <- list("plot"= SNAPPlot, "data" = f.SNAPcty_tab, "FlexTable" = f.snapFlex,"caption" = outCap)
+  outList <- list("plot"= SNAPPlot, "data" = f.SNAPcty_PL, "table" = f.SNAPcty_tab, "FlexTable" = f.snapFlex,"caption" = outCap)
   
   return(outList)
 }

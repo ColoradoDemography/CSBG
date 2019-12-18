@@ -220,7 +220,7 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
   
 
   #bind list
-  outList <- list("plot"= POVPlot, "data" = f.saipecty_tab, "FlexTable" = f.povFlex, "caption" = outCap)
+  outList <- list("plot"= POVPlot, "data" = f.saipecty_PLOT, "table" = f.saipecty_tab, "FlexTable" = f.povFlex, "caption" = outCap)
   
   return(outList)
 }

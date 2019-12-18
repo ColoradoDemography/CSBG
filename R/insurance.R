@@ -52,23 +52,35 @@ insurance <- function(DBPool,lvl,listID,curYR){
 
    }
 
-    
+ 
 # creating Plotly Chart
-    f.inscty_PL <-   gather(f.insctyVAL,ins,value,dirinsurance_p:schinsurance_p, factor_key=TRUE)
-    f.inscty_PL$ins <- plyr::revalue(f.inscty_PL$ins, c("dirinsurance_p"	 = "Uninsured",
-                                                       "empinsurance_p"	 =   "Employer-sponsored",
-                                                        "medicaid_p"	 =  "Medicaid",
-                                                        "noinsurance_p"	 = "Individually purchased",
-                                                        "schinsurance_p"	 =  "Child Health Plan Plus"
-))
-    f.inscty_PL$ins <- factor(f.inscty_PL$ins, levels = c( "Individually purchased",
-                                                           "Employer-sponsored", 
+   f.inscty_tot <-   gather(f.insctyVAL,ins,count,dirinsurance_n:schinsurance_n, factor_key=TRUE)
+   f.inscty_pct <-   gather(f.insctyVAL,ins,pct,dirinsurance_p:schinsurance_p, factor_key=TRUE)
+   
+   f.inscty_tot$ins <- plyr::revalue(f.inscty_tot$ins, c("dirinsurance_n"	 = "Uninsured",
+                                                       "empinsurance_n"	 =   "Employer Sponsored",
+                                                        "medicaid_n"	 =  "Medicaid",
+                                                        "noinsurance_n"	 = "Individually Purchased",
+                                                        "schinsurance_n"	 =  "Child Health Plan Plus"))
+    f.inscty_tot$ins <- factor(f.inscty_tot$ins, levels = c( "Individually Purchased",
+                                                           "Employer Sponsored", 
                                                            "Medicaid",
                                                           "Uninsured",
                                                           "Child Health Plan Plus"))
-   
     
-    f.inscty_PL$indText  <- paste0( f.insctyVAL$county," Health Insurance: ",f.inscty_PL$ins,", Percent: ", percent(f.inscty_PL$value * 100))  
+    f.inscty_pct$ins <- plyr::revalue(f.inscty_pct$ins, c("dirinsurance_p"	 = "Uninsured",
+                                                       "empinsurance_p"	 =   "Employer Sponsored",
+                                                        "medicaid_p"	 =  "Medicaid",
+                                                        "noinsurance_p"	 = "Individually Purchased",
+                                                        "schinsurance_p"	 =  "Child Health Plan Plus"))
+    f.inscty_pct$ins <- factor(f.inscty_pct$ins, levels = c( "Individually Purchased",
+                                                           "Employer Sponsored", 
+                                                           "Medicaid",
+                                                          "Uninsured",
+                                                          "Child Health Plan Plus"))
+   f.inscty_PL <- inner_join(f.inscty_pct,f.inscty_tot[,c(1,9,10)])
+    
+    f.inscty_PL$indText  <- paste0( f.insctyVAL$county," Health Insurance: ",f.inscty_PL$ins,", Percent: ", percent(f.inscty_PL$pct * 100)," Count: ",NumFmt(f.inscty_PL$count))  
     grTitle <- paste0("Health Insturance by Source, ",listID$plName1," ",curYR)
     outCap <- captionSrc("INS","","")
     xAxis <- list(title = "Source of Insurance")
@@ -78,7 +90,7 @@ insurance <- function(DBPool,lvl,listID,curYR){
 if(length(ctyfips) > 1 ){
 insPlot <- plot_ly(f.inscty_PL, 
                    x = ~ins, 
-                   y = ~value, 
+                   y = ~pct, 
                    type = 'bar', text = ~indText, hoverinfo = 'text',
                    transforms = list(
                       list(
@@ -120,7 +132,7 @@ insPlot <- plot_ly(f.inscty_PL,
         )))
 } else {
    insPlot <- plot_ly(f.inscty_PL, 
-                      x = ~ins, y = ~value,  type = 'bar',
+                      x = ~ins, y = ~pct,  type = 'bar',
                       text = ~indText, hoverinfo = 'text') %>%
     layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
           showlegend = FALSE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
@@ -181,7 +193,7 @@ insPlot <- plot_ly(f.inscty_PL,
 
 
   #bind list
-  outList <- list("plot"= insPlot, "data" = f.inscty_tab, "FlexTable" = f.insFlex,"caption" = outCap)
+  outList <- list("plot"= insPlot, "data" = f.inscty_PL, "table" = f.inscty_tab, "FlexTable" = f.insFlex,"caption" = outCap)
   
   return(outList)
 }

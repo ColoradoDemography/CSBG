@@ -255,7 +255,7 @@ names(f.povertycty_tab) <- c("Agency/County","Value","Less than 50%", "50 to 124
 
 
   #bind list
-  outList <- list("plot"= POVPlot, "data" = f.povertycty_tab, "FlexTable" = f.povFlex,"caption" = outCap)
+  outList <- list("plot"= POVPlot, "data" = f.povertycty_P, "table" = f.povertycty_tab, "FlexTable" = f.povFlex,"caption" = outCap)
   
   return(outList)
 }

@@ -279,10 +279,12 @@ EDUCPlot <- f.educctyPlot %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=8) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=8) %>%
        align(j=1:2, align="left", part="body") 
-  
+ 
+    
+    f.educctyDat <- bind_rows(f.educctyTotP, f.educctyPovP) 
  
   #bind list
-  outList <- list("plot"= EDUCPlot, "data" =  f.educctyTab, "FlexTable" = f.edFlex, "caption" = outCap)
+  outList <- list("plot"= EDUCPlot, "data" = f.educctyDat, "table" =  f.educctyTab, "FlexTable" = f.edFlex, "caption" = outCap)
   
   return(outList)
 }

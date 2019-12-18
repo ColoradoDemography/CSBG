@@ -295,16 +295,16 @@ if(length(ctyfips) > 1) {
                                                              
 
     # Plotly 
+   f.ctyHHL_PLT <- inner_join(f.ctyHHL_pct,f.ctyHHL_tot[,2:6], by=c("county","pov","famtype","tenure"))
    
    
-   
-    f.ctyHHL_PLT <- f.ctyHHL_pct[which(f.ctyHHL_pct$pov == "Below Poverty Level" &
+    f.ctyHHL_PLT <- f.ctyHHL_PLT[which(f.ctyHHL_pct$pov == "Below Poverty Level" &
                                        f.ctyHHL_pct$tenure != "All Households"),] %>% arrange(famtype,tenure,county)
     f.ctyHHL_PLT$famtype <- factor(f.ctyHHL_PLT$famtype,c( "Female Householder",
                                                              "Male Householder",
                                                             "Married Couple", "All Families"))                                                           
     
-    f.ctyHHL_PLT$indText  <- paste0( f.ctyHHL_PLT$geoname," Family Type: ", f.ctyHHL_PLT$famtype," ",percent(f.ctyHHL_PLT$pct * 100))  
+    f.ctyHHL_PLT$indText  <- paste0( f.ctyHHL_PLT$geoname," Family Type: ", f.ctyHHL_PLT$famtype," Percentage: ",percent(f.ctyHHL_PLT$pct * 100)," Count: ",NumFmt(f.ctyHHL_PLT$count))  
     grTitle <- paste0("Housing Tenure, Below FPL, ",listID$plName1)
     outCap <- captionSrc("ACS",ACS,"B17010") 
     xAxis <- list(title = "Family Type")
@@ -448,7 +448,7 @@ if(length(ctyfips) > 1 ){
        align(j=1:2, align="left", part="body") 
  
 
-  outList <- list("plot" = HHPLOT, "FlexTable" = f.flexHH, "data" = f.ctyHH_tab,"caption" = outCap)
+  outList <- list("plot" = HHPLOT, "FlexTable" = f.flexHH, "data" = f.ctyHHL_PLT, "table" = f.ctyHH_tab,"caption" = outCap)
   return(outList)
 }
 

@@ -449,7 +449,7 @@ if(length(ctyfips) > 1 ){
        align(j=1:2, align="left", part="body") 
  
 
-  outList <- list("plot" = FAMPLOT, "FlexTable" = f.flexDIS, "data" = f.ctyFAM_tab,"caption" = outCap)
+  outList <- list("plot" = FAMPLOT, "FlexTable" = f.flexDIS, "data" = f.ctyFAML_PLT, "table" = f.ctyFAM_tab,"caption" = outCap)
   return(outList)
 }
 

@@ -424,7 +424,6 @@ if(length(ctyfips) > 1 ){
  
     # flex Table and output data file
  
-                       
     f.ctyEMPL_tot$count <- format(round(f.ctyEMPL_tot$count ,digits=0),  big.mark=",")
     f.ctyEMPL_pct$pct <- percent(f.ctyEMPL_pct$pct * 100)
     
@@ -478,7 +477,7 @@ if(length(ctyfips) > 1 ){
        align(j=1:2, align="left", part="body") 
  
 
-  outList <- list("LFPlot" = LFPlot, "UEMPPlot" =  UEMPPlot,"FlexTable" = f.flexEMP, "data" = f.ctyEMP_tab,"caption" = outCap)
+  outList <- list("LFPlot" = LFPlot, "UEMPPlot" =  UEMPPlot,"FlexTable" = f.flexEMP, "data" = f.ctyEMPL_pct, "table" = f.ctyEMP_tab,"caption" = outCap)
   return(outList)
 }
 

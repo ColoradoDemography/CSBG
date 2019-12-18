@@ -4,7 +4,7 @@
 #'
 #' @param place is the place name, typically the value of input$unit
 #' @param oname the input data description object
-#' @param dboj is the data object to be output
+#' @param dobj is the data object to be output
 #' @export
 
 downloadObj <- function(input, output, session, place, oname, dobj) {

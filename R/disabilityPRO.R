@@ -277,8 +277,7 @@ if(length(ctyfips) > 1 ){
   
     # flex Table and output data file
    ageList <- c("Under 18","18 to 64","65+","Total")
-   
-                      
+
     f.ctyDISL_tot$count <- NumFmt(f.ctyDISL_tot$count)
     f.ctyDISL_pct$pct <- percent(f.ctyDISL_pct$pct * 100)
     
@@ -298,7 +297,7 @@ if(length(ctyfips) > 1 ){
     f.ctyDIS_tab  <- f.ctyDIS_tab %>% arrange(factor(county, levels = ctyList),  
                                               factor(age_cat, levels = ageList), desc(Value))
     
-    f.ctyDIS_tab <- f.ctyDIS_tab[,c(1,4,8,6,5,7)]
+    f.ctyDIS_tab <- f.ctyDIS_tab[,c(1,4,8,5:7)]
      f.ctyDIS_tab$age_cat <- as.character(f.ctyDIS_tab$age_cat)
   
     #Clearing geoname
@@ -326,7 +325,7 @@ if(length(ctyfips) > 1 ){
  tab_head <- paste0("Persons with Disabilities Below the Poverty Level, ",listID$plName1)
 
 
- names(f.ctyDIS_tab) <- c("Agency/County","Value","Age Category","Below Poverty Level","Above Poverty Level","Total")
+ names(f.ctyDIS_tab) <- c("Agency/County","Age Category","Value","Below Poverty Level","Above Poverty Level","Total")
 
    
    f.flexDIS <- flextable(
@@ -337,7 +336,7 @@ if(length(ctyfips) > 1 ){
        align(j=1:2, align="left", part="body") 
  
 
-  outList <- list("plot" = DISPLOT, "FlexTable" = f.flexDIS, "data" = f.ctyDIS_tab,"caption" = outCap)
+  outList <- list("plot" = DISPLOT, "FlexTable" = f.flexDIS, "data" = f.ctyDISL_pct, "table" = f.ctyDIS_tab,"caption" = outCap)
   return(outList)
 }
 

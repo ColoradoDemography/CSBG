@@ -168,7 +168,7 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
     f.saipe_POV[,4:6] <- sapply(f.saipe_POV[,4:6],NumFmt) 
     f.saipe_POVW <- gather(f.saipe_POV,age_cat,value, pov0517:povpop,factor_key=TRUE) %>%
            spread(year,value)
-    f.saipe_POVW$type = "Population Pelow FPL"
+    f.saipe_POVW$type = "Population Below FPL"
     f.saipe_POVW$age_cat <- as.character(f.saipe_POVW$age_cat)
     
     f.saipe_PCT <- f.saipectyVAL[,c(1:3,10:12)] 
@@ -228,7 +228,7 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
   
 
   #bind list
-  outList <- list("plot"= POVPlot, "data" = f.saipecty_tabW, "FlexTable" = f.povFlex,"caption" = outCap)
+  outList <- list("plot"= POVPlot, "data" = f.saipecty_PLOT, "table" = f.saipecty_tabW, "FlexTable" = f.povFlex,"caption" = outCap)
   
   return(outList)
 }
