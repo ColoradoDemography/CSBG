@@ -63,6 +63,7 @@ source("R/insurance.R")
 source("R/housingPRO.R")
 source("R/listTofips.R")
 source("R/NumFmt.R")
+source("R/outputWord.R")
 source("R/percent.R")
 source("R/popPlace.R")
 source("R/popTable.R")
@@ -135,52 +136,23 @@ fixPath <- function(inPath){
   return(outPath)
 }
 
-#Table 1: Population by Age
+# Output List
+outputObj <- matrix(list() , nrow = 12,ncol=2)
+
+#Output Objects
 age.list <<- list()
-
-# Table 2: Population by Age by Employment Status
 emp.list <<- list()
+pov3.list <<-list()
+educ.list <<- list()
+pov5.list <<- list()
+pov6.list <<- list()
+dis7.list <<- list()
+fam8.list <<- list()
+hh9.list <<- list()
+snap10.list <<- list()
+wic11.list <<- list()
+ins12.list <<- list()
 
-#Population Forecast
-popf1 <<- list()
-popf2 <<- list()
-popf3 <<- list()
-popf4 <<- list()
-popf.list <<- list()
-
-
-#Population Characteristics
-popc1 <<- list()
-popc2 <<- list()
-popc3 <<- list()
-popc4 <<- list()
-popc.list <<- list()
-
-#Housing and Household Characteristics
-poph1 <<- list()
-poph2 <<- list()
-poph3 <<- list()
-poph4 <<- list()
-poph5 <<- list() # Housing Values
-poph.list <<- list()
-
-#Commuting (Transit)
-popt1 <<- list()
-popt2 <<- list()  # This is for the jobs and Migration chart
-popt.list <<- list()
-
-#Employment by Industry
-popei1 <<- list()
-popei2 <<- list()
-popei3 <<- list()
-popei.list <<- list()
-
-#Employment and Demographic Forecast
-popem1 <<- list()
-popem2 <<- list()
-popem3 <<- list()
-popem4 <<- list()
-popem.list <<- list()
 
 
 # Structure of user Interface
@@ -244,19 +216,19 @@ ui <-
 
                                                       ),
                                                       selected =  c("age","ageemp","pov", "educatt","povage",
-                                                                    "povagetr","povagedis","hhpov","hspov",
+                                                                    "povagetr","povagedis","hhpov",
                                                                     "tenure", "snap", "wic", "insurance")
                                    ),
                                    
                                    #Action Button
                                    actionButton("profile","View Profile"),
                                    actionButton("contact","Contact SDO",onclick ="window.open('https://goo.gl/forms/xvyxzq6DGD46rMo42', '_blank')"),
-                                   downloadButton("outputPDF", label="Download PDF Report",
+                                   downloadButton("outputWord", label="Download Word Report",
                                                   style="color: black; background-color: gray90; border-color: black")
                                    
                  ), #dashboardSidebar
                  dashboardBody(  tags$head( 
-                   tags$meta(name="keywords", content="Colorado, demographic, county, community, municiplaity, city, population, housing, household, age, median income, jobs, wages"),
+                   tags$meta(name="keywords", content="Colorado, demographic, county, community, municipality, city, population, housing, household, age, median income, jobs, wages"),
                   # includeScript(initJS),
                   # includeScript(tagManJS), #writes GTM connection
                    tags$link(rel = "stylesheet", type = "text/css", href = "dashboard.css"),  #Link to CSS...
@@ -287,23 +259,31 @@ ui <-
 # Server Management Function
 server <- function(input, output, session) {
   
-  infoSrc <- matrix(" ",nrow=8,ncol=2)
-  infoSrc[1,1] <- "<b>Basic Statistics</b>"
-  infoSrc[1,2] <- "Summary Table and Map"
-  infoSrc[2,1] <- "<b>Population Trends</b>"
-  infoSrc[2,2] <- "Population Estimates and Forecasts"
-  infoSrc[3,1] <- "<b>Population Characteristics: Age</b>"
-  infoSrc[3,2] <- "Population Estimates and Migration by Age"
-  infoSrc[4,1] <- "<b>Population Characteristics: Income, Education and Race</b>"
-  infoSrc[4,2] <- "Population Estimates by Income, Income Source, Educational Attainment and Race"
-  infoSrc[5,1] <- "<b>Housing and Households</b>"
-  infoSrc[5,2] <- "Housing Units, Costs and Unit Characteristics"
-  infoSrc[6,1] <- "<b>Commuting and Job Growth</b>"
-  infoSrc[6,2] <- "Commuting Patterns and Job Growth and Migration"
-  infoSrc[7,1] <- "<b>Employment by Industry</b>"
-  infoSrc[7,2] <- "Employment Data by Industry"
-  infoSrc[8,1] <- "<b>Employment Forecast and Wage Information</b>"
-  infoSrc[8,2] <- "Employment Forecasts, Wage and Number of Firms"
+  infoSrc <- matrix(" ",nrow=12,ncol=2)
+  infoSrc[1,1] <- "<b>Population by Age</b>"
+  infoSrc[1,2] <- "Population for selected age caregories"
+  infoSrc[2,1] <- "<b>Age by Employment Status</b>"
+  infoSrc[2,2] <- "Population by age group for persons in the Civilian Labor Force and persons unemployed"
+  infoSrc[3,1] <- "<b>Population by Federal Poverty Level</b>"
+  infoSrc[3,2] <- "Population by percentage of the Federal Poverty Level"
+  infoSrc[4,1] <- "<b>Educational Attainment by Federal Poverty Level</b>"
+  infoSrc[4,2] <- "Educational Attainment for persons Age 25 and older by 100% of Federal Poverty Level"
+  infoSrc[5,1] <- "<b>Age by Federal Poverty Level</b>"
+  infoSrc[5,2] <- "Age by Federal Poverty level using Small Area Income and Poverty Estimates (SAIPE) data"
+  infoSrc[6,1] <- "<b>Age by Federal Poverty Level</b>"
+  infoSrc[6,2] <- paste0("Age by Federal Poverty level using Small Area Income and Poverty Estimates (SAIPE) Trend Data 2010 to ",curYr)
+  infoSrc[7,1] <- "<b>Age by Federal Poverty Level for Persons with Disabilities</b>"
+  infoSrc[7,2] <- "Age by Federal Poverty Level for Persons by General Disability Status"
+  infoSrc[8,1] <- "<b>Families by Type and Poverty Status</b>"
+  infoSrc[8,2] <- "Families by Headship Type and Poverty Status"
+  infoSrc[9,1] <- "<b>Housing Tenure by Poverty Status</b>"
+  infoSrc[9,2] <- "Housing Tenure by Poverty Status, Family Headship and Presence of Children"
+  infoSrc[10,1] <- "<b>Supplemental Nutrition Assistance Program (SNAP)</b>"
+  infoSrc[10,2] <- "Eligibility and Participation in the Supplemental Nutrition Assistance Program"
+  infoSrc[11,1] <- "<b>Women, Infants and Children (WIC)</b>"
+  infoSrc[11,2] <- "Eligibility and Participation in the Women, Infants and Children Program"
+  infoSrc[12,1] <- "<b>Health Insurance by Source</b>"
+  infoSrc[12,2] <- "Health Insurance enrollment by source"
   
   infoTab <-  kable(infoSrc, format='html', table.attr='class="cleanTab"',align='l',linesep = "") %>%
     kable_styling(bootstrap_options ="condensed", full_width = F) %>%
@@ -311,57 +291,14 @@ server <- function(input, output, session) {
   infoTab <- gsub("&lt;","<",infoTab)
   infoTab <- gsub("&gt;",">",infoTab)
   
-  #Creating data Source Links Table
-  linkSrc <- matrix(" ", nrow=6, ncol=5)
-  linkSrc[1,1]  <- "<b>Data Dashboard</b>"
-  linkSrc[2,1]  <- "<a href='https://gis.dola.colorado.gov/apps/demographic_dashboard/' target='_blank'>Demographic Dashboard</a>"
-  linkSrc[3,1]  <- "<a href='https://gis.dola.colorado.gov/apps/netmigration_dashboard/' target='_blank'>Net Migration Dashboard</a>"
-  
-  linkSrc[4,1] <- "<b>Data Lookup Pages</b>"
-  linkSrc[5,1] <- "<a href='https://demography.dola.colorado.gov/population/data/profile-county/' target='_blank'>County Data Lookup</a>"
-  linkSrc[6,1] <- "<a href='https://demography.dola.colorado.gov/population/data/profile-regions/' target='_blank'>Regional Data Lookup</a>"
-  
-  linkSrc[1,2]  <- "<b>Maps and GIS data</b>" 
-  linkSrc[2,2]  <- "<a href='https://demography.dola.colorado.gov/gis/map-gallery/' target='_blank'>Interactive Map Gallery</a>"
-  linkSrc[3,2]  <- "<a href='https://demography.dola.colorado.gov/gis/thematic-maps/#thematic-maps' target='_blank'>Thematic Maps</a>"
-  linkSrc[4,2]  <- "<a href='https://demography.dola.colorado.gov/demography/region-reports-2014/#colorado-planning-region-reports' target='_blank'>Region Reports</a>"
-  linkSrc[5,2] <- "<a href='https://demography.dola.colorado.gov/gis/gis-data/#gis-data' target='_blank'>GIS Data Downloads</a>"
-  linkSrc[6,2] <- "<a href='https://demography.dola.colorado.gov/gis/gis-data/#gis-data' target='_blank'>Links to GIS Data and DOLA Grants</a>"
-  
-  
-  linkSrc[1,3]  <- "<b>Population Data</b>"
-  linkSrc[2,3]  <- "<a href='https://demography.dola.colorado.gov/population/' target='_blank'>Population Estimates and Forecasts</a>"
-  linkSrc[3,3]  <- "<a href='https://demography.dola.colorado.gov/births-deaths-migration/' target='_blank'>Births Deaths and Migration</a>"
-  linkSrc[4,3]  <- "<a href='https://demography.dola.colorado.gov/economy-labor-force/' target='_blank'>Economy and Labor Force</a>"
-  linkSrc[5,3]  <- "<a href='https://demography.dola.colorado.gov/housing-and-households/' target='_blank','>Housing and Households</a>"
-  
-  linkSrc[1,4] <- "<b>Census and ACS Data</b>"
-  linkSrc[2,4] <- "<a href='https://demography.dola.colorado.gov/data/#census-data-tools' target='_blank'>Census Data Tools</a>"
-  linkSrc[3,4] <- "<a href='https://demography.dola.colorado.gov/census-acs/' target='_blank'>Census Data Page</a>"
-  linkSrc[1,5]  <- "<b>Publications</b>"
-  linkSrc[2,5]  <- "<a href='https://demography.dola.colorado.gov/demography/publications-and-presentations/#publications-and-presentations' target='_blank'>Publications and Reports</a>"
-  linkSrc[3,5]  <- "<a href='https://demography.dola.colorado.gov/crosstabs/' target='_blank'>Crosstabs</a>"
-  linkSrc[4,5]  <- "<a href='https://demography.dola.colorado.gov/demography/publications-and-presentations/#annual-demography-summit-2017' target='_blank'>Annual Summit</a>"
-  
-  
-  linkTab <-  kable(linkSrc, format='html', table.attr='class="cleanTab"',align='l',linesep = "") %>%
-    kable_styling(bootstrap_options ="condensed") %>%
-    column_spec(1, width = "2.25in") %>%
-    column_spec(2, width = "2.25in") %>%
-    column_spec(3, width = "2.25in") %>%
-    column_spec(4, width = "2.25in") %>%
-    column_spec(5, width = "2.25in")
-  
-  linkTab <- gsub("&lt;","<",linkTab)
-  linkTab <- gsub("&gt;",">",linkTab)
-  
-  frontPgBox1 <- box(width=11,tags$div(tags$b("Welcome to the State Demography Office (SDO) Colorado Demographic Profiles Website"), tags$br(),
-                                       "This tool provides summary plots and data describing Counties and Incorporated Municipalities in Colorado.", tags$br(),
+ 
+  frontPgBox1 <- box(width=11,tags$div(tags$b("Welcome to the Community Services Block Garnt (CSBG) Data Dashboard"), tags$br(),
+                                       "This dashboar provides summary plots and data to assist CSBG grant recipients in compiling their annual plans.", tags$br(),
                                        tags$em("Profile Contents:"),
                                        HTML(infoTab),
                                        "To create a profile:",tags$br(),
                                        tags$ul(
-                                         tags$li("Select a Data Level and Location using the dropdown boxes."),
+                                         tags$li("Select a CSBG Agency using the dropdown boxes."),
                                          tags$li("Select specific Data Elements to display using the checkboxes."),
                                          tags$li("Click on the 'View Profile' button to display the selected profile.")
                                        ), 
@@ -369,26 +306,21 @@ server <- function(input, output, session) {
                                        panel of each display box.", tags$br(),
                                        tags$em(tags$b("Notes:")), tags$br(), 
                                        tags$ul(
-                                         tags$li("Profiles are available for Counties and Incorporated Municipalites.  
-                                                 Please contact SDO for information on other geographies and places."),
+                                         tags$li("You may download a comprehensive report containing your data request by clicking on the 'Download Word Report' button."),
                                          tags$li("Producing the requested outputs may take up to 3 minutes, depending on your request and your connection speed."),
-                                         tags$li("Downloading any report, plot or data object will open a new browser window while the 
-                                                 object is being processed and downloaded.  This window will close once the object processing is completed."),
                                          tags$li("Downloaded objects will be saved in the 'Download' location supported by your browser.")
                                          )))
-  frontPgBox2 <-  box(width=11, tags$div(
-    tags$b("Links to other SDO Data Sources:"),
-    HTML(linkTab)))
+
   
-  frontPg <- list(frontPgBox1,frontPgBox2)
-  shinyjs::hide("outputPDF")
+  frontPg <- list(frontPgBox1)
+  shinyjs::hide("outputWord")
   
 
- # output$ui <- renderUI(frontPg)
+  output$ui <- renderUI(frontPg)
 
   
   observeEvent(input$level, ({
-    shinyjs::hide("outputPDF")
+    shinyjs::hide("outputWord")
     
     #clears the comp2 dropdown on change
     
@@ -400,15 +332,13 @@ server <- function(input, output, session) {
   
   # Event for Comparison selection
   observeEvent(input$comp, {
-    shinyjs::hide("outputPDF")
+    shinyjs::hide("outputWord")
     
   }) #observeEvent input$comp
   
   # Event for click on profile button
   observeEvent(input$profile,  {
  
-    
-
  #   dLout <- submitPush(input$level,input$unit,input$outChk)  # Generate dataLayer Command
  #   session$sendCustomMessage("handler1",dLout)  #Sends dataLayer command to dataL.js script
     
@@ -422,7 +352,7 @@ server <- function(input, output, session) {
     }  else {
       withProgress(message = 'Generating Profile', value = 0, {
         fipslist <<- listTofips(value1=input$level,inlist2="",value2="")
-          placeName <- simpleCap(input$level)
+          placeName <- input$level
         
         
         #Generate profile UI objects
@@ -474,6 +404,8 @@ server <- function(input, output, session) {
           
           #building List
           age.list <<- list(age.box0, age.box1, age.box2)
+          outputObj[[1,1]] <- list(age_list)
+          outputObj[[1,2]] <- list("Population by Age")
           
           incProgress()
         }
@@ -485,7 +417,7 @@ server <- function(input, output, session) {
 
           outplote1 <- emp_list$LFPlot
           outplote2 <- emp_list$UEMPPlot
-          outtabe1 <- emp_list$data
+          outtabe1 <- emp_list$table
           outCaption2 <- emp_list$caption
           
           sketch2 <- htmltools::withTags(table(
@@ -523,6 +455,8 @@ server <- function(input, output, session) {
           
           #building List
           emp.list <<- list(emp.box0, emp.box1, emp.box2,emp.box3)
+          outputObj[[2,1]] <- list(emp_list)
+          outputObj[[2,2]] <- list("Age by Employment Status")
           
           incProgress()
         }  
@@ -533,7 +467,7 @@ server <- function(input, output, session) {
           pov3_list <- povertyPRO(lvl=input$level,listID=fipslist,ACS=curACS,PreACS = "",curYr=curYr)
 
           outplotpov3 <- pov3_list$plot
-          outtabpov3 <- pov3_list$data
+          outtabpov3 <- pov3_list$table
           outCaption3 <- pov3_list$caption
           
           sketch3 <- htmltools::withTags(table(
@@ -569,6 +503,8 @@ server <- function(input, output, session) {
           
           #building List
           pov3.list <<- list(pov3.box0, pov3.box1, pov3.box2)
+          outputObj[[3,1]] <- list(pov3_list)
+          outputObj[[3,2]] <- list("Population by Federal Poverty Level")
           
           incProgress()
         }                       
@@ -579,7 +515,7 @@ server <- function(input, output, session) {
           educatt_list <- educPRO(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
 
           outploted1 <- educatt_list$plot
-          outtabed1 <- educatt_list$data
+          outtabed1 <- educatt_list$table
           outCaption4 <- educatt_list$caption
          
           sketch4 <- htmltools::withTags(table(
@@ -614,7 +550,9 @@ server <- function(input, output, session) {
           
           #building List
           educ.list <<- list(educ.box0, educ.box1, educ.box2)
-          
+          outputObj[[4,1]] <- list(educatt_list)
+          outputObj[[4,2]] <- list("Educational Attainment by Federal Poverty Level")
+
           incProgress()
         }
         
@@ -624,7 +562,7 @@ server <- function(input, output, session) {
           pov5_list <- povertyPRO2(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr,censKey=censAPI)
 
           outplotpov5 <- pov5_list$plot
-          outtabpov5 <- pov5_list$data
+          outtabpov5 <- pov5_list$table
           outCaption5 <- pov5_list$caption
          
           sketch5 <- htmltools::withTags(table(
@@ -659,7 +597,9 @@ server <- function(input, output, session) {
           
           #building List
           pov5.list <<- list(pov5.box0, pov5.box1, pov5.box2)
-          
+          outputObj[[5,1]] <- list(pov5_list)
+          outputObj[[5,2]] <- list("Age by Federal Poverty Level")
+
           incProgress()
         }   
         
@@ -669,7 +609,7 @@ server <- function(input, output, session) {
           pov6_list <- povertyTrend(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr,censKey=censAPI)
 
           outplotpov6 <- pov6_list$plot
-          outtabpov6 <- pov6_list$data
+          outtabpov6 <- pov6_list$table
           outCaption6 <- pov6_list$caption
     
           sketch6 <- htmltools::withTags(
@@ -705,7 +645,9 @@ server <- function(input, output, session) {
           
           #building List
           pov6.list <<- list(pov6.box0, pov6.box1, pov6.box2)
-          
+          outputObj[[6,1]] <- list(pov6_list)
+          outputObj[[6,2]] <- list("Age by Federal Poverty Level Trend")
+
           incProgress()
         }
 
@@ -715,7 +657,7 @@ server <- function(input, output, session) {
           dis7_list <- disabilityPRO(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
 
           outplotdis7 <- dis7_list$plot
-          outtabdis7 <- dis7_list$data
+          outtabdis7 <- dis7_list$table
           outCaption7 <- dis7_list$caption
   
           sketch7 <- htmltools::withTags(
@@ -751,17 +693,19 @@ server <- function(input, output, session) {
           
           #building List
           dis7.list <<- list(dis7.box0, dis7.box1, dis7.box2)
+          outputObj[[7,1]] <- list(dis7_list)
+          outputObj[[7,2]] <- list("Age by Federal Poverty Level for Persons with Disabilities")
           
           incProgress()
         }
  
        #Families by Type and Poverty Status
         if("hhpov" %in% input$outChk) {
-          fam8_text <- tags$h2("Table 8: Families by Type and Poverty Status")
+          fam8_text <- tags$h2("Families by Type and Poverty Status")
           fam8_list <- familiesPRO(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
 
           outplotfam8 <- fam8_list$plot
-          outtabfam8 <- fam8_list$data
+          outtabfam8 <- fam8_list$table
           outCaption8 <- fam8_list$caption
   
           sketch8 <- htmltools::withTags(
@@ -797,7 +741,9 @@ server <- function(input, output, session) {
           
           #building List
           fam8.list <<- list(fam8.box0, fam8.box1, fam8.box2)
-          
+          outputObj[[8,1]] <- list(fam8_list)
+          outputObj[[8,2]] <- list("Families by Type and Poverty Status")
+
           incProgress()
         }       
  
@@ -807,7 +753,7 @@ server <- function(input, output, session) {
           hh9_list <- housingPRO(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
 
           outplothh9 <- hh9_list$plot
-          outtabhh9 <- hh9_list$data
+          outtabhh9 <- hh9_list$table
           outCaption9 <- hh9_list$caption
   
           sketch9 <- htmltools::withTags(
@@ -843,7 +789,9 @@ server <- function(input, output, session) {
           
           #building List
           hh9.list <<- list(hh9.box0, hh9.box1, hh9.box2)
-          
+          outputObj[[9,1]] <- list(hh9_list)
+          outputObj[[9,2]] <- list("Housing Tenure by Poverty Status")
+
           incProgress()
         }    
         
@@ -853,7 +801,7 @@ server <- function(input, output, session) {
           snap_list <- snap(DBPool=DOLAPool,lvl=input$level,listID=fipslist,curYR=curYr)
 
           outplotsnap <- snap_list$plot
-          outtabsnap <- snap_list$data
+          outtabsnap <- snap_list$table
           outCaption10 <- snap_list$caption
   
           sketch10 <- htmltools::withTags(
@@ -889,7 +837,9 @@ server <- function(input, output, session) {
           
           #building List
           snap10.list <<- list(snap.box0, snap.box1, snap.box2)
-          
+          outputObj[[10,1]] <- list(snap_list)
+          outputObj[[10,2]] <- list("Supplemental Nutrition Assistance Program (SNAP)")
+
           incProgress()
         }   
         
@@ -899,7 +849,7 @@ server <- function(input, output, session) {
           wic_list <- wic(DBPool=DOLAPool,lvl=input$level,listID=fipslist,curYR=curYr)
 
           outplotwic <- wic_list$plot
-          outtabwic <- wic_list$data
+          outtabwic <- wic_list$table
           outCaption11 <- wic_list$caption
   
           sketch11 <- htmltools::withTags(
@@ -935,7 +885,9 @@ server <- function(input, output, session) {
           
           #building List
           wic11.list <<- list(wic.box0, wic.box1, wic.box2)
-          
+          outputObj[[11,1]] <- list(wic_list)
+          outputObj[[11,2]] <- list("Women, Infants and Children (WIC)")
+ 
           incProgress()
         }  
         
@@ -946,7 +898,7 @@ server <- function(input, output, session) {
           insurance_list <- insurance(DBPool=DOLAPool,lvl=input$level,listID=fipslist,curYR=curYr)
 
           outplotinsurance <- insurance_list$plot
-          outtabinsurance <- insurance_list$data
+          outtabinsurance <- insurance_list$table
           outCaption12 <- insurance_list$caption
   
           sketch12 <- htmltools::withTags(
@@ -982,9 +934,12 @@ server <- function(input, output, session) {
           
           #building List
           ins12.list <<- list(insurance.box0, insurance.box1, insurance.box2)
+          outputObj[[12,1]] <- list(insurance_list)
+          outputObj[[12,2]] <- list("Health Insurance by Source")
           
           incProgress()
         } 
+        shinyjs::show("outputWord")
         }) #Progress Bar
     }#if input$unit == ""
     
@@ -1003,79 +958,97 @@ server <- function(input, output, session) {
     }
     output$ui  <- renderUI({ do.call(tabsetPanel, tabs) }) #renderUI
     
+     #Event to output Word documents
+
+    output$outputWord <- downloadHandler(
+      
+      filename <- function() {
+        paste0(input$level," CSBG Report ",as.character(Sys.Date()),".docx")
+      },
+      content <- function(file) {
+        #Generate Report
+        #knitting file and copy to final document
+       
+        tempWord <- outputWord(chkList = input$outChk, locList = fipslist, lvl = input$level, outputMat = outputObj)
+
+        print(tempWord, target=file) # move pdf to file for downloading
+       shinyjs::hide("outputWord") 
+      } #Content
+    ) #Download Handler
+
  
     #Event to outload plots and data files
     
     # Age
     if("age" %in% input$outChk){
-    callModule(downloadObj, id = "popa1tabl", simpleCap(input$level),"popa1tabl", age_list$FlexTable)
-    callModule(downloadObj, id = "popa1data", simpleCap(input$level),"popa1data", age_list$table)
+    callModule(downloadObj, id = "popa1tabl", input$level,"popa1tabl", age_list$FlexTable)
+    callModule(downloadObj, id = "popa1data", input$level,"popa1data", age_list$table)
     }
     
    #Age by Employment  
     if("ageemp" %in% input$outChk){
-    callModule(downloadObj, id = "pope1tabl", simpleCap(input$level),"pope1tabl", emp_list$FlexTable)
-    callModule(downloadObj, id = "pope1data", simpleCap(input$level),"pope1data", emp_list$data)
+    callModule(downloadObj, id = "pope1tabl", input$level,"pope1tabl", emp_list$FlexTable)
+    callModule(downloadObj, id = "pope1data", input$level,"pope1data", emp_list$data)
     }
 
    #Federal Poverty Level
    if("pov" %in% input$outChk){
-    callModule(downloadObj, id = "povpp3tabl", simpleCap(input$level),"povpp3tabl", pov3_list$FlexTable)
-    callModule(downloadObj, id = "povpp3data", simpleCap(input$level),"povpp3data", pov3_list$data)
+    callModule(downloadObj, id = "povpp3tabl", input$level,"povpp3tabl", pov3_list$FlexTable)
+    callModule(downloadObj, id = "povpp3data", input$level,"povpp3data", pov3_list$data)
      }
     
    #Educational Attainment by Federal Poverty Level
    if("educatt" %in% input$outChk){
-    callModule(downloadObj, id = "poped1tabl", simpleCap(input$level),"poped1tabl", educatt_list$FlexTable)
-    callModule(downloadObj, id = "poped1data", simpleCap(input$level),"poped1data", educatt_list$data)
+    callModule(downloadObj, id = "poped1tabl", input$level,"poped1tabl", educatt_list$FlexTable)
+    callModule(downloadObj, id = "poped1data", input$level,"poped1data", educatt_list$data)
    }
   
    #Age by Federal Poverty Level
    if("povage" %in% input$outChk){
-    callModule(downloadObj, id = "povpp5tabl", simpleCap(input$level),"povpp5tabl", pov5_list$FlexTable)
-    callModule(downloadObj, id = "povpp5data", simpleCap(input$level),"povpp5data", pov5_list$data)
+    callModule(downloadObj, id = "povpp5tabl", input$level,"povpp5tabl", pov5_list$FlexTable)
+    callModule(downloadObj, id = "povpp5data", input$level,"povpp5data", pov5_list$data)
    }
   
   #Age by Federal Poverty Level Trend
    if("povagetr" %in% input$outChk){
-    callModule(downloadObj, id = "povpp6tabl", simpleCap(input$level),"povpp6tabl", pov6_list$FlexTable)
-    callModule(downloadObj, id = "povpp6data", simpleCap(input$level),"povpp6data", pov6_list$data)
+    callModule(downloadObj, id = "povpp6tabl", input$level,"povpp6tabl", pov6_list$FlexTable)
+    callModule(downloadObj, id = "povpp6data", input$level,"povpp6data", pov6_list$data)
      }
     
    #Age by Federal Poverty Level for Persons with Disabilities
    if("povagedis" %in% input$outChk){
-    callModule(downloadObj, id = "dispp7tabl", simpleCap(input$level),"dispp7tabl", dis7_list$FlexTable)
-    callModule(downloadObj, id = "dispp7data", simpleCap(input$level),"dispp7data", dis7_list$data)
+    callModule(downloadObj, id = "dispp7tabl", input$level,"dispp7tabl", dis7_list$FlexTable)
+    callModule(downloadObj, id = "dispp7data", input$level,"dispp7data", dis7_list$data)
    }
     
     #Families by Type and Poverty Status
     if("hhpov" %in% input$outChk){
-    callModule(downloadObj, id = "fampv8tabl", simpleCap(input$level),"fampv8tabl", fam8_list$FlexTable)
-    callModule(downloadObj, id = "fampv8data", simpleCap(input$level),"fampv8data", fam8_list$data)
+    callModule(downloadObj, id = "fampv8tabl", input$level,"fampv8tabl", fam8_list$FlexTable)
+    callModule(downloadObj, id = "fampv8data", input$level,"fampv8data", fam8_list$data)
     }
     
    #Housing Tenure by Poverty Status
     if("tenure" %in% input$outChk) {
-    callModule(downloadObj, id = "house9tabl", simpleCap(input$level),"house9tabl", hh9_list$FlexTable)
-    callModule(downloadObj, id = "house9data", simpleCap(input$level),"house9data", hh9_list$data)
+    callModule(downloadObj, id = "house9tabl", input$level,"house9tabl", hh9_list$FlexTable)
+    callModule(downloadObj, id = "house9data", input$level,"house9data", hh9_list$data)
     }
     
     #Supplemental Nutrition Assistance Program (SNAP)
     if("snap" %in% input$outChk) {
-    callModule(downloadObj, id = "snap10tabl", simpleCap(input$level),"snap10tabl", snap_list$FlexTable)
-    callModule(downloadObj, id = "snap10data", simpleCap(input$level),"snap10data", snap_list$data)
+    callModule(downloadObj, id = "snap10tabl", input$level,"snap10tabl", snap_list$FlexTable)
+    callModule(downloadObj, id = "snap10data", input$level,"snap10data", snap_list$data)
     }
     
     #Womens Infants and Children (WIC)
     if("wic" %in% input$outChk) {
-    callModule(downloadObj, id = "wic11tabl", simpleCap(input$level),"wic11tabl", wic_list$FlexTable)
-    callModule(downloadObj, id = "wic11data", simpleCap(input$level),"wic11data", wic_list$data)
+    callModule(downloadObj, id = "wic11tabl", input$level,"wic11tabl", wic_list$FlexTable)
+    callModule(downloadObj, id = "wic11data", input$level,"wic11data", wic_list$data)
     }
     
     #health Insurance by Source
     if("insurance" %in% input$outChk) {
-    callModule(downloadObj, id = "ins12tabl", simpleCap(input$level),"ins12tabl", insurance_list$FlexTable)
-    callModule(downloadObj, id = "ins12data", simpleCap(input$level),"ins12data", insurance_list$data)
+    callModule(downloadObj, id = "ins12tabl", input$level,"ins12tabl", insurance_list$FlexTable)
+    callModule(downloadObj, id = "ins12data", input$level,"ins12data", insurance_list$data)
     }
   }) #observeEvent input$profile
   
