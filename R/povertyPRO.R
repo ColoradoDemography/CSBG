@@ -250,12 +250,16 @@ names(f.povertycty_tab) <- c("Agency/County","Value","Less than 50%", "50 to 124
        col_keys = names(f.povertycty_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
-       align(j=1:2, align="left", part="body") 
+       align(j=1:2, align="left", part="body") %>%
+       width(j= 1, width=3) %>%
+       width(j=2:7,width=0.75) %>%
+       height(part="footer", height=0.4) %>%
+      height(part="header", i=2,height=0.7)
 
 
 
   #bind list
-  outList <- list("plot"= POVPlot, "data" = f.povertycty_P, "table" = f.povertycty_tab, "FlexTable" = f.povFlex,"caption" = outCap)
+  outList <- list("plot"= POVPlot, "data" =  f.povertycty_PLOT, "table" = f.povertycty_tab, "FlexTable" = f.povFlex,"caption" = outCap)
   
   return(outList)
 }

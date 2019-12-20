@@ -208,7 +208,13 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
        col_keys = names(f.saipecty_tab)) %>%
        set_header_labels(geoname = "Agency/County", type= "Value", age_cat = "Age Category") %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=11) %>%
-       add_footer_row(values=captionSrc("SAIPE","",""),top=FALSE,colwidths=11) 
+       add_footer_row(values=captionSrc("SAIPE","",""),top=FALSE,colwidths=11) %>%
+       align(j=1:2, align="left", part="body") %>%
+       width(j= 1, width=3) %>%
+       width(j=2:3, width=1) %>%
+       width(j=4:11,width=0.7) %>%
+       height(part="footer", height=0.4) %>%
+       height(part="body", height=0.5)
       
 
   names(f.saipecty_tab)[1] <- "Agency/County"

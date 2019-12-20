@@ -437,7 +437,7 @@ if(length(ctyfips) > 1 ){
  tab_head <- paste0("Housing Tenure by Poverty Status, ",listID$plName1)
 
  f.ctyHH_tab <-  f.ctyHH_tab[,c(1,4,3,5,7,8,6)]
- names(f.ctyHH_tab) <- c("Agency/County","Family Type","Poverty Level","Value","Own","Rent","All Household")
+ names(f.ctyHH_tab) <- c("Agency/County","Family Type","Poverty Level","Value","Own","Rent","All Households")
 
    
    f.flexHH <- flextable(
@@ -445,7 +445,13 @@ if(length(ctyfips) > 1 ){
        col_keys = names(f.ctyHH_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
-       align(j=1:2, align="left", part="body") 
+       align(j=1:2, align="left", part="body") %>%
+       width(j= 1, width=3) %>%
+       width(j=2:3, width=1.6) %>%
+       width(j=4, width=1) %>%
+       width(j=5:7,width=0.75) %>%
+       height(part="footer", height=0.4) %>%
+       height(part="header",i=2, height=0.7)
  
 
   outList <- list("plot" = HHPLOT, "FlexTable" = f.flexHH, "data" = f.ctyHHL_PLT, "table" = f.ctyHH_tab,"caption" = outCap)

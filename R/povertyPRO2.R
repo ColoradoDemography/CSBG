@@ -209,7 +209,7 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
     f.saipecty_tabW <- clrGeoname(f.saipecty_tabW,"geoname",npanel1,3)
     f.saipecty_tabW <- f.saipecty_tabW[,c(2,3,5,4,6)]
     names(f.saipecty_tabW)[1] <- "Agency/County"
-    names(f.saipecty_tabW)[2] <- "Data Type"
+    names(f.saipecty_tabW)[2] <- "Value"
 
  # Flex Table
   tab_head <- paste0("Percent Below Federal Poverty Level, ",listID$plName1, " ",curYr)
@@ -219,7 +219,14 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
        f.saipecty_tabW,
        col_keys = names(f.saipecty_tabW)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=5) %>%
-       add_footer_row(values=outCap,top=FALSE,colwidths=5) 
+       add_footer_row(values=outCap,top=FALSE,colwidths=5) %>%
+       align(j=1:2, align="left", part="body") %>%
+       width(j= 1, width=3) %>%
+       width(j=2, width=1.8) %>%
+       width(j=3:5,width=1) %>%
+       height(part="body", height=0.4) %>%
+       height(part="footer", height=0.4) %>%
+       height(part="header", i=2,height=1)
       
 
   

@@ -47,7 +47,9 @@ downloadObj <- function(input, output, session, place, oname, dobj) {
       }
       if(suffix == " Table.docx") {
         doc <- read_docx()
-        doc <- body_add_flextable(doc, value = dobj)
+        doc <-  body_add_flextable(doc, value = dobj) %>%
+          body_end_section_landscape(w = 21/2.54, h = 29.7/2.54)
+        
         print(doc, target = file)
       }
     } #content

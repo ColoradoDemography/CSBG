@@ -446,7 +446,13 @@ if(length(ctyfips) > 1 ){
        col_keys = names(f.ctyFAM_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
-       align(j=1:2, align="left", part="body") 
+       align(j=1:2, align="left", part="body") %>%
+       width(j= 1, width=3) %>%
+       width(j=2:3, width=1.6) %>%
+       width(j=4, width=1) %>%
+       width(j=5:7,width=0.75) %>%
+       height(part="footer", height=0.4) %>%
+       height(part="header",i=2, height=0.7)
  
 
   outList <- list("plot" = FAMPLOT, "FlexTable" = f.flexDIS, "data" = f.ctyFAML_PLT, "table" = f.ctyFAM_tab,"caption" = outCap)

@@ -278,13 +278,17 @@ EDUCPlot <- f.educctyPlot %>%
        col_keys = names(f.educctyTab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=8) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=8) %>%
-       align(j=1:2, align="left", part="body") 
+       align(j=1:2, align="left", part="body") %>%
+       width(j= 1, width=3) %>%
+       width(j=2:7,width=1) %>%
+       height(part="footer", height=0.4) %>%
+       height(part="header", height=1)
  
     
     f.educctyDat <- bind_rows(f.educctyTotP, f.educctyPovP) 
- 
+
   #bind list
-  outList <- list("plot"= EDUCPlot, "data" = f.educctyDat, "table" =  f.educctyTab, "FlexTable" = f.edFlex, "caption" = outCap)
+  outList <- list("plot"= EDUCPlot, "data" = f.educctyPlot, "table" =  f.educctyTab, "FlexTable" = f.edFlex, "caption" = outCap)
   
   return(outList)
 }

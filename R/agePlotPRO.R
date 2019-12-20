@@ -242,7 +242,7 @@ if(length(ctyfips) > 1 ){
  
 f.place_tab <- clrGeoname( f.place_tab,"County",npanel1,2)
  
- tab_head <- paste0("Population by age, ",listID$plName1)
+ tab_head <- paste0("Population by Age, ",listID$plName1)
 
  
  f.flexage <- flextable(
@@ -250,11 +250,15 @@ f.place_tab <- clrGeoname( f.place_tab,"County",npanel1,2)
        col_keys = names(f.place_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
-       align(j=1:2, align="left", part="body") 
+       align(j=1:2, align="left", part="body") %>%
+       width(j= 1, width=3) %>%
+       width(j=2:7,width=0.75) %>%
+       height(part="footer", height=0.4)
+ 
  
 
   
   
-  outList <- list("plot" = AgePlot, "data" = f.place_dat, "table" = f.place_tab, "FlexTable" = f.flexage,"caption" = outCap)
+  outList <- list("plot" = AgePlot, "data" = f.place, "table" = f.place_tab, "FlexTable" = f.flexage,"caption" = outCap)
   return(outList)
 }

@@ -474,10 +474,16 @@ if(length(ctyfips) > 1 ){
        col_keys = names(f.ctyEMP_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=9) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=9) %>%
-       align(j=1:2, align="left", part="body") 
+       align(j=1:2, align="left", part="body") %>%
+       width(j= 1, width=3) %>%
+       width(j=2, width=1) %>%
+       width(j=3:6,width=0.7) %>%
+       width(j=7:9,width=1) %>%
+       height(part="footer", height=0.4) %>%
+       height(part="header", i=2,height=1.5)
  
 
-  outList <- list("LFPlot" = LFPlot, "UEMPPlot" =  UEMPPlot,"FlexTable" = f.flexEMP, "data" = f.ctyEMPL_pct, "table" = f.ctyEMP_tab,"caption" = outCap)
+  outList <- list("LFPlot" = LFPlot, "UEMPPlot" =  UEMPPlot,"FlexTable" = f.flexEMP, "data" = f.ctyEMPL_PLOT, "table" = f.ctyEMP_tab,"caption" = outCap)
   return(outList)
 }
 

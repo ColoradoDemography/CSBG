@@ -17,25 +17,25 @@ captionSrc <- function(type, dataSrc,tab) {
     srcStr <- paste0("Source: State Demography Office and U.S. Bureau of Economic Analysis", dateStr)
   }
   if(type == "SAIPE") {
-    srcStr <- paste0("Source: U.S. Census Bureau Small Area Income and Poverty Estimates (SAIPE) Program", dateStr)
+    srcStr <- paste0("Source: U.S. Census Bureau Small Area Income and Poverty Estimates (SAIPE)\n", dateStr)
   }
   if(type == "QCEW") {
     srcStr <- paste0("Source: Department of Labor and Employment (QCEW)", dateStr)
   }
   if(type == "SNAP") {
-    srcStr <- paste0("Source: Supplemental Nutrition Assistance Program (SNAP) Participation, Hunger Free Colorado", dateStr)
+    srcStr <- paste0("Source: Supplemental Nutrition Assistance Program (SNAP) Participation,\nHunger Free Colorado", dateStr)
   }
   if(type == "WIC") {
-    srcStr <- paste0("Women, Infants and Children (WIC) Participatio, Annie E. Casey Foundation Kids Count Data Center", dateStr)
+    srcStr <- paste0("Women, Infants and Children (WIC) Program,\nAnnie E. Casey Foundation Kids Count Data Center", dateStr)
   }
   
     if(type == "INS") {
-    srcStr <- paste0("Health Insurance by Source, Colorado Health Institute", dateStr)
+    srcStr <- paste0("Health Insurance by Source,\nColorado Health Institute", dateStr)
   }
   if(type =="ACS") {
     byr <- paste0("20",substr(dataSrc,4,5))
     eyr <- paste0("20",substr(dataSrc,6,7))
-    srcStr <- paste0("Source: U.S. Census Bureau, ",byr,"-",eyr," American Community Survey, Table Number ",tab,dateStr)
+    srcStr <- paste0("Source: U.S. Census Bureau, ",byr,"-",eyr," American Community Survey,\nTable Number ",tab,dateStr)
     
   }
   return(srcStr)
