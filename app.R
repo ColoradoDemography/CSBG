@@ -222,9 +222,9 @@ ui <-
                                    
                                    #Action Button
                                    actionButton("profile","View Profile"),
-                                   actionButton("contact","Contact SDO",onclick ="window.open('https://goo.gl/forms/xvyxzq6DGD46rMo42', '_blank')"),
-                                   downloadButton("outputWord", label="Download Word Report",
-                                                  style="color: black; background-color: gray90; border-color: black")
+                                   actionButton("contact","Contact SDO",onclick ="window.open('https://goo.gl/forms/xvyxzq6DGD46rMo42', '_blank')")
+                                #   downloadButton("outputWord", label="Download Word Report",
+                                #                  style="color: black; background-color: gray90; border-color: black")
                                    
                  ), #dashboardSidebar
                  dashboardBody(  tags$head( 
@@ -308,21 +308,21 @@ server <- function(input, output, session) {
                                          tags$li("Producing the requested outputs may take up to 3 minutes, depending on your request and your connection speed."),
                                          tags$li("You can download individual plots by hovering over the image and using the Plotly download functions."),
                                          tags$li("You can download individual tables and underlying data for each display by selecting the 'Sources and Downloads' panel of each display box."),
-                                         tags$li("You can download a comprehensive report containing your data request by clicking on the 'Download Word Report' button."),
+                                         # tags$li("You can download a comprehensive report containing your data request by clicking on the 'Download Word Report' button."),
                                          tags$li("Downloaded files will be saved in the 'Download' location supported by your browser."),
                                          tags$li("Questions?  Click on the 'Contact SDO' button to submit a question about this tool.")
                                          )))
 
   
   frontPg <- list(frontPgBox1)
-  shinyjs::hide("outputWord")
+ # shinyjs::hide("outputWord")
   
 
   output$ui <- renderUI(frontPg)
 
   
   observeEvent(input$level, ({
-    shinyjs::hide("outputWord")
+  #  shinyjs::hide("outputWord")
     
     #clears the comp2 dropdown on change
     
@@ -334,7 +334,7 @@ server <- function(input, output, session) {
   
   # Event for Comparison selection
   observeEvent(input$comp, {
-    shinyjs::hide("outputWord")
+ #   shinyjs::hide("outputWord")
     
   }) #observeEvent input$comp
   
@@ -941,7 +941,7 @@ server <- function(input, output, session) {
           
           incProgress()
         } 
-        shinyjs::show("outputWord")
+   #     shinyjs::show("outputWord")
         }) #Progress Bar
     }#if input$unit == ""
     
