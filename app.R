@@ -298,17 +298,19 @@ server <- function(input, output, session) {
                                        HTML(infoTab),
                                        "To create a profile:",tags$br(),
                                        tags$ul(
-                                         tags$li("Select a CSBG Agency using the dropdown boxes."),
+                                         tags$li("Select a CSBG Agency using the 'Select an Agency' dropdown box."),
                                          tags$li("Select specific Data Elements to display using the checkboxes."),
                                          tags$li("Click on the 'View Profile' button to display the selected profile.")
                                        ), 
-                                       "You can download the plots and underlying data for each display by selecting the 'Sources and Downloads' 
-                                       panel of each display box.", tags$br(),
+                                       tags$br(),
                                        tags$em(tags$b("Notes:")), tags$br(), 
                                        tags$ul(
-                                         tags$li("You may download a comprehensive report containing your data request by clicking on the 'Download Word Report' button."),
                                          tags$li("Producing the requested outputs may take up to 3 minutes, depending on your request and your connection speed."),
-                                         tags$li("Downloaded objects will be saved in the 'Download' location supported by your browser.")
+                                         tags$li("You can download individual plots by hovering over the image and using the Plotly download functions."),
+                                         tags$li("You can download individual tables and underlying data for each display by selecting the 'Sources and Downloads' panel of each display box."),
+                                         tags$li("You can download a comprehensive report containing your data request by clicking on the 'Download Word Report' button."),
+                                         tags$li("Downloaded files will be saved in the 'Download' location supported by your browser."),
+                                         tags$li("Questions?  Click on the 'Contact SDO' button to submit a question about this tool.")
                                          )))
 
   
@@ -968,10 +970,16 @@ server <- function(input, output, session) {
       content <- function(file) {
         #Generate Report
         #knitting file and copy to final document
+        tempRMD <- "SDO_Report.Rmd"
        
-        tempWord <- outputWord(chkList = input$outChk, locList = fipslist, lvl = input$level, outputMat = outputObj)
-
-        print(tempWord, target=file) # move pdf to file for downloading
+        tempWord <- rmarkdown::render(input= tempRMD,
+                          params =  list(outChk = input$outChk,
+                                         olistID = fipslist,
+                                         olevel = input$level,
+                                         oObj = outputObj),
+                          run_pandoc = TRUE)
+        
+        file.rename(tempWord, file) # move pdf to file for downloading
        shinyjs::hide("outputWord") 
       } #Content
     ) #Download Handler
