@@ -76,20 +76,19 @@ if("age" %in% unlist(outChk)) {
     age_list <- oObj[[1,1]]
     age_table <- age_list[[1]]$FlexTable
 
-    cat("### Population by Age\n")
+    cat("### Population by Age  \n")
 }
 ```
 
 
-```{r age2, results="asis", echo = FALSE}
+```{r age2, results="asis", echo = FALSE, out.width = "100%", fig.pos="h"}
 
 if("age" %in% unlist(outChk)) {
 grCount <- 4
 for(i in 1:length(ctyfips)) {
-  agep <- readPNG(fixPath(filemat[grCount]))
-  grid.raster(agep)
- 
-  grCount <- grCount + 1
+   agep <- fixPath(filemat[grCount])
+   cat(paste0("![](",agep,")  \n"))
+   grCount <- grCount + 1
 }
 
 }
@@ -113,23 +112,25 @@ if("ageemp" %in% unlist(outChk)) {
     ageemp_table <- ageemp_list[[1]]$FlexTable
 
 
-cat("### Age by Employment Status\n")
+cat("### Age by Employment Status  \n")
 }
 ```
 
-```{r ageemp2, results="asis", echo = FALSE}
+```{r ageemp2, results="asis", echo = FALSE, out.width = "100%", fig.pos="h"}
 
 if("ageemp" %in% unlist(outChk)) {
    grCount <- 10
+  
    for(i in 1:length(ctyfips)) {
-       ageemp1p <- readPNG(fixPath(filemat[grCount]))
-       grid.raster(ageemp1p)
-       grCount <- grCount + 1
-
-       ageemp2p <-readPNG(fixPath(filemat[grCount]))
-       grid.raster(ageemp2p)
-       grCount <- grCount + 1
-    }
+          ageemp1p <- fixPath(filemat[grCount])   
+          grCount <- grCount + 1
+          ageemp2p <- fixPath(filemat[grCount])
+          grCount <- grCount + 1
+          
+      cat(paste0("![](",ageemp1p,")  \n")) 
+      
+      cat(paste0("![](",ageemp2p,")  \n"))
+   }
 }
 
 ```
@@ -150,7 +151,7 @@ if("pov" %in% unlist(outChk)) {
     pov_list <- oObj[[3,1]]
     pov_table <- pov_list[[1]]$FlexTable
 
-cat("### Population by Federal Poverty Level\n")
+cat("### Population by Federal Poverty Level  \n")
 }
 ```
 
@@ -159,9 +160,9 @@ cat("### Population by Federal Poverty Level\n")
 if("pov" %in% unlist(outChk)) {
    grCount <- 22
    for(i in 1:length(ctyfips)) {
-       povp <- readPNG(fixPath(filemat[grCount]) ) 
-       grid.raster(povp)
-       grCount <- grCount + 1
+      povp <- fixPath(filemat[grCount])
+   cat(paste0("![](",povp,")  \n"))
+   grCount <- grCount + 1
 }
 
 }
@@ -184,7 +185,7 @@ if("educatt" %in% unlist(outChk)) {
     educatt_list <- oObj[[4,1]]
     educatt_table <- educatt_list[[1]]$FlexTable
 
-cat("### Educational Attainment by Federal Poverty Level\n")
+cat("### Educational Attainment by Federal Poverty Level  \n")
 }
 ```
 
@@ -193,9 +194,9 @@ cat("### Educational Attainment by Federal Poverty Level\n")
 if("educatt" %in% unlist(outChk)) {
     grCount <- 28
    for(i in 1:length(ctyfips)) {
-       educp <- readPNG(fixPath(filemat[grCount]) ) 
-       grid.raster(educp)
-       grCount <- grCount + 1
+      educp <- fixPath(filemat[grCount])
+      cat(paste0("![](",educp,")  \n"))
+      grCount <- grCount + 1
      }
 }
 
@@ -217,7 +218,7 @@ if("povage" %in% unlist(outChk)) {
     povage_list <- oObj[[5,1]]
     povage_table <- povage_list[[1]]$FlexTable
  
-cat("### Age by Federal Poverty Level\n")
+cat("### Age by Federal Poverty Level  \n")
 }
 ```
 
@@ -225,9 +226,9 @@ cat("### Age by Federal Poverty Level\n")
 if("povage" %in% unlist(outChk)) {
    grCount <- 33
    for(i in 1:length(ctyfips)) {
-       povagep <- readPNG(fixPath(filemat[grCount]) ) 
-       grid.raster(povagep)
-       grCount <- grCount + 1
+      povagep <- fixPath(filemat[grCount])
+      cat(paste0("![](",povagep,")  \n"))
+      grCount <- grCount + 1
      }
 }
 
@@ -249,7 +250,7 @@ if("povagetr" %in% unlist(outChk)) {
     povagetr_list <- oObj[[6,1]]
     povagetr_table <- povagetr_list[[1]]$FlexTable
     
-   cat("### Age by Federal Poverty Level Trend\n")
+   cat("### Age by Federal Poverty Level Trend  \n")
 }
 ```
 
@@ -257,10 +258,9 @@ if("povagetr" %in% unlist(outChk)) {
 if("povagetr" %in% unlist(outChk)) {
    grCount <- 40
    for(i in 1:length(ctyfips)) {
-       povagetrp <- readPNG(fixPath(filemat[grCount]) ) 
-       grid.raster(povagetrp)
-       grCount <- grCount + 1
-    }
+       povagetrp <- fixPath(filemat[grCount])
+       cat(paste0("![](",povagetrp,")  \n"))
+       grCount <- grCount + 1    }
 }
 
 ```
@@ -282,7 +282,7 @@ if("povagedis" %in% unlist(outChk)) {
     povagedis_table <- povagedis_list[[1]]$FlexTable
    
     
-cat("### Age by Federal Poverty Level for Persons with Disabilities\n")
+cat("### Age by Federal Poverty Level for Persons with Disabilities  \n")
 }
 ```
 
@@ -290,8 +290,8 @@ cat("### Age by Federal Poverty Level for Persons with Disabilities\n")
 if("povagedis" %in% unlist(outChk)) {
    grCount <- 46
    for(i in 1:length(ctyfips)) {
-       povagedisp <- readPNG(fixPath(filemat[grCount]) ) 
-       grid.raster(povagedisp)
+       povagedisp <- fixPath(filemat[grCount])
+       cat(paste0("![](",povagedisp,")  \n"))
        grCount <- grCount + 1
     }
 }
@@ -314,7 +314,7 @@ if("hhpov" %in% unlist(outChk)) {
     hhpov_list <- oObj[[8,1]]
     hhpov_table <- hhpov_list[[1]]$FlexTable
     
-    cat("### Families by Type and Poverty Status\n")
+    cat("### Families by Type and Poverty Status  \n")
 }
 ```
 
@@ -322,8 +322,8 @@ if("hhpov" %in% unlist(outChk)) {
 if("hhpov" %in% unlist(outChk)) {
    grCount <- 52
    for(i in 1:length(ctyfips)) {
-       hhpovp <- readPNG(fixPath(filemat[grCount]) ) 
-       grid.raster(hhpovp)
+       hhpovp <- fixPath(filemat[grCount])
+       cat(paste0("![](",hhpovp,")  \n"))
        grCount <- grCount + 1
     }
 }
@@ -346,7 +346,7 @@ if("tenure" %in% unlist(outChk)) {
     tenure_list <- oObj[[9,1]]
     tenure_table <- tenure_list[[1]]$FlexTable
     
-    cat("### Housing Tenure by Poverty Status\n")
+    cat("### Housing Tenure by Poverty Status  \n")
 }
 ```
 
@@ -354,8 +354,8 @@ if("tenure" %in% unlist(outChk)) {
 if("tenure" %in% unlist(outChk)) {
    grCount <- 58
    for(i in 1:length(ctyfips)) {
-       tenurep <- readPNG(fixPath(filemat[grCount]) ) 
-       grid.raster(tenurep)
+       tenurep <- fixPath(filemat[grCount])
+       cat(paste0("![](",tenurep,")  \n"))
        grCount <- grCount + 1
     }
 }
@@ -378,7 +378,7 @@ if("snap" %in% unlist(outChk)) {
     snap_list <- oObj[[10,1]]
     snap_table <- snap_list[[1]]$FlexTable
 
-    cat("### Supplemental Nutrition Assistance Program (SNAP)\n")
+    cat("### Supplemental Nutrition Assistance Program (SNAP)  \n")
 }
 ```
 
@@ -386,8 +386,8 @@ if("snap" %in% unlist(outChk)) {
 if("snap" %in% unlist(outChk)) {
    grCount <- 64
    for(i in 1:length(ctyfips)) {
-       snapp <- readPNG(fixPath(filemat[grCount]) ) 
-       grid.raster(snapp)
+       snapp <- fixPath(filemat[grCount]) 
+       cat(paste0("![](",snapp,")  \n"))
        grCount <- grCount + 1
     }
 }
@@ -410,7 +410,7 @@ if("wic" %in% unlist(outChk)) {
     wic_list <- oObj[[11,1]]
     wic_table <- wic_list[[1]]$FlexTable
    
-    cat("### Women, Infants and Children (WIC)\n")
+    cat("### Women, Infants and Children (WIC)  \n")
 }
 ```
 
@@ -418,8 +418,8 @@ if("wic" %in% unlist(outChk)) {
 if("wic" %in% unlist(outChk)) {
    grCount <- 70
    for(i in 1:length(ctyfips)) {
-       wicp <- readPNG(fixPath(filemat[grCount]) ) 
-       grid.raster(wicp)
+       wicp <- fixPath(filemat[grCount])
+       cat(paste0("![](",wicp,")  \n"))
        grCount <- grCount + 1
     }
 }
@@ -450,8 +450,8 @@ if("insurance" %in% unlist(outChk)) {
 if("insurance" %in% unlist(outChk)) {
     grCount <- 70
    for(i in 1:length(ctyfips)) {
-       insurancep <- readPNG(fixPath(filemat[grCount])) 
-       grid.raster(insurancep)
+       insurancep <- fixPath(filemat[grCount]) 
+       cat(paste0("![](",insurancep,")  \n"))
        grCount <- grCount + 1
     }
 }
