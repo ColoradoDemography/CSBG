@@ -35,6 +35,8 @@ library(DT)
 library(plotly)
 library(tidycensus)
 library(saipeAPI)  # Installed 2019
+library(png)
+
 
 # Additions for Database pool
 library('pool') 
@@ -86,7 +88,7 @@ source("R/wic.R")
 
 
 # The GLOBAL Variables  Add Additional lists items as sections get defined
-#File Locations ALSO LOOK AT LINE IN THE PDF OUTPUT CODE  LINE 1229
+#File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
  tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
 
@@ -222,13 +224,13 @@ ui <-
                                    
                                    #Action Button
                                    actionButton("profile","View Profile"),
-                                   actionButton("contact","Contact SDO",onclick ="window.open('https://goo.gl/forms/xvyxzq6DGD46rMo42', '_blank')")
-                                #   downloadButton("outputWord", label="Download Word Report",
-                                #                  style="color: black; background-color: gray90; border-color: black")
+                                   actionButton("contact","Contact SDO",onclick ="window.open('https://goo.gl/forms/xvyxzq6DGD46rMo42', '_blank')"),
+                                   downloadButton("outputWord", label="Download Word Report",
+                                                  style="color: black; background-color: gray90; border-color: black")
                                    
                  ), #dashboardSidebar
                  dashboardBody(  tags$head( 
-                   tags$meta(name="keywords", content="Colorado, demographic, county, community, municipality, city, population, housing, household, age, median income, jobs, wages"),
+                   tags$meta(name="keywords", content="Colorado, demographic, CSBG, community, municipality, city, population, housing, household, age, median income, jobs, wages"),
                   # includeScript(initJS),
                   # includeScript(tagManJS), #writes GTM connection
                    tags$link(rel = "stylesheet", type = "text/css", href = "dashboard.css"),  #Link to CSS...
@@ -315,14 +317,27 @@ server <- function(input, output, session) {
 
   
   frontPg <- list(frontPgBox1)
- # shinyjs::hide("outputWord")
+  shinyjs::hide("outputWord")
   
+  
+ #Creating output file location and Prepping Matrix of filenames
+
+    tName <- ""
+    tmpName <- sample(c(0:9, LETTERS),8, replace=TRUE)
+    for(i in 1:8) {
+      tName <- paste0(tName,tmpName[i])
+    }
+    
+    fullDir <- file.path(tPath,tName)
+    tDir <- dir.create(fullDir) #Setting Temporary Directory location for Reporting
+  
+    fileMat <- TempFil(fullDir)  
 
   output$ui <- renderUI(frontPg)
 
   
   observeEvent(input$level, ({
-  #  shinyjs::hide("outputWord")
+    shinyjs::hide("outputWord")
     
     #clears the comp2 dropdown on change
     
@@ -334,7 +349,7 @@ server <- function(input, output, session) {
   
   # Event for Comparison selection
   observeEvent(input$comp, {
- #   shinyjs::hide("outputWord")
+    shinyjs::hide("outputWord")
     
   }) #observeEvent input$comp
   
@@ -941,7 +956,7 @@ server <- function(input, output, session) {
           
           incProgress()
         } 
-   #     shinyjs::show("outputWord")
+        shinyjs::show("outputWord")
         }) #Progress Bar
     }#if input$unit == ""
     
@@ -968,18 +983,30 @@ server <- function(input, output, session) {
         paste0(input$level," CSBG Report ",as.character(Sys.Date()),".docx")
       },
       content <- function(file) {
+        
+      withProgress(message = 'Generating Word Document', value = 0, {
+        x <-  outputWord(input$outChk, fipslist, input$level, outputObj,fileMat)  # x is  a list with nothing in it.
+  
+        incProgress()
         #Generate Report
         #knitting file and copy to final document
-        tempRMD <- "SDO_Report.Rmd"
+        tempRMD <- fixPath(fileMat[1])   #Testing
+        tempWord <- fixPath(fileMat[2])
        
-        tempWord <- rmarkdown::render(input= tempRMD,
+        
+       # tempRMD <- fisPath(fileMat[1])   #Production
+       # tempWord <- fixPath(fileMat[2])
+        
+        rmarkdown::render(input= tempRMD, output_file = tempWord,
                           params =  list(outChk = input$outChk,
                                          olistID = fipslist,
                                          olevel = input$level,
-                                         oObj = outputObj),
+                                         oObj = outputObj,
+                                         ofileMat = fileMat),
                           run_pandoc = TRUE)
-        
-        file.rename(tempWord, file) # move pdf to file for downloading
+        incProgress()
+        file.rename(tempWord, file) # move word to file for downloading
+      }) # progress
        shinyjs::hide("outputWord") 
       } #Content
     ) #Download Handler
