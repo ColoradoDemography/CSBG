@@ -985,6 +985,7 @@ server <- function(input, output, session) {
       content <- function(file) {
         
       withProgress(message = 'Generating Word Document', value = 0, {
+        app_idle_timeout = 100000
         x <-  outputWord(input$outChk, fipslist, input$level, outputObj,fileMat)  # x is  a list with nothing in it.
   
         incProgress()
