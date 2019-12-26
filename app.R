@@ -90,11 +90,11 @@ source("R/wic.R")
 # The GLOBAL Variables  Add Additional lists items as sections get defined
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
-# tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
-
+ tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
+#tPath <- "D:/TempDir"
 
 #Production
- tPath <- "/tmp"  
+# tPath <- "/tmp"  
 
 # Locations for Google Analtyics Java Script Files
 # Local/ Development
@@ -946,7 +946,7 @@ server <- function(input, output, session) {
           
           incProgress()
         } 
-        shinyjs::show("outputWord")
+        
         #Creating output file location and Prepping Matrix of filenames
         
         tName <- ""
@@ -961,7 +961,7 @@ server <- function(input, output, session) {
         fileMat <- TempFil(fullDir)  
         
         x <-  outputWord(input$outChk, fipslist, input$level, outputObj,fileMat)  # x is  a list with nothing in it.
-        
+        shinyjs::show("outputWord")
         }) #Progress Bar
     }#if input$unit == ""
     
@@ -993,12 +993,12 @@ server <- function(input, output, session) {
         incProgress()
         #Generate Report
         #knitting file and copy to final document
-       # tempRMD <- fixPath(fileMat[1])   #Testing
-       # tempWord <- fixPath(fileMat[2])
+        tempRMD <- fixPath(fileMat[1])   #Testing
+        tempWord <- fixPath(fileMat[2])
        
         
-        tempRMD <- fisPath(fileMat[1])   #Production
-        tempWord <- fixPath(fileMat[2])
+       # tempRMD <- fisPath(fileMat[1])   #Production
+       # tempWord <- fixPath(fileMat[2])
         
         rmarkdown::render(input= tempRMD, output_file = tempWord,
                           params =  list(outChk = input$outChk,
