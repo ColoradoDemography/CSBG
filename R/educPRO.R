@@ -280,7 +280,8 @@ EDUCPlot <- f.educctyPlot %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=8) %>%
        align(j=1:2, align="left", part="body") %>%
        width(j= 1, width=3) %>%
-       width(j=2:7,width=1) %>%
+       width(j=2,width=1.5) %>%
+       width(j=3:7,width=1) %>%
        height(part="footer", height=0.4) %>%
        height(part="header", height=1)
  
