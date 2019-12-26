@@ -91,9 +91,10 @@ source("R/wic.R")
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
 # tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
+tPath <- "D:/TempDir"
 
 #Production
- tPath <- "/tmp"  
+# tPath <- "/tmp"  
 
 # Locations for Google Analtyics Java Script Files
 # Local/ Development
@@ -320,18 +321,7 @@ server <- function(input, output, session) {
   shinyjs::hide("outputWord")
   
   
- #Creating output file location and Prepping Matrix of filenames
 
-    tName <- ""
-    tmpName <- sample(c(0:9, LETTERS),8, replace=TRUE)
-    for(i in 1:8) {
-      tName <- paste0(tName,tmpName[i])
-    }
-    
-    fullDir <- file.path(tPath,tName)
-    tDir <- dir.create(fullDir) #Setting Temporary Directory location for Reporting
-  
-    fileMat <- TempFil(fullDir)  
 
   output$ui <- renderUI(frontPg)
 
@@ -957,6 +947,21 @@ server <- function(input, output, session) {
           incProgress()
         } 
         shinyjs::show("outputWord")
+        #Creating output file location and Prepping Matrix of filenames
+        
+        tName <- ""
+        tmpName <- sample(c(0:9, LETTERS),8, replace=TRUE)
+        for(i in 1:8) {
+          tName <- paste0(tName,tmpName[i])
+        }
+        
+        fullDir <- file.path(tPath,tName)
+        tDir <- dir.create(fullDir) #Setting Temporary Directory location for Reporting
+        
+        fileMat <- TempFil(fullDir)  
+        
+        x <-  outputWord(input$outChk, fipslist, input$level, outputObj,fileMat)  # x is  a list with nothing in it.
+        
         }) #Progress Bar
     }#if input$unit == ""
     
@@ -985,18 +990,15 @@ server <- function(input, output, session) {
       content <- function(file) {
         
       withProgress(message = 'Generating Word Document', value = 0, {
-       
-        x <-  outputWord(input$outChk, fipslist, input$level, outputObj,fileMat)  # x is  a list with nothing in it.
-  
         incProgress()
         #Generate Report
         #knitting file and copy to final document
-        # tempRMD <- fixPath(fileMat[1])   #Testing
-        # tempWord <- fixPath(fileMat[2])
+        tempRMD <- fixPath(fileMat[1])   #Testing
+        tempWord <- fixPath(fileMat[2])
        
         
-        tempRMD <- fileMat[1]   #Production
-        tempWord <- fileMat[2]
+       # tempRMD <- fisPath(fileMat[1])   #Production
+       # tempWord <- fixPath(fileMat[2])
         
         rmarkdown::render(input= tempRMD, output_file = tempWord,
                           params =  list(outChk = input$outChk,
