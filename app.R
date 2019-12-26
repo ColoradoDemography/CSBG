@@ -998,7 +998,7 @@ server <- function(input, output, session) {
        
         
         tempRMD <- fixPath(fileMat[1])   #Production
-        tempWord <- fixPath[fileMat[2])
+        tempWord <- fixPath(fileMat[2])
         
         rmarkdown::render(input= tempRMD, output_file = tempWord,
                           params =  list(outChk = input$outChk,
