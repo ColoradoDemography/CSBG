@@ -16,7 +16,7 @@ header-includes:
    
 output: 
  word_document:
-    reference_docx: Landscape.docx
+    reference_docx: ../www/Landscape.docx
 fontsize: 11
 documentclass: article
 
