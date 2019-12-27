@@ -16,7 +16,7 @@ header-includes:
    
 output: 
  word_document:
-    reference_docx: ../www/Landscape.docx
+    reference_docx: Landscape.docx
 fontsize: 11
 documentclass: article
 
@@ -43,13 +43,6 @@ library(flextable, quietly=TRUE)
 
 muffleError <- function(x,options) {}
 knit_hooks$set(error=muffleError)
-
-fixPath <- function(inPath){
-  outPath <- gsub("ABICKF~1","ABickford",inPath)
-  outPath <-gsub("\\\\","/",outPath)
- # outPath <- inPath
-  return(outPath)
-}
 
  outChk <- params$outChk  # List of topical areas
  olistID <- params$olistID # Place List
