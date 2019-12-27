@@ -90,11 +90,11 @@ source("R/wic.R")
 # The GLOBAL Variables  Add Additional lists items as sections get defined
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
- tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
+# tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
 # tPath <- "C:/Users/adamb/OneDrive/Documents/TempDir"
 
 #Production
-# tPath <- "/tmp"  
+ tPath <- "/tmp"  
 
 # Locations for Google Analtyics Java Script Files
 # Local/ Development
@@ -999,7 +999,7 @@ server <- function(input, output, session) {
         
        # tempRMD <- fixPath(fileMat[1])   #Production
        # tempWord <- fixPath(fileMat[2])
-        
+        incProgress()
         rmarkdown::render(input= tempRMD, output_file = tempWord,
                           params =  list(outChk = input$outChk,
                                          olistID = fipslist,
