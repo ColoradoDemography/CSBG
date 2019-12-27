@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Community Services Block Grant Dashboard Report"
 
 header-includes:
    - \usepackage{caption}
@@ -62,7 +62,7 @@ base <- 10
  
 ```
 
-# Community Services Block Grant Dashboard Report
+
 ### Print Date: `r format(Sys.Date(),"%m/%d/%Y")`
 
 
