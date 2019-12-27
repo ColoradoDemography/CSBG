@@ -82,17 +82,17 @@ f.saipe <- f.saiperaw %>%
     f.saipecty_CL <- gather(f.saipectyVAL[,c(1:3,7:9)],age_cat,count,pov0517:povpop, factor_key=TRUE) 
     f.saipecty_CL$age_cat <- plyr::revalue(f.saipecty_CL$age_cat, c("pov0517" = "5 to 17",
                                                               "povgt17" = "18 and Older",
-                                                              "povpop" = "All Persons"))
+                                                              "povpop" = "Total"))
     f.saipecty_CL$age_cat <- factor(f.saipecty_CL$age_cat, levels = c("5 to 17",
-                                                              "18 and Older", "All Persons"))
+                                                              "18 and Older", "Total"))
 
 
     f.saipecty_PL <- gather(f.saipectyVAL[,c(1:3,10:12)],age_cat,value,povpct0517:povpcttot, factor_key=TRUE) 
     f.saipecty_PL$age_cat <- plyr::revalue(f.saipecty_PL$age_cat, c("povpct0517" = "5 to 17",
                                                               "povpctgt17" = "18 and Older",
-                                                              "povpcttot" = "All Persons"))
+                                                              "povpcttot" = "Total"))
     f.saipecty_PL$age_cat <- factor(f.saipecty_PL$age_cat, levels = c("5 to 17",
-                                                              "18 and Older", "All Persons"))
+                                                              "18 and Older", "Total"))
     
     f.saipecty_PLOT <- inner_join(f.saipecty_PL,f.saipecty_CL[,c(1,4,5)], by=c("fips","age_cat"))
     f.saipecty_PLOT$indText  <- paste0( f.saipectyVAL$geoname," Year: ",f.saipecty_PLOT$year," Ages: ",f.saipecty_PLOT$age_cat,", Percent in Poverty: ", percent(f.saipecty_PLOT$value * 100)," Estimate: ",NumFmt(f.saipecty_PLOT$count))  
