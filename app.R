@@ -46,7 +46,9 @@ library('config')
 
 source("R/bldCaption.R")
 source("R/ageEmployment.R")
+source("R/ageForecastPRO.R")
 source("R/agePlotPRO.R")
+source("R/agePoverty.R")
 source("R/boxContent.R")
 source("R/captionSrc.R")
 source("R/chkID.R")
@@ -71,6 +73,7 @@ source("R/povertyPRO.R")
 source("R/povertyPRO2.R")
 source("R/povertyTrend.R")
 source("R/roundUpNice.R")
+source("R/RTHouse.R")
 source("R/submitPush.R")
 source("R/submitReport.R")
 source("R/tabList.R")
@@ -87,11 +90,11 @@ source("R/wic.R")
 # The GLOBAL Variables  Add Additional lists items as sections get defined
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
-# tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
+ tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
 # tPath <- "C:/Users/adamb/OneDrive/Documents/TempDir"
 
 #Production
- tPath <- "/tmp"  
+# tPath <- "/tmp"  
 
 # Locations for Google Analtyics Java Script Files
 # Local/ Development
@@ -164,38 +167,38 @@ ui <-
                                    # data level Drop down
                                    selectInput("level", "Select an Agency" ,
                                                choices=c("Select an Agency",
-                                                         "Adams County MCSA",
-                                                          "Arapahoe County MCSA",
-                                                          "Baca County MCSA",
-                                                          "Boulder County MCSA",
-                                                          "Broomfield, City and County MCSA",
+                                                         "Adams County",
+                                                          "Arapahoe County",
+                                                          "Baca County",
+                                                          "Boulder County",
+                                                          "Broomfield, City and County",
                                                           "Colorado East Community Action Agency",
-                                                          "Delta County MCSA",
-                                                          "Denver, City and County MCSA",
-                                                          "Douglas County MCSA",
-                                                          "Eagle County MCSA",
-                                                          "El Paso County MCSA",
-                                                          "Garfield County MCSA",
-                                                          "Gunnison County MCSA",
+                                                          "Delta County",
+                                                          "Denver, City and County",
+                                                          "Douglas County",
+                                                          "Eagle County",
+                                                          "El Paso County",
+                                                          "Garfield County",
+                                                          "Gunnison County",
                                                           "Housing Solutions for the Southwest",
-                                                          "Jefferson County MCSA",
-                                                          "Kiowa County MCSA",
-                                                          "Larimer County MCSA",
+                                                          "Jefferson County",
+                                                          "Kiowa County",
+                                                          "Larimer County",
                                                           "MADA",
-                                                          "Mesa County MCSA",
+                                                          "Mesa County",
                                                           "Moffat County United Way",
                                                           "Mountain Family Center",
                                                           "Northeastern Colorado Association of Local Governments",
-                                                          "Otero County MCSA",
-                                                          "Prowers County MCSA",
-                                                          "Pueblo County MCSA",
-                                                          "Rio Blanco County MCSA",
-                                                          "Routt County MCSA",
+                                                          "Otero County",
+                                                          "Prowers County",
+                                                          "Pueblo County",
+                                                          "Rio Blanco County",
+                                                          "Routt County",
                                                           "San Luis Valley Community Action Agency",
                                                           "South Central Council of Governments",
-                                                          "Summit County MCSA",
+                                                          "Summit County",
                                                           "Upper Arkansas Area Council of Governments",
-                                                          "Weld County MCSA"
+                                                          "Weld County"
                                                           )  #Enabled in V1
                                    ),
                                    #Output Content Checkboxes
@@ -996,7 +999,7 @@ server <- function(input, output, session) {
         
        # tempRMD <- fixPath(fileMat[1])   #Production
        # tempWord <- fixPath(fileMat[2])
-        incProgress()
+        
         rmarkdown::render(input= tempRMD, output_file = tempWord,
                           params =  list(outChk = input$outChk,
                                          olistID = fipslist,
