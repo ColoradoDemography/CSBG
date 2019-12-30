@@ -293,7 +293,7 @@ server <- function(input, output, session) {
   
  
   frontPgBox1 <- box(width=11,tags$div(tags$b("Welcome to the Community Services Block Garnt (CSBG) Data Dashboard"), tags$br(),
-                                       "This dashboar provides summary plots and data to assist CSBG grant recipients in compiling their annual plans.", tags$br(),
+                                       "This dashboard provides summary plots and quantitative demographic and poverty data specific to CO CSBG Grantee service areas to assist in their three-year Needs Assessment and Community Action Plan.", tags$br(),
                                        tags$em("Profile Contents:"),
                                        HTML(infoTab),
                                        "To create a profile:",tags$br(),
