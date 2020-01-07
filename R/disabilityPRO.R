@@ -15,11 +15,14 @@ disabilityPRO <- function(lvl,listID, ACS,curYr) {
 
 
     ctyfips <- as.character(as.numeric(substr(listID$list1,3,5)))
-    f.ctyList <- data.frame(geoname = listID$plName2,
+    f.ctyList <- data.frame(geoname = as.character(listID$plName2),
                             county = as.numeric(ctyfips))
+    f.ctyList$geoname <- as.character(f.ctyList$geoname)
+    
 # ctyList for marginal table    
     if(nrow(f.ctyList) > 1) {
-      agy <- data.frame(geoname = listID$plName1, county = 0)
+      agy <- data.frame(geoname = as.character(listID$plName1), county = 0)
+      agy$geoname <- as.character(agy$geoname)
       f.ctyList <- bind_rows(agy,f.ctyList)
     }
 

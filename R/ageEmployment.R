@@ -11,6 +11,7 @@
 #' @export
 #'
 ageEmployment <- function(lvl,listID, ACS,curYr) {
+
   # Collecting place ids from  idList, setting default values
    outCap <- captionSrc("ACS",ACS,"B23001") 
     ctyfips <- as.character(as.numeric(substr(listID$list1,3,5)))
@@ -217,7 +218,7 @@ if(length(ctyfips) > 1) {
    
 }
  f.ctyEMP_cty$geoname <- sub(", Colorado","",f.ctyEMP_cty$geoname)  
-
+ f.ctyEMP_cty[is.na(f.ctyEMP_cty)] <- 0
  ctyList <- as.list(unique(sort(f.ctyEMP_cty$county)))
 
  # preparing files
