@@ -193,7 +193,7 @@ ui <-
                                                           "Routt County",
                                                           "San Luis Valley Community Action Agency",
                                                           "South Central Council of Governments",
-                                                          "Summit County",
+                                                          "Summit County, MCSA",
                                                           "Upper Arkansas Area Council of Governments",
                                                           "Weld County"
                                                           )  #Enabled in V1
