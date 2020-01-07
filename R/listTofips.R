@@ -41,7 +41,7 @@ listTofips <- function(value1,inlist2,value2){
                     "Routt County" = c("08107"), 
                     "San Luis Valley Community Action Agency" = c("08003", "08021", "08023", "08079", "08105", "08109"),
                     "South Central Council of Governments" = c("08055", "08071"),  
-                    "Summit County" = c("08019", "08047", "08117"), 
+                    "Summit County, MCSA" = c("08019", "08047", "08117"), 
                     "Upper Arkansas Area Council of Governments" = c("08015", "08027", "08043", "08065"),  
                     "Weld County" = c("08123") 
            )
