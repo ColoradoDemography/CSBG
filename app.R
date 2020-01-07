@@ -71,6 +71,7 @@ source("R/povertyPRO.R")
 source("R/povertyPRO2.R")
 source("R/povertyTrend.R")
 source("R/roundUpNice.R")
+source("R/RTHouse.R")
 source("R/submitPush.R")
 source("R/submitReport.R")
 source("R/tabList.R")
@@ -87,11 +88,11 @@ source("R/wic.R")
 # The GLOBAL Variables  Add Additional lists items as sections get defined
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
-# tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
+ tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
 # tPath <- "C:/Users/adamb/OneDrive/Documents/TempDir"
 
 #Production
- tPath <- "/tmp"  
+# tPath <- "/tmp"  
 
 # Locations for Google Analtyics Java Script Files
 # Local/ Development
@@ -175,10 +176,10 @@ ui <-
                                                           "Douglas County",
                                                           "Eagle County",
                                                           "El Paso County",
-                                                          "Garfield County",
-                                                          "Gunnison County",
+                                                          "Garfield County, MCSA",
+                                                          "Gunnison County, MCSA",
                                                           "Housing Solutions for the Southwest",
-                                                          "Jefferson County",
+                                                          "Jefferson County, MCSA",
                                                           "Kiowa County",
                                                           "Larimer County",
                                                           "MADA",
@@ -186,7 +187,7 @@ ui <-
                                                           "Moffat County United Way",
                                                           "Mountain Family Center",
                                                           "Northeastern Colorado Association of Local Governments",
-                                                          "Otero County",
+                                                          "Otero County, MCSA",
                                                           "Prowers County",
                                                           "Pueblo County",
                                                           "Rio Blanco County",
