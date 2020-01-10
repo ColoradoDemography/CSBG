@@ -31,6 +31,9 @@ captionSrc <- function(type, dataSrc,tab) {
   
     if(type == "INS") {
     srcStr <- paste0("Health Insurance by Source,\nColorado Health Institute", dateStr)
+    }
+  if(type == "BLS") {
+    srcStr <- paste0("Bureau of Labor Statistics,\nLocal Area Unemployment Statistics", dateStr)
   }
   if(type =="ACS") {
     byr <- paste0("20",substr(dataSrc,4,5))

@@ -5,7 +5,7 @@
 #' @export
 
 TempFil <- function(oDir) {
-  oMatrix <- matrix(data=NA,nrow=81)
+  oMatrix <- matrix(data=NA,nrow=99)
 
   # Copying RMD File      
   file.copy("SDO_Report.Rmd",oDir)

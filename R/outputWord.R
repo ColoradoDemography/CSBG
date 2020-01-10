@@ -9,7 +9,7 @@
 #' @export
 
 outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
-
+  
    x <- list()
 
   ctyfips <- as.character(as.numeric(substr(locList$list1,3,5)))
@@ -58,71 +58,47 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
   }
 
   if("ageemp" %in% chkList) {
-    grCount <- 10
+
+    grCount <- 12
     ageemp_list <- outputMat[[2,1]]
     ageemp_data <- ageemp_list[[1]]$data
     ageemp_caption <- ageemp_list[[1]]$caption
-    ageemp_title <- unlist(outputMat[[2,2]])
-    ageemp_title2 <- paste0("Age Distribution by Percentage in Civilian Labor Force,\n",locList$plName1)
-    ageemp_title3 <- paste0("Age Distribution by Percentage Unemployed,\n",locList$plName1)
+    ageemp_title <- paste0(unlist(outputMat[[2,2]]),", ",locList$plName1)
     
-    
-    ageemp_data$age_cat <- factor(ageemp_data$age_cat, levels=c("16 to 19", "20 to 64", "65+"))
-    ageemp_data$pct <- ageemp_data$pct * 100
+    ageemp_data$UNEMPRATE <- ageemp_data$UNEMPRATE * 100
       
-    
+
     # Creating ggplot
    for(i in 1:length(ctyfips)) {
-       ageemp_data2 <- ageemp_data[which(ageemp_data$county == ctyfips[i] & ageemp_data$type == "In Civilian Labor Force"),]
-       ageemp_data3 <- ageemp_data[which(ageemp_data$county == ctyfips[i] & ageemp_data$type == "Unemployed"),]
-       
-       maxLim2 <- max(ageemp_data2$pct) + 20
-       maxLim3 <- max(ageemp_data3$pct) + 20
+  
+       ageemp_data2 <- ageemp_data[which(ageemp_data$fips == ctyfips[i]),]
+       maxLim <- max(ageemp_data2$UNEMPRATE) + 2
        
        LocName <- unique(ageemp_data2$geoname)
-       ggimg2a <-ggplot(ageemp_data2, aes(x=age_cat, y=pct)) +
-       geom_bar(stat="identity", position="dodge", color="black", fill="blue")+
-             scale_y_continuous(limits = c(0, maxLim2), label=percent, expand = c(0, 0)) +
+       ggimg2a <-ggplot(ageemp_data2, aes(x=date, y=UNEMPRATE)) +
+       geom_line(size=1.2) +
+             scale_x_date(labels = date_format("%B, %Y")) +
+             scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
               theme_codemog(base_size=base) +
-              labs(title = ageemp_title2,
+              labs(title = ageemp_title,
                    subtitle = LocName,
                    caption = ageemp_caption,
-                   x = "Age Category",
+                   x = "Date",
                    y= "Percentage") +
               theme(plot.title = element_text(hjust = 0.5, size=12),
-                 plot.caption = element_text(hjust = 0, size=9),
+                    plot.caption = element_text(hjust = 0, size=9),
                     panel.background = element_rect(fill = "white", colour = "gray50"),
                     panel.grid.major = element_line(colour = "gray80"),
                     axis.text.x = element_text(size=10),
-                    axis.text.y=element_text(size=10),
-                    legend.position= "none")
+                    axis.text.y=element_text(size=10))
            ggsave(fileMat[grCount],ggimg2a, device="png", height = 3 , width = 7, dpi=300)
            grCount <- grCount + 1
-       
-       ggimg2b <-ggplot(ageemp_data3, aes(x=age_cat, y=pct)) +
-       geom_bar(stat="identity", position="dodge", color="black", fill="blue")+
-             scale_y_continuous(limits = c(0, maxLim3), label=percent, expand = c(0, 0)) +
-              theme_codemog(base_size=base) +
-              labs(title = ageemp_title3,
-                   subtitle = LocName,
-                   caption = ageemp_caption,
-                   x = "Age Category",
-                   y= "Percentage") +
-              theme(plot.title = element_text(hjust = 0.5, size=12),
-                 plot.caption = element_text(hjust = 0, size=9),
-                    panel.background = element_rect(fill = "white", colour = "gray50"),
-                    panel.grid.major = element_line(colour = "gray80"),
-                    axis.text.x = element_text(size=10),
-                    axis.text.y=element_text(size=10),
-                    legend.position= "none")
-         ggsave(fileMat[grCount],ggimg2b, device="png", height = 3 , width = 7, dpi=300)
-         grCount <- grCount + 1
     
 }
   }   
  
  if("pov" %in% chkList) {
-   grCount <- 22
+   grCount <- 20
     pov_list <- outputMat[[3,1]]
     pov_data <- pov_list[[1]]$data
     pov_caption <- pov_list[[1]]$caption
@@ -205,7 +181,7 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
  } 
   
  if("povage" %in% chkList) {
-    grCount <- 33
+    grCount <- 36
     povage_list <- outputMat[[5,1]]
     povage_data <- povage_list[[1]]$data
     povage_caption <- povage_list[[1]]$caption
@@ -242,7 +218,7 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
  } 
   
  if("povagetr" %in% chkList) {
-    grCount <- 40
+    grCount <- 44
     povagetr_list <- outputMat[[6,1]]
     povagetr_data <- povagetr_list[[1]]$data
     povagetr_caption <- povagetr_list[[1]]$caption
@@ -279,7 +255,7 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
  } 
   
  if("povagedis" %in% chkList) {
-    grCount <- 46
+    grCount <- 52
     povagedis_list <- outputMat[[7,1]]
     povagedis_data <- povagedis_list[[1]]$data
     povagedis_caption <- povagedis_list[[1]]$caption
@@ -317,7 +293,7 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
   
 
 if("hhpov" %in% chkList) {
-    grCount <- 52
+    grCount <- 60
     hhpov_list <- outputMat[[8,1]]
     hhpov_data <- hhpov_list[[1]]$data
     hhpov_table <- hhpov_list[[1]]$FlexTable
@@ -356,7 +332,7 @@ if("hhpov" %in% chkList) {
 }
   
  if("tenure" %in% chkList) {
-    grCount <- 58
+    grCount <- 68
     tenure_list <- outputMat[[9,1]]
     tenure_data <- tenure_list[[1]]$data
     tenure_caption <- tenure_list[[1]]$caption
@@ -394,7 +370,7 @@ if("hhpov" %in% chkList) {
 
   
    if("snap" %in% chkList) {
-    grCount <- 64
+    grCount <- 76
     snap_list <- outputMat[[10,1]]
     snap_data <- snap_list[[1]]$data
     snap_caption <- snap_list[[1]]$caption
@@ -430,7 +406,7 @@ if("hhpov" %in% chkList) {
    }
   
    if("wic" %in% chkList) {
-     grCount <- 70
+     grCount <- 84
     wic_list <- outputMat[[11,1]]
     wic_data <- wic_list[[1]]$data
     wic_caption <- wic_list[[1]]$caption
@@ -465,7 +441,7 @@ if("hhpov" %in% chkList) {
   
  
   if("insurance" %in% chkList) {
-    grCount <- 76
+    grCount <- 92
     insurance_list <- outputMat[[12,1]]
     insurance_data <- insurance_list[[1]]$data
     insurance_caption <- insurance_list[[1]]$caption
