@@ -11,7 +11,7 @@
 #' @export
 #'
 ageEmployment <- function(lvl,listID, ACS,curYr) {
-
+browser()
   # Collecting place ids from  idList, setting default values
    outCap <- captionSrc("ACS",ACS,"B23001") 
     ctyfips <- as.character(as.numeric(substr(listID$list1,3,5)))

@@ -8,7 +8,7 @@
 #' @return plotly graphic, data table and data file
 #' @export
 povertyPRO <- function(lvl,listID, ACS,PreACS,curYr){
- 
+
   # Collecting List of Counties
    outCap <- captionSrc("ACS",ACS,"B17024") 
 
