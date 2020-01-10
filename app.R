@@ -4,6 +4,7 @@
 
 
 rm(list = ls())
+options(warn=1)
 library(tidyverse, quietly=TRUE)
 library(readr)
 library(readxl, quietly=TRUE)
@@ -37,13 +38,13 @@ library(tidycensus)
 library(saipeAPI)  # Installed 2019
 
 
-
 # Additions for Database pool
 library('pool') 
 library('DBI')
 library('stringr')
 library('config')
 
+source("R/API_setup.R")
 source("R/bldCaption.R")
 source("R/ageEmployment.R")
 source("R/agePlotPRO.R")
@@ -78,6 +79,7 @@ source("R/tabTitle.R")
 source("R/TempFil.R")
 source("R/simpleCap.R")
 source("R/snap.R")
+source("R/unemploymentTrend.R")
 source("R/wic.R")
 
 
@@ -87,11 +89,11 @@ source("R/wic.R")
 # The GLOBAL Variables  Add Additional lists items as sections get defined
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
-# tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
+ tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
 # tPath <- "C:/Users/adamb/OneDrive/Documents/TempDir"
 
 #Production
- tPath <- "/tmp"  
+# tPath <- "/tmp"  
 
 # Locations for Google Analtyics Java Script Files
 # Local/ Development
@@ -103,11 +105,7 @@ source("R/wic.R")
 # initJS <- "/srv/shiny-server/ProfileDashboard2/www/dL_init.js"
 # tagManJS <- "/srv/shiny-server/ProfileDashboard2/www/tag_manager.js"
 
-# Current ACS database
-curACS <- "acs1317"
-curYr <- 2017
-fipslist <<- ""
-censAPI <- "08fe07c2a7bf781b7771d7cccb264fe7ff8965ce"
+
 # Set up database pool 1/23/19
 
 config <- get("database")
@@ -201,7 +199,7 @@ ui <-
                                    #Output Content Checkboxes
                                    checkboxGroupInput("outChk", "Select the Data Elements to display:",
                                                       choices = c("Population by Age" = "age",
-                                                                  "Age by Employment Status" = "ageemp",
+                                                                  "Unemployment Rate" = "ageemp",
                                                                   "Population by Federal Poverty Level" = "pov",
                                                                   "Educational Attainment by Federal Poverty Level" = "educatt",
                                                                   "Age by Federal Poverty Level" = "povage",
@@ -262,8 +260,8 @@ server <- function(input, output, session) {
   infoSrc <- matrix(" ",nrow=12,ncol=2)
   infoSrc[1,1] <- "<b>Population by Age</b>"
   infoSrc[1,2] <- "Population for selected age caregories"
-  infoSrc[2,1] <- "<b>Age by Employment Status</b>"
-  infoSrc[2,2] <- "Population by age group for persons in the Civilian Labor Force and persons unemployed"
+  infoSrc[2,1] <- "<b>Unemployment Rate</b>"
+  infoSrc[2,2] <- "Unemployment Rate by Month"
   infoSrc[3,1] <- "<b>Population by Federal Poverty Level</b>"
   infoSrc[3,2] <- "Population by percentage of the Federal Poverty Level"
   infoSrc[4,1] <- "<b>Educational Attainment by Federal Poverty Level</b>"
@@ -414,13 +412,12 @@ server <- function(input, output, session) {
           incProgress()
         }
 
-        #Age by Employment Status
+        #Unemployment Rate
         if("ageemp" %in% input$outChk) {
-          emp_text <- tags$h2("Age by Employment Status")
-          emp_list <- ageEmployment(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
+          emp_text <- tags$h2("Unemployment Rate")
+          emp_list <- unemploymentTrend(lvl=input$level,listID=fipslist,curYr=curYr)
 
-          outplote1 <- emp_list$LFPlot
-          outplote2 <- emp_list$UEMPPlot
+          outplote1 <- emp_list$plot
           outtabe1 <- emp_list$table
           outCaption2 <- emp_list$caption
           
@@ -433,17 +430,17 @@ server <- function(input, output, session) {
           EMPTabOut <- datatable(outtabe1,
                        container = sketch2,
                        rownames = FALSE,
-                      caption = paste0("Age by Employment Status: ",input$level),
-                      options = list(pageLength = 12,
+                      caption = paste0("Unemployment Rate: ",input$level),
+                      options = list(pageLength = 14,
                       autowidth= TRUE,
                      columnDefs = list(list(width = '300px', targets = "_all"))))
                       
 
           
-          pope1.info <- tags$div(boxContent(title= "Age by Employment Status",
-                                              description = "The Age  by Employment Status outputs show 1) the proportion of individuals in the labor force, and the proportion of civilians in the labor force who are unemployed.",
-                                              MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
-                                              urlList = list(c("American Community Survey, Table B23001","https://data.census.gov")) ),
+          pope1.info <- tags$div(boxContent(title= "Unemployment Rate",
+                                              description = "The Unemployment Rate display shows the adjusted unemployment rate for the current year.",
+                                              MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F",
+                                              urlList = list(c("Bureau of Labor Statistics, Local Area Unemployment Statistics","https://www.bls.gov/lau/")) ),
                                    tags$br(),
                                    downloadObjUI("pope1tabl"), downloadObjUI("pope1data"))
 
@@ -451,16 +448,14 @@ server <- function(input, output, session) {
           emp.box1 <- tabBox(width=12, height=500,
                                tabPanel("Plot",renderPlotly({outplote1})))
           emp.box2 <- tabBox(width=12, height=500,
-                               tabPanel("Plot",renderPlotly({outplote2})))
-          emp.box3 <- tabBox(width=12, height=500,
                                tabPanel("Table",DT::renderDataTable(EMPTabOut)),
                                tabPanel("Sources and Downloads",pope1.info))
           
           
           #building List
-          emp.list <<- list(emp.box0, emp.box1, emp.box2,emp.box3)
+          emp.list <<- list(emp.box0, emp.box1, emp.box2)
           outputObj[[2,1]] <- list(emp_list)
-          outputObj[[2,2]] <- list("Age by Employment Status")
+          outputObj[[2,2]] <- list("Unemployment Rate")
           
           incProgress()
         }  
@@ -1023,7 +1018,7 @@ server <- function(input, output, session) {
    #Age by Employment  
     if("ageemp" %in% input$outChk){
     callModule(downloadObj, id = "pope1tabl", input$level,"pope1tabl", emp_list$FlexTable)
-    callModule(downloadObj, id = "pope1data", input$level,"pope1data", emp_list$data)
+    callModule(downloadObj, id = "pope1data", input$level,"pope1data", emp_list$table)
     }
 
    #Federal Poverty Level
