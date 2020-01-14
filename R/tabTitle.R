@@ -7,7 +7,7 @@
 tabTitle <-function(item) {
   outTitle <- switch(item,
                       "age" = "Population by Age",
-                     "ageemp" = "Age by Employment Status",
+                     "ageemp" = "Unemployment Rate",
                      "pov" = "Population by Federal Poverty Level",
                      "educatt" = "Educational Attainment by Federal Poverty Level",
                      "povage" = "Age by Federal Poverty Level",

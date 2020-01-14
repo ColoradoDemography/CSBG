@@ -21,7 +21,7 @@ TempFil <- function(oDir) {
  file.copy("www/Landscape.docx",oDir)
   
   
-  for(i in 4:81) {
+  for(i in 4:99) {
       oMatrix[i] <- tempfile(tmpdir=oDir,fileext=".png")
     } 
  
