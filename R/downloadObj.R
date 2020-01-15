@@ -22,7 +22,7 @@ downloadObj <- function(input, output, session, place, oname, dobj) {
 
   prefix <- switch(dname,
                    "popa1" = " Age Distribution",
-                   "pope1" = " Age by Employment Status",
+                   "pope1" = " Unemployment Rate",
                    "povpp3" = " Population by Federal Poverty Level",
                    "poped1" = " Educational Attainment by Fed Poverty Level",
                    "povpp5" = " Age by Federal Poverty Level",
