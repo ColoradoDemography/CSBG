@@ -10,6 +10,10 @@ library(readr)
 library(readxl, quietly=TRUE)
 library(scales, quietly=TRUE)
 
+library(codemogAPI, quietly=TRUE)
+library(codemogLib)
+library(codemog)
+
 library(knitr, quietly=TRUE)
 library(kableExtra, quietly=TRUE)
 library(RPostgreSQL)
