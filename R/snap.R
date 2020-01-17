@@ -11,10 +11,10 @@
 snap <- function(DBPool,lvl,listID,curYR){
 
   # Collecting List of Counties
- 
+
   ctyfips <- as.numeric(substr(listID$list1,3,5))
   
-  
+  curYR <- 2017
  
 # Extracting SNAP data
   SNAPSQL <- "SELECT * FROM data.csbg_snap;"
