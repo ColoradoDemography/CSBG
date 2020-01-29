@@ -1048,7 +1048,7 @@ server <- function(input, output, session) {
   #Age by Federal Poverty Level Trend
    if("povagetr" %in% input$outChk){
     callModule(downloadObj, id = "povpp6tabl", input$level,"povpp6tabl", pov6_list$FlexTable)
-    callModule(downloadObj, id = "povpp6data", input$level,"povpp6data", pov6_list$data)
+    callModule(downloadObj, id = "povpp6data", input$level,"povpp6data", pov6_list$table)
      }
     
    #Age by Federal Poverty Level for Persons with Disabilities
