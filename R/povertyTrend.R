@@ -202,11 +202,13 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
  # Flex Table
   tab_head <- paste0("Percent Below Federal Poverty Level by Age Trend, ",listID$plName1)
   nCols <- ncol(f.saipecty_tab)
+   names(f.saipecty_tab)[1] <- "Agency/County"
+  names(f.saipecty_tab)[2] <- "Value"
+  names(f.saipecty_tab)[3] <- "Age Category"
   
   f.povFlex <- flextable(
        f.saipecty_tab,
        col_keys = names(f.saipecty_tab)) %>%
-       set_header_labels(geoname = "Agency/County", type= "Value", age_cat = "Age Category") %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=nCols) %>%
        add_footer_row(values=captionSrc("SAIPE","",""),top=FALSE,colwidths=nCols) %>%
        align(j=1:2, align="left", part="body") %>%
@@ -217,9 +219,7 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
        height(part="body", height=0.5)
       
 
-  names(f.saipecty_tab)[1] <- "Agency/County"
-  names(f.saipecty_tab)[1] <- "Value"
-  names(f.saipecty_tab)[3] <- "Age Category"
+ 
     
 
 
