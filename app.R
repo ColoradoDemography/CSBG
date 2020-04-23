@@ -48,15 +48,14 @@ library('DBI')
 library('stringr')
 library('config')
 
-source("R/API_setup.R")
-source("R/bldCaption.R")
 source("R/ageEmployment.R")
 source("R/agePlotPRO.R")
+source("R/API_setup.R")
+source("R/bldCaption.R")
 source("R/boxContent.R")
 source("R/captionSrc.R")
 source("R/chkID.R")
 source("R/clrGeoname.R")
-
 source("R/CountyName.R")
 source("R/disabilityPRO.R")
 source("R/downloadObj.R")
@@ -64,40 +63,36 @@ source("R/downloadObjUI.R")
 source("R/educPRO.R")
 source("R/familiesPRO.R")
 source("R/graph_objects.R")
-source("R/insurance.R")
 source("R/housingPRO.R")
+source("R/insurance.R")
 source("R/listTofips.R")
 source("R/NumFmt.R")
 source("R/outputWord.R")
 source("R/percent.R")
 source("R/popPlace.R")
-source("R/popTable.R")
 source("R/povertyPRO.R")
 source("R/povertyPRO2.R")
 source("R/povertyTrend.R")
 source("R/roundUpNice.R")
+source("R/simpleCap.R")
+source("R/snap.R")
 source("R/submitPush.R")
 source("R/submitReport.R")
 source("R/tabList.R")
 source("R/tabTitle.R")
 source("R/TempFil.R")
-source("R/simpleCap.R")
-source("R/snap.R")
 source("R/unemploymentTrend.R")
 source("R/wic.R")
-
-
-
 
 
 # The GLOBAL Variables  Add Additional lists items as sections get defined
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
 # tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
-# tPath <- "C:/Users/abickford/Documents/Shiny Demos/TempDir"
+ tPath <- "C:/Users/abickford/Documents/Shiny Demos/TempDir"
 
 #Production
- tPath <- "/tmp"  
+# tPath <- "/tmp"  
 
 # Locations for Google Analtyics Java Script Files
 # Local/ Development
