@@ -402,7 +402,7 @@ if(length(ctyfips) > 1 ){
     f.ctyHH_Count <-  f.ctyHHL_tot %>% spread(tenure,count)
     f.ctyHH_Percent <-  f.ctyHHL_pct %>% spread(tenure,pct)
    
-    f.ctyHH_tab <- bind_rows(f.ctyHH_Count,f.ctyHH_Percent)  
+    f.ctyHH_tab <- bind_rows(mutate_all(f.ctyHH_Count,as.character),mutate_all(f.ctyHH_Percent,as.character))  
     
     
     # reordering Records for Table

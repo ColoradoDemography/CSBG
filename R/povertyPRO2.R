@@ -193,7 +193,7 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
     f.saipe_PCTW$age_cat <- as.character(f.saipe_PCTW$age_cat)
     
 
-    f.saipecty_tab <- bind_rows(f.saipe_PCTW, f.saipe_POVW, f.saipe_POPW) %>% arrange(fips,type)
+    f.saipecty_tab <- bind_rows(mutate_all(f.saipe_PCTW,as.character), mutate_all(f.saipe_POVW,as.character), mutate_all(f.saipe_POPW,as.character)) %>% arrange(fips,type)
     f.saipecty_tab <-f.saipecty_tab[,c(1,2,5,3,4)]
     names(f.saipecty_tab) <- c("fips","geoname","type", "age_cat","value")
     

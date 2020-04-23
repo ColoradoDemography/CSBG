@@ -144,7 +144,7 @@ agePlotPRO  <- function(lvl,listID,ACS,curYr) {
     f.place_pop$type <- "Count"
     
  
-    f.place_tab <- bind_rows(f.place_pct,f.place_pop)
+    f.place_tab <- bind_rows(mutate_all(f.place_pct,as.character),mutate_all(f.place_pop,as.character))
     f.place_tab <- f.place_tab %>% arrange(county,desc(type))
     f.place_tab <- f.place_tab[,c(1,8,3:7)]
     

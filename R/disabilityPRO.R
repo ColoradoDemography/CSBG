@@ -152,8 +152,7 @@ if(length(ctyfips) > 1) {
       f.ctyDISL_Mar2 <- inner_join(f.ctyList,f.ctyDISL_Mar1,by="county")
       names(f.ctyDISL_Mar2) <- c("geoname","county","type","age_cat","meas","count","pct")
       
-      
-      
+     
       f.ctyDISL_MarT <- f.ctyDISL_Mar2[,c(1:6)]
       f.ctyDISL_MarP <- f.ctyDISL_Mar2[,c(1:5,7)]
       
@@ -292,7 +291,7 @@ if(length(ctyfips) > 1 ){
     f.ctyDIS_Count$Value <- "Count"
      f.ctyDIS_Percent$Value <- "Percentage"
    
-    f.ctyDIS_tab <- bind_rows(f.ctyDIS_Count,f.ctyDIS_Percent)  
+    f.ctyDIS_tab <- bind_rows(mutate_all(f.ctyDIS_Count,as.character),mutate_all(f.ctyDIS_Percent,as.character))  
     
     
     # reordering Records for Table

@@ -233,7 +233,7 @@ POVPlot <- f.povertycty_PLOT %>%
  names(f.povertycty_P) <- c("geoname", "county", "type", "POV.LT50", "POV.50124", 
                                     "POV.125199", "POV.GE200",  "TOT.POP")
  
- f.povertycty_tab <- bind_rows(f.povertycty_C,f.povertycty_P) %>% arrange(county,desc(type))
+ f.povertycty_tab <- bind_rows(mutate_all(f.povertycty_C,as.character),mutate_all(f.povertycty_P,as.character)) %>% arrange(county,desc(type))
  
  
   #Clearing geoname

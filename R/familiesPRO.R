@@ -403,7 +403,7 @@ if(length(ctyfips) > 1 ){
     f.ctyFAM_Count <-  f.ctyFAML_tot %>% spread(kids,count)
     f.ctyFAM_Percent <-  f.ctyFAML_pct %>% spread(kids,pct)
    
-    f.ctyFAM_tab <- bind_rows(f.ctyFAM_Count,f.ctyFAM_Percent)  
+    f.ctyFAM_tab <- bind_rows(mutate_all(f.ctyFAM_Count,as.character),mutate_all(f.ctyFAM_Percent,as.character))  
     
     
     # reordering Records for Table

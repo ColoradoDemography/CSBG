@@ -259,7 +259,8 @@ EDUCPlot <- f.educctyPlot %>%
   f.educctyTAB_POVC[,5:9] <- sapply(f.educctyTAB_POVC[,5:9],NumFmt)
 
   
-  f.educctyTab <- bind_rows(list(f.educctyTAB_POVP,f.educctyTAB_POVC),list(f.educctyTAB_TOTP,f.educctyTAB_TOTC)) %>%
+  f.educctyTab <- bind_rows(mutate_all(f.educctyTAB_POVP,as.character),mutate_all(f.educctyTAB_POVC,as.character),
+                            mutate_all(f.educctyTAB_TOTP,as.character),mutate_all(f.educctyTAB_TOTC,as.character)) %>%
      arrange(county,desc(lvl),desc(type))
   
   f.educctyTab <- f.educctyTab[,c(1,3,4,8,7,6,5,9)]
@@ -303,7 +304,7 @@ EDUCPlot <- f.educctyPlot %>%
        height(part="header", height=1)
  
     
-    f.educctyDat <- bind_rows(f.educctyTotP, f.educctyPovP) 
+    f.educctyDat <- bind_rows(mutate_all(f.educctyTotP,as.character), mutate_all(f.educctyPovP,as.character)) 
 
   #bind list
   outList <- list("plot"= EDUCPlot, "data" = f.educctyPlot, "table" =  f.educctyTab, "FlexTable" = f.edFlex, "caption" = outCap)

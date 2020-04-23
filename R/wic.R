@@ -156,7 +156,7 @@ WICPlot <- plot_ly(f.WICcty_PL,
 
     
 
-   f.WICcty_tab <- bind_rows(f.WIC_PCT, f.WIC_POP) %>% arrange(fips,desc(Value))
+   f.WICcty_tab <- bind_rows(mutate_all(f.WIC_PCT,as.character), mutate_all(f.WIC_POP,as.character)) %>% arrange(fips,desc(Value))
    f.WICcty_tab <- f.WICcty_tab[,c(2:6)]
 
      #Clearing county

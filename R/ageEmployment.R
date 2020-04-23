@@ -434,7 +434,7 @@ if(length(ctyfips) > 1 ){
     f.ctyEMP_Count <-  f.ctyEMPL_tot %>% spread(type,count)
     f.ctyEMP_Percent <-  f.ctyEMPL_pct %>% spread(type,pct)
    
-    f.ctyEMP_tab <- bind_rows(f.ctyEMP_Count,f.ctyEMP_Percent)  
+    f.ctyEMP_tab <- bind_rows(mutate_all(f.ctyEMP_Count,as.character),mutate_all(f.ctyEMP_Percent,as.character))  
     # reordering Records for Table
     
     f.ctyEMP_tab  <- f.ctyEMP_tab[,c(1:4,7:9,5,10,6)] %>% arrange(factor(county, levels = ctyList),  

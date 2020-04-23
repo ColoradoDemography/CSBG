@@ -160,7 +160,7 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
     names(f.SNAP_PCT)<- c("fips","Agency/County", "Value", "Participating", "Not Participating", "Eligible")
     
 
-    f.SNAPcty_tab <- bind_rows(f.SNAP_PCT, f.SNAP_POP) %>% arrange(fips,desc(Value))
+    f.SNAPcty_tab <- bind_rows(mutate_all(f.SNAP_PCT,as.character), mutate_all(f.SNAP_POP,as.character)) %>% arrange(fips,desc(Value))
    f.SNAPcty_tab <- f.SNAPcty_tab[,c(2:6)]
 
      #Clearing county

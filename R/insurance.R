@@ -165,7 +165,7 @@ insPlot <- plot_ly(f.inscty_PL,
 
     
 
-   f.inscty_tab <- bind_rows(f.ins_PCT, f.ins_POP) %>% arrange(fips,desc(Value))
+   f.inscty_tab <- bind_rows(mutate_all(f.ins_PCT,as.character), mutate_all(f.ins_POP,as.character)) %>% arrange(fips,desc(Value))
    f.inscty_tab <- f.inscty_tab[,c(2:8)]
 
      #Clearing county

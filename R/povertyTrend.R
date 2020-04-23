@@ -184,7 +184,7 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
            spread(year,value)
     f.saipe_PCTW$type = "Percentage"
 
-    f.saipecty_tab <- bind_rows(f.saipe_PCTW, f.saipe_POVW, f.saipe_POPW) %>% arrange(fips,type)
+    f.saipecty_tab <- bind_rows(mutate_all(f.saipe_PCTW,as.character), mutate_all(f.saipe_POVW,as.character), mutate_all(f.saipe_POPW,as.character)) %>% arrange(fips,type)
     f.saipecty_tab <-f.saipecty_tab[,c(2,13,3,4:12)]
     
     f.saipecty_tab$age_cat <- plyr::revalue(f.saipecty_tab$age_cat, 
