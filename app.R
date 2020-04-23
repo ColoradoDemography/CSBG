@@ -4,7 +4,7 @@
 
 
 rm(list = ls())
-options(warn=1)
+
 library(tidyverse, quietly=TRUE)
 library(readr)
 library(readxl, quietly=TRUE)
@@ -18,9 +18,6 @@ library(knitr, quietly=TRUE)
 library(kableExtra, quietly=TRUE)
 library(RPostgreSQL)
 library(rmarkdown)
-library(codemogAPI, quietly=TRUE)
-library(codemogProfile, quietly=TRUE)
-library(codemogLib)
 library(shiny, quietly=TRUE)
 library(shinydashboard, quietly=TRUE)
 library(shinyjs, quietly=TRUE)
@@ -31,14 +28,14 @@ library(units)
 library(grid)
 library(gridExtra)
 library(ggthemes)
-library(maptools)
+#library(maptools)
 library(officer)
 library(flextable)
 library(ggplotify)
 library(ggrepel)  # These are the new packages
 library(leaflet)
 library(htmltools)
-library(mapview)
+#library(mapview)
 library(DT)
 library(plotly)
 library(tidycensus)
@@ -59,6 +56,7 @@ source("R/boxContent.R")
 source("R/captionSrc.R")
 source("R/chkID.R")
 source("R/clrGeoname.R")
+
 source("R/CountyName.R")
 source("R/disabilityPRO.R")
 source("R/downloadObj.R")
@@ -96,7 +94,7 @@ source("R/wic.R")
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
 # tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
-# tPath <- "C:/Users/adamb/OneDrive/Documents/TempDir"
+# tPath <- "C:/Users/abickford/Documents/Shiny Demos/TempDir"
 
 #Production
  tPath <- "/tmp"  
