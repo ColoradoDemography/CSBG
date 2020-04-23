@@ -212,16 +212,24 @@ POVPlot <- f.povertycty_PLOT %>%
 
 
  #Creating Table data file
- 
+
  f.povertycty_C$type <- "Count"
  f.povertycty_C <- f.povertycty_C[,c(1,2,8,3:7)]
+ if(typeof(f.povertycty_C) == "list") {
+   f.povertycty_C <- as.data.frame(f.povertycty_C)
+ }
  f.povertycty_C[,4:8] <- sapply(f.povertycty_C[,4:8],NumFmt)
 
 
  f.povertycty_P$type <- "Percentage"
  f.povertycty_P <- f.povertycty_P[,c(1,2,8,3:7)]
- f.povertycty_P[,4:8] <- lapply(f.povertycty_P[,4:8], function(x) x * 100)
- f.povertycty_P[,4:8] <- sapply(f.povertycty_P[,4:8],percent)
+ if(typeof(f.povertycty_P) == "list") {
+   f.povertycty_P <- as.data.frame(f.povertycty_P)
+ }
+ 
+ f.povertycty_P[,4:8] <- sapply(f.povertycty_P[,4:8], function(x) percent(x * 100))
+ 
+ 
  names(f.povertycty_P) <- c("geoname", "county", "type", "POV.LT50", "POV.50124", 
                                     "POV.125199", "POV.GE200",  "TOT.POP")
  

@@ -225,20 +225,37 @@ EDUCPlot <- f.educctyPlot %>%
  
   f.educctyTAB_TOTP$lvl <- "All Persons"
   f.educctyTAB_TOTP$type <- "Percentage"
-  f.educctyTAB_TOTP[,5:9] <- lapply(f.educctyTAB_TOTP[,5:9],function(x) x *100)
-  f.educctyTAB_TOTP[,5:9] <- sapply(f.educctyTAB_TOTP[,5:9],percent)
+  if(typeof(f.educctyTAB_TOTP) == "list") {
+    f.educctyTAB_TOTP <- as.data.frame(f.educctyTAB_TOTP)
+  }
+  f.educctyTAB_TOTP[,5:9] <- sapply(f.educctyTAB_TOTP[,5:9],function(x) percent(x *100))
+
    
   f.educctyTAB_TOTC$lvl <- "All Persons"
   f.educctyTAB_TOTC$type <- "Count"
+  
+  if(typeof(f.educctyTAB_TOTC) == "list") {
+    f.educctyTAB_TOTC <- as.data.frame(f.educctyTAB_TOTC)
+  }
+  
   f.educctyTAB_TOTC[,5:9] <- sapply(f.educctyTAB_TOTC[,5:9],NumFmt)
 
   f.educctyTAB_POVP$lvl <- "Persons Below FPL"
   f.educctyTAB_POVP$type <- "Percentage"
-  f.educctyTAB_POVP[,5:9] <- lapply(f.educctyTAB_POVP[,5:9],function(x) x *100)
-  f.educctyTAB_POVP[,5:9] <- sapply(f.educctyTAB_POVP[,5:9],percent)
+  if(typeof(f.educctyTAB_POVP) == "list") {
+    f.educctyTAB_POVP <- as.data.frame(f.educctyTAB_POVP)
+  }
+ 
+  f.educctyTAB_POVP[,5:9] <- sapply(f.educctyTAB_POVP[,5:9],function(x) percent(x *100))
+
    
   f.educctyTAB_POVC$lvl <- "Persons Below FPL"
   f.educctyTAB_POVC$type <- "Count" 
+  if(typeof(f.educctyTAB_POVC) == "list") {
+    f.educctyTAB_POVC <- as.data.frame(f.educctyTAB_POVC)
+  }
+  
+  
   f.educctyTAB_POVC[,5:9] <- sapply(f.educctyTAB_POVC[,5:9],NumFmt)
 
   

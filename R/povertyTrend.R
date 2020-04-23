@@ -153,21 +153,33 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
 # Creating Table data file
 
     f.saipe_POP <- f.saipectyVAL[,c(1:6)] 
+    if(typeof(f.saipe_POP) == "list") {
+      f.saipe_POP <- as.data.frame(f.saipe_POP)
+    }
+    
     f.saipe_POP[,4:6] <- sapply(f.saipe_POP[,4:6],NumFmt) 
     f.saipe_POPW <- gather(f.saipe_POP,age_cat,value, pop0517:totpop,factor_key=TRUE) %>%
            spread(year,value)
     f.saipe_POPW$type = "Total Population"
     
     f.saipe_POV <- f.saipectyVAL[,c(1:3,7:9)] 
+    if(typeof(f.saipe_POV) == "list") {
+      f.saipe_POV <- as.data.frame(f.saipe_POV)
+    }
+    
     f.saipe_POV[,4:6] <- sapply(f.saipe_POV[,4:6],NumFmt) 
     f.saipe_POVW <- gather(f.saipe_POV,age_cat,value, pov0517:povpop,factor_key=TRUE) %>%
            spread(year,value)
     f.saipe_POVW$type = "Population below FPL"
     
     f.saipe_PCT <- f.saipectyVAL[,c(1:3,10:12)] 
+    if(typeof(f.saipe_PCT) == "list") {
+      f.saipe_PCT <- as.data.frame(f.saipe_PCT)
+    }
     
-    f.saipe_PCT[,4:6] <- lapply(f.saipe_PCT[,4:6], function(x) x * 100)
-    f.saipe_PCT[,4:6] <- sapply(f.saipe_PCT[,4:6],percent) 
+    
+    f.saipe_PCT[,4:6] <- sapply(f.saipe_PCT[,4:6], function(x) percent(x * 100))
+
     f.saipe_PCTW <- gather(f.saipe_PCT,age_cat,value, povpct0517:povpcttot,factor_key=TRUE) %>%
            spread(year,value)
     f.saipe_PCTW$type = "Percentage"

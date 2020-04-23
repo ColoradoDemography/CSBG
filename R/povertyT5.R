@@ -1,43 +1,24 @@
-#' povertyPRO2 generaes tables and ployly charts from SAIPE county data for the current year
+#' povertyT5 generaes tables and ployly charts from SAIPE county data for the current year
 #'  CSBG Dashboard 11/2019  A. Bickford
-#'  Pulling data from SAIPE API  
 #' @param DBPool the DOLA database pool
 #' @lvl the selected agency
 #' @param listID is the list of selected county codes
-#' @param ACS is the current ACS data file
 #' @param cyrYr Current year value
 #' @return plotly graphic, data table and data file
 #' @export
 
-povertyPRO2 <- function(lvl,listID,ACS,curYr,censKey){
+povertyT5 <- function(DBPool,lvl,listID,curYR){
 
   # Collecting List of Counties
  
   ctyfips <- as.numeric(substr(listID$list1,3,5))
   
-# Building the data files  
-
-# Extracting SAIPE data from the saipe API, Gathering all county records
-  saipeAPI::set_api_key(censKey)
-f.saiperaw <- saipeAPI::saipe_county(year = curYr, var = c("STABREV", "YEAR", "GEOID", "NAME", 
-                                                           "SAEPOV0_17_PT", "SAEPOV5_17R_PT", "SAEPOVALL_PT",
-                                                           "SAEPOVU_0_17", "SAEPOVU_5_17R", "SAEPOVU_ALL"))
-
-
-f.saipe <- f.saiperaw %>% 
-        filter(GEOID %in% listID$list1) %>%
-        mutate(fips = as.numeric(county),
-               geoname = NAME,
-               year = YEAR,
-               totpop = SAEPOVU_ALL,
-               pople17 = SAEPOVU_0_17,
-               pop0517 = SAEPOVU_5_17R,
-               povpop  = SAEPOVALL_PT,
-               povle17 = SAEPOV0_17_PT,
-               pov0517 = SAEPOV5_17R_PT
-               )
-
-# Generating output data file 
+  
+ 
+# Extracting SAIPE data
+  SAIPESQL <- "SELECT * FROM data.saipe;"
+  f.saipe <- dbGetQuery(DBPool, SAIPESQL) %>% filter(fips %in% ctyfips  & year == curYR)
+  
    f.saipectyVAL <- f.saipe %>%
        mutate(popgt17 = totpop - pople17,
               povgt17 = povpop - povle17,
@@ -77,32 +58,24 @@ f.saipe <- f.saiperaw %>%
 
    }
 
-
+    
 # creating Plotly Chart
-    f.saipecty_CL <- gather(f.saipectyVAL[,c(1:3,7:9)],age_cat,count,pov0517:povpop, factor_key=TRUE) 
-    f.saipecty_CL$age_cat <- plyr::revalue(f.saipecty_CL$age_cat, c("pov0517" = "5 to 17",
-                                                              "povgt17" = "18 and Older",
-                                                              "povpop" = "Total"))
-    f.saipecty_CL$age_cat <- factor(f.saipecty_CL$age_cat, levels = c("5 to 17",
-                                                              "18 and Older", "Total"))
-
 
     f.saipecty_PL <- gather(f.saipectyVAL[,c(1:3,10:12)],age_cat,value,povpct0517:povpcttot, factor_key=TRUE) 
     f.saipecty_PL$age_cat <- plyr::revalue(f.saipecty_PL$age_cat, c("povpct0517" = "5 to 17",
                                                               "povpctgt17" = "18 and Older",
-                                                              "povpcttot" = "Total"))
+                                                              "povpcttot" = "All Persons"))
     f.saipecty_PL$age_cat <- factor(f.saipecty_PL$age_cat, levels = c("5 to 17",
-                                                              "18 and Older", "Total"))
-    
-    f.saipecty_PLOT <- inner_join(f.saipecty_PL,f.saipecty_CL[,c(1,4,5)], by=c("fips","age_cat"))
-    f.saipecty_PLOT$indText  <- paste0( f.saipectyVAL$geoname," Year: ",f.saipecty_PLOT$year," Ages: ",f.saipecty_PLOT$age_cat,", Percent in Poverty: ", percent(f.saipecty_PLOT$value * 100)," Estimate: ",NumFmt(f.saipecty_PLOT$count))  
-    grTitle <- paste0("Percent Below Federal Poverty Level, ",listID$plName1," ",curYr)
+                                                              "18 and Older", "All Persons"))
+  
+    f.saipecty_PL$indText  <- paste0( f.saipectyVAL$geoname," Year: ",f.saipecty_PL$year," Ages: ",f.saipecty_PL$age_cat,", Percent in Poverty: ", percent( f.saipecty_PL$value * 100))  
+    grTitle <- paste0("Table 5: Percent Below Federal Poverty Level, ",listID$plName1," ",curYR)
     outCap <- captionSrc("SAIPE","","")
     xAxis <- list(title = "Age Category")
     yAxis <- list(title = 'Percent',tickformat = "%")
 
 if(length(ctyfips) > 1 ){
-POVPlot <- plot_ly(f.saipecty_PLOT, 
+POVPlot <- plot_ly(f.saipecty_PL, 
                    x = ~age_cat, 
                    y = ~value, 
                    type = 'bar', text = ~indText, hoverinfo = 'text',
@@ -111,7 +84,7 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
                         type = 'filter',
                         target = ~geoname,
                         operation = '=',
-                        value = unique(f.saipecty_PLOT$geoname)[1]))) %>%
+                        value = unique(f.saipecty_PL$geoname)[1]))) %>%
  layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
           showlegend = FALSE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
                       annotations = list(text = outCap,
@@ -122,30 +95,30 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
         active = 0,
         buttons = list(
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[1]),
-                     label = unique(f.saipecty_PLOT$geoname)[1]),
+                     args = list("transforms[0].value", unique(f.saipecty_PL$geoname)[1]),
+                     label = unique(f.saipecty_PL$geoname)[1]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[2]),
-                     label = unique(f.saipecty_PLOT$geoname)[2]),
+                     args = list("transforms[0].value", unique(f.saipecty_PL$geoname)[2]),
+                     label = unique(f.saipecty_PL$geoname)[2]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[3]),
-                     label = unique(f.saipecty_PLOT$geoname)[3]),
+                     args = list("transforms[0].value", unique(f.saipecty_PL$geoname)[3]),
+                     label = unique(f.saipecty_PL$geoname)[3]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[4]),
-                     label = unique(f.saipecty_PLOT$geoname)[4]),
+                     args = list("transforms[0].value", unique(f.saipecty_PL$geoname)[4]),
+                     label = unique(f.saipecty_PL$geoname)[4]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[5]),
-                     label = unique(f.saipecty_PLOT$geoname)[5]),
+                     args = list("transforms[0].value", unique(f.saipecty_PL$geoname)[5]),
+                     label = unique(f.saipecty_PL$geoname)[5]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[6]),
-                     label = unique(f.saipecty_PLOT$geoname)[6]),
+                     args = list("transforms[0].value", unique(f.saipecty_PL$geoname)[6]),
+                     label = unique(f.saipecty_PL$geoname)[6]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[7]),
-                     label = unique(f.saipecty_PLOT$geoname)[7])
+                     args = list("transforms[0].value", unique(f.saipecty_PL$geoname)[7]),
+                     label = unique(f.saipecty_PL$geoname)[7])
             )
         )))
 } else {
-   POVPlot <- plot_ly(f.saipecty_PLOT, 
+   POVPlot <- plot_ly(f.saipecty_PL, 
                       x = ~age_cat, y = ~value,  type = 'bar',
                       text = ~indText, hoverinfo = 'text') %>%
     layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
@@ -158,10 +131,6 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
 # Creating Table data file
 
     f.saipe_POP <- f.saipectyVAL[,c(1:6)] 
-    if(typeof(f.saipe_POP) == "list") {
-      f.saipe_POP <- as.data.frame(f.saipe_POP)
-    }
-    
     f.saipe_POP[,4:6] <- sapply(f.saipe_POP[,4:6],NumFmt) 
     f.saipe_POPW <- gather(f.saipe_POP,age_cat,value, pop0517:totpop,factor_key=TRUE) %>%
            spread(year,value)
@@ -177,14 +146,15 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
     f.saipe_POV[,4:6] <- sapply(f.saipe_POV[,4:6],NumFmt) 
     f.saipe_POVW <- gather(f.saipe_POV,age_cat,value, pov0517:povpop,factor_key=TRUE) %>%
            spread(year,value)
-    f.saipe_POVW$type = "Population Below FPL"
+    f.saipe_POVW$type = "Population Pelow FPL"
     f.saipe_POVW$age_cat <- as.character(f.saipe_POVW$age_cat)
     
-    f.saipe_PCT <- f.saipectyVAL[,c(1:3,10:12)] 
+    f.saipe_PCT <- f.saipectyVAL[,c(1:3,10:12)]
+    
     if(typeof(f.saipe_PCT) == "list") {
-      f.saipe_PCT <- as.data.frame(f.saipe_PCT)
+      f.saipe_PCT <- as.data.frame(f.saipe_PPCT)
     }
-
+    
     f.saipe_PCT[,4:6] <- sapply(f.saipe_PCT[,4:6], function(x) percent(x * 100))
 
     f.saipe_PCTW <- gather(f.saipe_PCT,age_cat,value, povpct0517:povpcttot,factor_key=TRUE) %>%
@@ -218,28 +188,21 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
     } else {
       npanel1 = length(ctyfips) + 1
     }
- 
+    
     f.saipecty_tabW <- clrGeoname(f.saipecty_tabW,"geoname",npanel1,3)
-    f.saipecty_tabW <- f.saipecty_tabW[,c(2,3,5,4,6)]
+    f.saipecty_tabW <- f.saipecty_tabW[,c(2:6)]
     names(f.saipecty_tabW)[1] <- "Agency/County"
-    names(f.saipecty_tabW)[2] <- "Value"
+    names(f.saipecty_tabW)[2] <- "Data Type"
 
  # Flex Table
-  tab_head <- paste0("Percent Below Federal Poverty Level, ",listID$plName1, " ",curYr)
+  tab_head <- paste0("Table 5: Percent Below Federal Poverty Level, ",listID$plName1, " ",curYR)
   
   
   f.povFlex <- flextable(
        f.saipecty_tabW,
        col_keys = names(f.saipecty_tabW)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=5) %>%
-       add_footer_row(values=outCap,top=FALSE,colwidths=5) %>%
-       align(j=1:2, align="left", part="body") %>%
-       width(j= 1, width=3) %>%
-       width(j=2, width=1.8) %>%
-       width(j=3:5,width=1) %>%
-       height(part="body", height=0.4) %>%
-       height(part="footer", height=0.4) %>%
-       height(part="header", i=2,height=1)
+       add_footer_row(values=outCap,top=FALSE,colwidths=5) 
       
 
   
@@ -248,7 +211,7 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
   
 
   #bind list
-  outList <- list("plot"= POVPlot, "data" = f.saipecty_PLOT, "table" = f.saipecty_tabW, "FlexTable" = f.povFlex,"caption" = outCap)
+  outList <- list("plot"= POVPlot, "data" = f.saipecty_tabW, "FlexTable" = f.povFlex,"caption" = outCap)
   
   return(outList)
 }
