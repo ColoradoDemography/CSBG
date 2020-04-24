@@ -15,7 +15,6 @@ wic <- function(DBPool,lvl,listID,curYR){
   ctyfips <- as.numeric(substr(listID$list1,3,5))
   
   
- 
 # Extracting WIC data
   WICSQL <- "SELECT * FROM data.csbg_wic;"
   f.WIC <- dbGetQuery(DBPool, WICSQL) %>% filter(fips %in% ctyfips  & year == curYR)
