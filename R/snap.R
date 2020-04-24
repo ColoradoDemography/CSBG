@@ -19,7 +19,7 @@ snap <- function(DBPool,lvl,listID,curYR){
 # Extracting SNAP data
   SNAPSQL <- "SELECT * FROM data.csbg_snap;"
  
-  f.SNAP <- dbGetQuery(DBPool, SNAPSQL) %>% filter(fips %in% ctyfips  & year == curYR)
+  f.SNAP <- dbGetQuery(DBPool, SNAPSQL) %>% filter(fips %in% ctyfips) %>% filter(year == curYR)
   
    f.SNAPctyVAL <- f.SNAP 
    
@@ -34,7 +34,6 @@ snap <- function(DBPool,lvl,listID,curYR){
                                      "snappct", "snapnonpct", "snapelig", "snappart",
                                      "snapnonpart")]
    
-   f.SNAPctyVAL$county <- paste0(f.SNAPctyVAL$county," County")
    
    if(length(ctyfips) > 1){
      f.SNAPagyVAL <- f.SNAP %>%
@@ -52,12 +51,12 @@ snap <- function(DBPool,lvl,listID,curYR){
                                      "snappct", "snapnonpct", "snapelig", "snappart",
                                    "snapnonpart")]
     
-    f.SNAPctyVAL <- bind_rows(f.SNAPagyVAL, f.SNAPctyVAL)
-
+    f.SNAPctyx <- bind_rows(f.SNAPagyVAL, f.SNAPctyVAL)
+    f.SNAPctyVAL <- f.SNAPctyx
    }
 
  
- f.SNAPctyVAL$county <- sub("County County","County",f.SNAPctyVAL$county)
+ 
 # creating Plotly Chart
 
      f.SNAPcty_tot <- gather(f.SNAPctyVAL,SNAP,count,c(snappart,snapnonpart), factor_key=TRUE)
@@ -140,6 +139,10 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
 
     
     f.SNAP_POP <- f.SNAPctyVAL[,c(1,2,7,8,6)] 
+    if(typeof(f.SNAP_POP) == "list") {
+      f.SNAP_POP <- as.data.frame(f.SNAP_POP)
+    }
+    
     f.SNAP_POP[,3:5] <- sapply(f.SNAP_POP[,3:5],NumFmt) 
     
     f.SNAP_POP$type = "Count"
@@ -151,11 +154,16 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
     
     f.SNAP_PCT <- f.SNAPctyVAL[,c(1,2,4,5)] 
     f.SNAP_PCT$snaptotpct <- f.SNAP_PCT$snappct + f.SNAP_PCT$snapnonpct
-    f.SNAP_PCT[,3:5] <- lapply(f.SNAP_PCT[,3:5], function(x) x * 100)
-    f.SNAP_PCT[,3:5] <- sapply(f.SNAP_PCT[,3:5],percent) 
+    if(typeof(f.SNAP_PCT) == "list") {
+      f.SNAP_PCT <- as.data.frame(f.SNAP_PCT)
+    }
+    
+    f.SNAP_PCT[,3:5] <- sapply(f.SNAP_PCT[,3:5], function(x) percent(x * 100))
+    
    
     f.SNAP_PCT$type = "Percentage"
     f.SNAP_PCT <- f.SNAP_PCT[,c(1,2,6,3:5)]
+    
     # Recoding
     names(f.SNAP_PCT)<- c("fips","Agency/County", "Value", "Participating", "Not Participating", "Eligible")
     
