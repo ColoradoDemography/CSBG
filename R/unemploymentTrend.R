@@ -174,7 +174,7 @@ UNEMPPlot <- plot_ly(f.unemploycty_PLOT,
        align(j=1:2, align="left", part="body") %>%
        width(j= 1, width=3) %>%
        width(j=2, width=2) %>%
-       width(j=3:4,width=1) %>%
+       width(j=3:4,width=1.2) %>%
        height(part="footer", height=0.4) %>%
        height(part="body", height=0.5)
       
