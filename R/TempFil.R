@@ -5,7 +5,7 @@
 #' @export
 
 TempFil <- function(oDir) {
-  oMatrix <- matrix(data=NA,nrow=200)
+  oMatrix <- matrix(data=NA,nrow=99)
 
   # Copying RMD File      
   file.copy("SDO_Report.Rmd",oDir)
@@ -21,7 +21,7 @@ TempFil <- function(oDir) {
  file.copy("www/Landscape.docx",oDir)
   
   
-  for(i in 4:200) {
+  for(i in 4:99) {
       oMatrix[i] <- tempfile(tmpdir=oDir,fileext=".png")
     } 
  
