@@ -89,10 +89,10 @@ source("R/wic.R")
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
 # tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
- tPath <- "C:/Users/abickford/Documents/Shiny Demos/TempDir"
+# tPath <- "C:/Users/abickford/Documents/Shiny Demos/TempDir"
 
 #Production
-# tPath <- "/tmp"  
+ tPath <- "/tmp"  
 
 # Locations for Google Analtyics Java Script Files
 # Local/ Development
