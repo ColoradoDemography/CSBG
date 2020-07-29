@@ -51,7 +51,7 @@ library('config')
 source("R/API_setup.R")  # Codes setting up ACS version and Census API Key
 source("R/bldCaption.R")
 source("R/ageEmployment.R")
-source("R/agePlotPRO.R")
+source("R/agePlotPRO2.R")
 source("R/boxContent.R")
 source("R/captionSrc.R")
 source("R/chkID.R")
@@ -371,7 +371,7 @@ server <- function(input, output, session) {
         #Population by Age  and Age by Poverty Status
         if("age" %in% input$outChk) {
           age_text <- tags$h2("Population by Age")
-          age_list <- agePlotPRO(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
+          age_list <- agePlotPRO2(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
           
           outplotp1 <- age_list$plot
           outtabp1 <- age_list$table
