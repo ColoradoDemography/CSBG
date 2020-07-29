@@ -103,7 +103,7 @@ povertyPRO <- function(lvl,listID, ACS,PreACS,curYr){
    f.povertyctyVAL <- bind_rows(f.povertyagyVAL,f.povertyctyVAL)
  } 
 
- 
+
  f.povertycty_C <-  f.povertyctyVAL[,1:7] 
 
  f.povertycty_CL <- f.povertycty_C %>% 
@@ -215,25 +215,17 @@ POVPlot <- f.povertycty_PLOT %>%
 
  f.povertycty_C$type <- "Count"
  f.povertycty_C <- f.povertycty_C[,c(1,2,8,3:7)]
- if(typeof(f.povertycty_C) == "list") {
-   f.povertycty_C <- as.data.frame(f.povertycty_C)
- }
- f.povertycty_C[,4:8] <- sapply(f.povertycty_C[,4:8],NumFmt)
+ f.povertycty_C[,4:8] <- lapply(f.povertycty_C[,4:8],NumFmt)
 
 
  f.povertycty_P$type <- "Percentage"
  f.povertycty_P <- f.povertycty_P[,c(1,2,8,3:7)]
- if(typeof(f.povertycty_P) == "list") {
-   f.povertycty_P <- as.data.frame(f.povertycty_P)
- }
- 
- f.povertycty_P[,4:8] <- sapply(f.povertycty_P[,4:8], function(x) percent(x * 100))
- 
- 
+ f.povertycty_P[,4:8] <- lapply(f.povertycty_P[,4:8], function(x) percent(x * 100))
+
  names(f.povertycty_P) <- c("geoname", "county", "type", "POV.LT50", "POV.50124", 
                                     "POV.125199", "POV.GE200",  "TOT.POP")
  
- f.povertycty_tab <- bind_rows(mutate_all(f.povertycty_C,as.character),mutate_all(f.povertycty_P,as.character)) %>% arrange(county,desc(type))
+ f.povertycty_tab <- bind_rows(f.povertycty_C,f.povertycty_P) %>% arrange(county,desc(type))
  
  
   #Clearing geoname

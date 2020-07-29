@@ -9,7 +9,7 @@
 #' @export
 
 plotlyLayout <- function(CrtTit,xAx,yAx,Cap,Legend) {
-  browser()
+  
   outStr <- paste0("layout(title = ", CrtTit,
                    ", xaxis = ",xAx,
                    ", yaxis = ",yAx,

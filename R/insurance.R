@@ -144,7 +144,7 @@ insPlot <- plot_ly(f.inscty_PL,
 # Creating Table data file
 
     f.ins_POP <- f.insctyVAL[,c(1:8)] 
-    f.ins_POP[,3:8] <- sapply(f.ins_POP[,3:8],NumFmt) 
+    f.ins_POP[,3:8] <- lapply(f.ins_POP[,3:8],NumFmt) 
     f.ins_POP$type = "Count"
     f.ins_POP <- f.ins_POP[,c(1,2,9,3:7)]
     
@@ -153,8 +153,8 @@ insPlot <- plot_ly(f.inscty_PL,
                                   "noinsurance", "schinsurance")
 
     f.ins_PCT <- f.insctyVAL[,c(1,2,9:13)] 
-    f.ins_PCT[,3:7] <- lapply(f.ins_PCT[,3:7], function(x) x * 100)
-    f.ins_PCT[,3:7] <- sapply(f.ins_PCT[,3:7],percent) 
+    f.ins_PCT[,3:7] <- lapply(f.ins_PCT[,3:7], function(x) percent(x * 100))
+ 
     
     f.ins_PCT$type = "Percentage"
      f.ins_PCT <- f.ins_PCT[,c(1,2,8,3:7)]
@@ -165,7 +165,7 @@ insPlot <- plot_ly(f.inscty_PL,
 
     
 
-   f.inscty_tab <- bind_rows(mutate_all(f.ins_PCT,as.character), mutate_all(f.ins_POP,as.character)) %>% arrange(fips,desc(Value))
+   f.inscty_tab <- bind_rows(f.ins_PCT, f.ins_POP) %>% arrange(fips,desc(Value))
    f.inscty_tab <- f.inscty_tab[,c(2:8)]
 
      #Clearing county

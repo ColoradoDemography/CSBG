@@ -225,42 +225,23 @@ EDUCPlot <- f.educctyPlot %>%
  
   f.educctyTAB_TOTP$lvl <- "All Persons"
   f.educctyTAB_TOTP$type <- "Percentage"
-  if(typeof(f.educctyTAB_TOTP) == "list") {
-    f.educctyTAB_TOTP <- as.data.frame(f.educctyTAB_TOTP)
-  }
-  f.educctyTAB_TOTP[,5:9] <- sapply(f.educctyTAB_TOTP[,5:9],function(x) percent(x *100))
-
+  f.educctyTAB_TOTP[,5:9] <- lapply(f.educctyTAB_TOTP[,5:9],function(x) percent(x *100))
    
   f.educctyTAB_TOTC$lvl <- "All Persons"
   f.educctyTAB_TOTC$type <- "Count"
-  
-  if(typeof(f.educctyTAB_TOTC) == "list") {
-    f.educctyTAB_TOTC <- as.data.frame(f.educctyTAB_TOTC)
-  }
-  
-  f.educctyTAB_TOTC[,5:9] <- sapply(f.educctyTAB_TOTC[,5:9],NumFmt)
+  f.educctyTAB_TOTC[,5:9] <- lapply(f.educctyTAB_TOTC[,5:9],NumFmt)
 
   f.educctyTAB_POVP$lvl <- "Persons Below FPL"
   f.educctyTAB_POVP$type <- "Percentage"
-  if(typeof(f.educctyTAB_POVP) == "list") {
-    f.educctyTAB_POVP <- as.data.frame(f.educctyTAB_POVP)
-  }
- 
-  f.educctyTAB_POVP[,5:9] <- sapply(f.educctyTAB_POVP[,5:9],function(x) percent(x *100))
+  f.educctyTAB_POVP[,5:9] <- lapply(f.educctyTAB_POVP[,5:9],function(x) percent(x *100))
 
    
   f.educctyTAB_POVC$lvl <- "Persons Below FPL"
   f.educctyTAB_POVC$type <- "Count" 
-  if(typeof(f.educctyTAB_POVC) == "list") {
-    f.educctyTAB_POVC <- as.data.frame(f.educctyTAB_POVC)
-  }
-  
-  
-  f.educctyTAB_POVC[,5:9] <- sapply(f.educctyTAB_POVC[,5:9],NumFmt)
+  f.educctyTAB_POVC[,5:9] <- lapply(f.educctyTAB_POVC[,5:9],NumFmt)
 
   
-  f.educctyTab <- bind_rows(mutate_all(f.educctyTAB_POVP,as.character),mutate_all(f.educctyTAB_POVC,as.character),
-                            mutate_all(f.educctyTAB_TOTP,as.character),mutate_all(f.educctyTAB_TOTC,as.character)) %>%
+  f.educctyTab <- bind_rows(list(f.educctyTAB_POVP,f.educctyTAB_POVC),list(f.educctyTAB_TOTP,f.educctyTAB_TOTC)) %>%
      arrange(county,desc(lvl),desc(type))
   
   f.educctyTab <- f.educctyTab[,c(1,3,4,8,7,6,5,9)]
@@ -304,7 +285,7 @@ EDUCPlot <- f.educctyPlot %>%
        height(part="header", height=1)
  
     
-    f.educctyDat <- bind_rows(mutate_all(f.educctyTotP,as.character), mutate_all(f.educctyPovP,as.character)) 
+    f.educctyDat <- bind_rows(f.educctyTotP, f.educctyPovP) 
 
   #bind list
   outList <- list("plot"= EDUCPlot, "data" = f.educctyPlot, "table" =  f.educctyTab, "FlexTable" = f.edFlex, "caption" = outCap)

@@ -7,7 +7,7 @@
 #' @return plotly graphic, data table and data file
 #' @export
 
-agePlotPRO  <- function(lvl,listID,ACS,curYr) {
+agePlotPRO2  <- function(lvl,listID,ACS,curYr) {
  
   # Collecting List of Counties
 
