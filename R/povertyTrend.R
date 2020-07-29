@@ -1,7 +1,7 @@
-#' povertyTrend generaes tables and ployly charts from SAIPE county data 2007-2017
+#' povertyTrend generaes tables and ployly charts from SAIPE county data ten year period
 #'  CSBG Dashboard 11/2019  A. Bickford
 #' @param DBPool the DOLA database pool
-#' @lvl the selected agenct
+#' @param lvl the selected agency
 #' @param listID is the list of selected county codes
 #' @return plotly graphic, data table and data file
 #' @export
@@ -9,27 +9,31 @@
 povertyTrend <- function(lvl,listID,ACS,curYr,censKey){
 
   # Collecting List of Counties
+  timeSTR <- paste0("from ", curYr - 10," to ", curYr)
  
   ctyfips <- as.numeric(substr(listID$list1,3,5))
   
-  saipeAPI::set_api_key(censKey)
- f.saiperaw <- saipeAPI::saipe_county(year = 2010:curYr, var = c("STABREV", "YEAR", "GEOID", "NAME", 
-                                                           "SAEPOV0_17_PT", "SAEPOV5_17R_PT", "SAEPOVALL_PT",
-                                                           "SAEPOVU_0_17", "SAEPOVU_5_17R", "SAEPOVU_ALL"))
+  f.saiperaw <- getCensus(key=censAPI,
+                          name = "timeseries/poverty/saipe",
+                          vars = c("STABREV", "YEAR", "GEOID", "NAME", 
+                                   "SAEPOV0_17_PT", "SAEPOV5_17R_PT", "SAEPOVALL_PT",
+                                   "SAEPOVU_0_17", "SAEPOVU_5_17R", "SAEPOVU_ALL"), 
+                          region = "county:*", regionin= "state:08",
+                          time = timeSTR) 
 
 
-f.saipe <- f.saiperaw %>% 
-        filter(GEOID %in% listID$list1) %>%
-        mutate(fips = as.numeric(county),
-               geoname = NAME,
-               year = YEAR,
-               totpop = SAEPOVU_ALL,
-               pople17 = SAEPOVU_0_17,
-               pop0517 = SAEPOVU_5_17R,
-               povpop  = SAEPOVALL_PT,
-               povle17 = SAEPOV0_17_PT,
-               pov0517 = SAEPOV5_17R_PT
-               )
+  f.saipe <- f.saiperaw %>% 
+    filter(GEOID %in% listID$list1) %>%
+    mutate(fips = as.numeric(county),
+           geoname = NAME,
+           year = YEAR,
+           totpop = as.numeric(SAEPOVU_ALL),
+           pople17 = as.numeric(SAEPOVU_0_17),
+           pop0517 = as.numeric(SAEPOVU_5_17R),
+           povpop  = as.numeric(SAEPOVALL_PT),
+           povle17 = as.numeric(SAEPOV0_17_PT),
+           pov0517 = as.numeric(SAEPOV5_17R_PT)
+    )
  
 
   
@@ -153,38 +157,26 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
 # Creating Table data file
 
     f.saipe_POP <- f.saipectyVAL[,c(1:6)] 
-    if(typeof(f.saipe_POP) == "list") {
-      f.saipe_POP <- as.data.frame(f.saipe_POP)
-    }
-    
     f.saipe_POP[,4:6] <- sapply(f.saipe_POP[,4:6],NumFmt) 
     f.saipe_POPW <- gather(f.saipe_POP,age_cat,value, pop0517:totpop,factor_key=TRUE) %>%
            spread(year,value)
     f.saipe_POPW$type = "Total Population"
     
     f.saipe_POV <- f.saipectyVAL[,c(1:3,7:9)] 
-    if(typeof(f.saipe_POV) == "list") {
-      f.saipe_POV <- as.data.frame(f.saipe_POV)
-    }
-    
     f.saipe_POV[,4:6] <- sapply(f.saipe_POV[,4:6],NumFmt) 
     f.saipe_POVW <- gather(f.saipe_POV,age_cat,value, pov0517:povpop,factor_key=TRUE) %>%
            spread(year,value)
     f.saipe_POVW$type = "Population below FPL"
     
     f.saipe_PCT <- f.saipectyVAL[,c(1:3,10:12)] 
-    if(typeof(f.saipe_PCT) == "list") {
-      f.saipe_PCT <- as.data.frame(f.saipe_PCT)
-    }
     
-    
-    f.saipe_PCT[,4:6] <- sapply(f.saipe_PCT[,4:6], function(x) percent(x * 100))
-
+    f.saipe_PCT[,4:6] <- lapply(f.saipe_PCT[,4:6], function(x) x * 100)
+    f.saipe_PCT[,4:6] <- sapply(f.saipe_PCT[,4:6],percent) 
     f.saipe_PCTW <- gather(f.saipe_PCT,age_cat,value, povpct0517:povpcttot,factor_key=TRUE) %>%
            spread(year,value)
     f.saipe_PCTW$type = "Percentage"
 
-    f.saipecty_tab <- bind_rows(mutate_all(f.saipe_PCTW,as.character), mutate_all(f.saipe_POVW,as.character), mutate_all(f.saipe_POPW,as.character)) %>% arrange(fips,type)
+    f.saipecty_tab <- bind_rows(f.saipe_PCTW, f.saipe_POVW, f.saipe_POPW) %>% arrange(fips,type)
     f.saipecty_tab <-f.saipecty_tab[,c(2,13,3,4:12)]
     
     f.saipecty_tab$age_cat <- plyr::revalue(f.saipecty_tab$age_cat, 
