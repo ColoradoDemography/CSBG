@@ -28,18 +28,18 @@ library(units)
 library(grid)
 library(gridExtra)
 library(ggthemes)
-#library(maptools)
+library(maptools)
 library(officer)
 library(flextable)
 library(ggplotify)
 library(ggrepel)  # These are the new packages
 library(leaflet)
 library(htmltools)
-#library(mapview)
+library(mapview)
 library(DT)
 library(plotly)
 library(tidycensus)
-library(saipeAPI)  # Installed 2019
+library(censusapi)  # Installed 2019
 
 
 # Additions for Database pool
@@ -48,14 +48,15 @@ library('DBI')
 library('stringr')
 library('config')
 
+source("R/API_setup.R")  # Codes setting up ACS version and Census API Key
+source("R/bldCaption.R")
 source("R/ageEmployment.R")
 source("R/agePlotPRO.R")
-source("R/API_setup.R")
-source("R/bldCaption.R")
 source("R/boxContent.R")
 source("R/captionSrc.R")
 source("R/chkID.R")
 source("R/clrGeoname.R")
+
 source("R/CountyName.R")
 source("R/disabilityPRO.R")
 source("R/downloadObj.R")
@@ -63,33 +64,37 @@ source("R/downloadObjUI.R")
 source("R/educPRO.R")
 source("R/familiesPRO.R")
 source("R/graph_objects.R")
-source("R/housingPRO.R")
 source("R/insurance.R")
+source("R/housingPRO.R")
 source("R/listTofips.R")
 source("R/NumFmt.R")
 source("R/outputWord.R")
 source("R/percent.R")
 source("R/popPlace.R")
+source("R/popTable.R")
 source("R/povertyPRO.R")
 source("R/povertyPRO2.R")
 source("R/povertyTrend.R")
 source("R/roundUpNice.R")
-source("R/simpleCap.R")
-source("R/snap.R")
 source("R/submitPush.R")
 source("R/submitReport.R")
 source("R/tabList.R")
 source("R/tabTitle.R")
 source("R/TempFil.R")
+source("R/simpleCap.R")
+source("R/snap.R")
 source("R/unemploymentTrend.R")
 source("R/wic.R")
+
+
+
 
 
 # The GLOBAL Variables  Add Additional lists items as sections get defined
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
 # tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
-# tPath <- "C:/Users/abickford/Documents/Shiny Demos/TempDir"
+# tPath <- "C:/Users/adamb/OneDrive/Documents/TempDir"
 
 #Production
  tPath <- "/tmp"  
@@ -988,8 +993,7 @@ server <- function(input, output, session) {
         tempWord <- fixPath(fileMat[2])
        
         
-       # tempRMD <- fixPath(fileMat[1])   #Production
-       # tempWord <- fixPath(fileMat[2])
+       
         
         rmarkdown::render(input= tempRMD, output_file = tempWord,
                           params =  list(outChk = input$outChk,
