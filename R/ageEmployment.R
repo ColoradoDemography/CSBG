@@ -277,7 +277,7 @@ if(length(ctyfips) > 1) {
  f.ctyEMPL_plt$indText  <- paste0( f.ctyEMPL_plt$geoname," Age Category: ", f.ctyEMPL_plt$age_cat," Percentage: ",percent(f.ctyEMPL_plt$pct * 100)," Count: ",NumFmt(f.ctyEMPL_plt$count))  
  grTitle <- paste0("Age Distribution by Percentage Unemployed, ",listID$plName1)
  xAxis <- list(title= "Age Category")
- yAxis <- list(title = 'Percent',tickformat = "%")
+ yAxis <- list(title = 'Percent',tickformat = ".1%")
  
  
 # People in Labor Force

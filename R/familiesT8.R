@@ -1,4 +1,4 @@
-#'familiesPRO Outputs Tables and plots for families by FPL and headship
+#'familiesT8 Outputs Tables and plots for families by FPL and headship
 #'
 #'    pulls data from ACS API 
 #'
@@ -10,7 +10,7 @@
 #' @return kable formatted  table and data file
 #' @export
 #'
-familiesPRO <- function(lvl,listID, ACS,curYr) {
+familiesT8 <- function(lvl,listID, ACS,curYr) {
   # Collecting place ids from  idList, setting default values
 
 
@@ -305,7 +305,7 @@ if(length(ctyfips) > 1) {
                                                             "Married Couple", "All Families"))                                                           
     
     f.ctyFAML_PLT$indText  <- paste0( f.ctyFAML_PLT$geoname," Family Type: ", f.ctyFAML_PLT$famtype," ",percent(f.ctyFAML_PLT$pct * 100))  
-    grTitle <- paste0("Families by Type, Below FPL, ",listID$plName1)
+    grTitle <- paste0("Table 8: Families by Type, Below FPL, ",listID$plName1)
     outCap <- captionSrc("ACS",ACS,"B17010") 
     xAxis <- list(title = "Family Type")
     yAxis <- list(title = 'Percent',tickformat = ".1%")
@@ -418,14 +418,12 @@ if(length(ctyfips) > 1 ){
     #Clearing geoname
     if(length(ctyfips) == 1) {
       npanel1 <- 1
-      npanel2 <- 4
     } else {
       npanel1 = length(ctyfips) + 1
-      npanel2 <- (length(ctyfips) + 1) * 4
     }
     
     f.ctyFAM_tab <- clrGeoname(f.ctyFAM_tab,"geoname",npanel1,24)
-    f.ctyFAM_tab <- clrGeoname(f.ctyFAM_tab,"famtype",npanel2,6)
+    f.ctyFAM_tab <- clrGeoname(f.ctyFAM_tab,"famtype",npanel1,6)
     for(i in 1:nrow(f.ctyFAM_tab)){
       if(i %% 2 == 0){
         f.ctyFAM_tab[i,3] <- ""
@@ -435,7 +433,7 @@ if(length(ctyfips) > 1 ){
     
      #Producing Flextable
  
- tab_head <- paste0("Families by Type and Poverty Status, ",listID$plName1)
+ tab_head <- paste0("Table 8: Families by Type and Poverty Status, ",listID$plName1)
 
  f.ctyFAM_tab <-  f.ctyFAM_tab[,c(1,4,3,5,7,8,6)]
  names(f.ctyFAM_tab) <- c("Agency/County","Family Type","Poverty Level","Value","Children Present","No Children Present","All Families")
@@ -446,16 +444,10 @@ if(length(ctyfips) > 1 ){
        col_keys = names(f.ctyFAM_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
-       align(j=1:2, align="left", part="body") %>%
-       width(j= 1, width=3) %>%
-       width(j=2:3, width=1.6) %>%
-       width(j=4, width=1) %>%
-       width(j=5:7,width=0.75) %>%
-       height(part="footer", height=0.4) %>%
-       height(part="header",i=2, height=0.7)
+       align(j=1:2, align="left", part="body") 
  
 
-  outList <- list("plot" = FAMPLOT, "FlexTable" = f.flexDIS, "data" = f.ctyFAML_PLT, "table" = f.ctyFAM_tab,"caption" = outCap)
+  outList <- list("plot" = FAMPLOT, "FlexTable" = f.flexDIS, "data" = f.ctyFAM_tab,"caption" = outCap)
   return(outList)
 }
 

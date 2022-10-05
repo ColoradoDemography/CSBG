@@ -16,7 +16,7 @@
 #'
 agePoverty <- function(lvl,listID, ACS,curYr,TabNo) {
   # Collecting place ids from  idList, setting default values
-
+browser()
    ctyfips <- substr(listID$list1,3,5)
    state <- "08"
     AgeEmpCTY <- data.frame()

@@ -72,13 +72,13 @@ povertyT5 <- function(DBPool,lvl,listID,curYR){
     grTitle <- paste0("Table 5: Percent Below Federal Poverty Level, ",listID$plName1," ",curYR)
     outCap <- captionSrc("SAIPE","","")
     xAxis <- list(title = "Age Category")
-    yAxis <- list(title = 'Percent',tickformat = "%")
+    yAxis <- list(title = 'Percent',tickformat = ".1%")
 
 if(length(ctyfips) > 1 ){
 POVPlot <- plot_ly(f.saipecty_PL, 
                    x = ~age_cat, 
                    y = ~value, 
-                   type = 'bar', text = ~indText, hoverinfo = 'text',
+                   type = 'bar', text = ~indText,  textposition = "none", hoverinfo = 'text',
                    transforms = list(
                       list(
                         type = 'filter',
@@ -120,7 +120,7 @@ POVPlot <- plot_ly(f.saipecty_PL,
 } else {
    POVPlot <- plot_ly(f.saipecty_PL, 
                       x = ~age_cat, y = ~value,  type = 'bar',
-                      text = ~indText, hoverinfo = 'text') %>%
+                      text = ~indText,  textposition = "none", hoverinfo = 'text') %>%
     layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
           showlegend = FALSE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
                       annotations = list(text = outCap,
@@ -138,25 +138,15 @@ POVPlot <- plot_ly(f.saipecty_PL,
     f.saipe_POPW$age_cat <- as.character(f.saipe_POPW$age_cat)
     
     f.saipe_POV <- f.saipectyVAL[,c(1:3,7:9)] 
-    if(typeof(f.saipe_POV) == "list") {
-      f.saipe_POV <- as.data.frame(f.saipe_POV)
-    }
-    
-    
     f.saipe_POV[,4:6] <- sapply(f.saipe_POV[,4:6],NumFmt) 
     f.saipe_POVW <- gather(f.saipe_POV,age_cat,value, pov0517:povpop,factor_key=TRUE) %>%
            spread(year,value)
     f.saipe_POVW$type = "Population Pelow FPL"
     f.saipe_POVW$age_cat <- as.character(f.saipe_POVW$age_cat)
     
-    f.saipe_PCT <- f.saipectyVAL[,c(1:3,10:12)]
-    
-    if(typeof(f.saipe_PCT) == "list") {
-      f.saipe_PCT <- as.data.frame(f.saipe_PPCT)
-    }
-    
-    f.saipe_PCT[,4:6] <- sapply(f.saipe_PCT[,4:6], function(x) percent(x * 100))
-
+    f.saipe_PCT <- f.saipectyVAL[,c(1:3,10:12)] 
+    f.saipe_PCT[,4:6] <- lapply(f.saipe_PCT[,4:6], function(x) x * 100)
+    f.saipe_PCT[,4:6] <- sapply(f.saipe_PCT[,4:6],percent) 
     f.saipe_PCTW <- gather(f.saipe_PCT,age_cat,value, povpct0517:povpcttot,factor_key=TRUE) %>%
            spread(year,value)
     f.saipe_PCTW$type = "Percentage Below FPL"

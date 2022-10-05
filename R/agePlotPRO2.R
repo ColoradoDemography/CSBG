@@ -1,4 +1,4 @@
-#' agePlotPRO Creates a Chart comparing The age distribution of a selected counties for a simgle year
+#' agePlotPRO Creates a Chart comparing The age distribution of a selected counties for a single year
 #'
 #' @param DBPool the active database pool
 #' @param lvl is the data type 
@@ -8,7 +8,7 @@
 #' @export
 
 agePlotPRO2  <- function(lvl,listID,ACS,curYr) {
- 
+
   # Collecting List of Counties
 
   f.ctyAge <- codemog_api(data="b01001",db=ACS,sumlev="50",geography="sumlev",meta="no")
@@ -153,14 +153,15 @@ agePlotPRO2  <- function(lvl,listID,ACS,curYr) {
       names(f.place_tab)[2] <- "Type"
     f.place_tab$County <- ifelse(f.place_tab$Type == "Count", "",f.place_tab$County)
    
-    
-
+ 
   #Preparing Plot
   f.place <- f.place[which(f.place$age_cat != "Total"),] %>% arrange(county)
+  f.place$age_pct <- round(f.place$age_pct, digits = 3)
   f.place$indText  <- paste0(f.place$geoname," Age Category: ",f.place$age_cat," Percentage: ",percent(f.place$age_pct * 100)," Count: ",NumFmt(f.place$cat_pop))  
   grTitle <- paste0("Population by Age, ",listID$plName1)
   xAxis <- list(title='Age Category')
-  yAxis <- list(title = 'Percent',tickformat = "%")
+  yAxis <- list(title = 'Percent',tickformat = ".1%")
+  
 
 if(length(ctyfips) > 1 ){
  AgePlot <- f.place %>%
@@ -169,8 +170,8 @@ if(length(ctyfips) > 1 ){
     x = ~age_cat, 
     y = ~age_pct,
   #  color=~cname,
-    text = ~indText,
-       hoverinfo = 'text',
+    text = ~indText, textposition = "none",
+    hoverinfo = 'text',
     transforms = list(
       list(
         type = 'filter',
@@ -217,7 +218,7 @@ if(length(ctyfips) > 1 ){
     x = ~age_cat, 
     y = ~age_pct,
   #  color=~cname,
-    text = ~indText,
+    text = ~indText, textposition = "none",
     hoverinfo = 'text',
     transforms = list(
       list(
@@ -245,15 +246,18 @@ f.place_tab <- clrGeoname( f.place_tab,"County",npanel1,2)
  
  tab_head <- paste0("Population by Age, ",listID$plName1)
 
- 
+
  f.flexage <- flextable(
        f.place_tab,
        col_keys = names(f.place_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
-       add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
+       add_footer_row(values=outCap, colwidths=7) %>%
+       align(j=1:7, align="center", part="header") %>%
        align(j=1:2, align="left", part="body") %>%
-       width(j= 1, width=3) %>%
-       width(j=2:7,width=0.75) %>%
+       align(j=3:7, align="right", part="body") %>%
+       align(j=1,align="left", part="footer") %>%
+       width(j=1:2, width=3) %>%
+       width(j=3:7,width=0.75) %>%
        height(part="footer", height=0.4)
  
  

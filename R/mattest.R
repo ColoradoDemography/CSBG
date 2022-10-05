@@ -1,19 +1,19 @@
 #' agePlotPRO Creates a Chart comparing The age distribution of a selected counties for a simgle year
 #'
 #' @param DBPool the active database pool
-#' @param lvl is the data type 
+#' @param lvl is the data type ("Regional Summary" or "Counties)
 #' @param listID is the list of selected county codes
 #' @param curYr is the single year value to be extracted by county_sya
 #' @return plotly graphic, data table and data file
 #' @export
 
 agePlotPRO  <- function(lvl,listID,ACS,curYr) {
- 
+
   # Collecting List of Counties
 
   f.ctyAge <- codemog_api(data="b01001",db=ACS,sumlev="50",geography="sumlev",meta="no")
   f.ctyAge[,c(3,8:56)] <- sapply(f.ctyAge[,c(3,8:56)],as.numeric)
-
+ 
   ctyfips <- as.character(as.numeric(substr(listID$list1,3,5)))
    outCap <- captionSrc("ACS",ACS,"B01001")
 
@@ -100,7 +100,7 @@ agePlotPRO  <- function(lvl,listID,ACS,curYr) {
  } else {
    f.agesum <- f.agesum_cty
  }
-   
+    
    # Wide to long
 
    f.place_tot <- f.agesum[,c(1:7)] %>%
@@ -113,7 +113,6 @@ agePlotPRO  <- function(lvl,listID,ACS,curYr) {
    
    f.place <- bind_cols(f.place_tot,f.place_pct)        
    f.place <- f.place[,c(1:4,7)] 
-   names(f.place) <- c("geoname","county","age_cat","cat_pop","age_pct")
     
     #Fixing labels
  
@@ -243,7 +242,7 @@ if(length(ctyfips) > 1 ){
  
 f.place_tab <- clrGeoname( f.place_tab,"County",npanel1,2)
  
- tab_head <- paste0("Population by Age, ",listID$plName1)
+ tab_head <- paste0("Population by age, ",listID$plName1)
 
  
  f.flexage <- flextable(
@@ -251,15 +250,11 @@ f.place_tab <- clrGeoname( f.place_tab,"County",npanel1,2)
        col_keys = names(f.place_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
-       align(j=1:2, align="left", part="body") %>%
-       width(j= 1, width=3) %>%
-       width(j=2:7,width=0.75) %>%
-       height(part="footer", height=0.4)
- 
+       align(j=1:2, align="left", part="body") 
  
 
   
   
-  outList <- list("plot" = AgePlot, "data" = f.place, "table" = f.place_tab, "FlexTable" = f.flexage,"caption" = outCap)
+  outList <- list("plot" = AgePlot, "data" = f.place_dat, "table" = f.place_tab, "FlexTable" = f.flexage,"caption" = outCap)
   return(outList)
 }

@@ -139,7 +139,7 @@ f.povertycty_PL$POV.LEVEL <- plyr::revalue(f.povertycty_PL$POV.LEVEL,
   f.povertycty_PLOT$indText  <- paste0( f.povertycty_PLOT$geoname," Percent of Federal Poverty Level, ", f.povertycty_PLOT$POV.LEVEL,": Percentage: ", percent(f.povertycty_PLOT$value * 100)," Count: ",NumFmt(f.povertycty_PLOT$count))  
   grTitle <- paste0("Population by Percentage of Federal Poverty Level, ",listID$plName1)
   xAxis <- list(title='Percentage of Federal Poverty Level')
-  yAxis <- list(title = 'Percent',tickformat = "%")
+  yAxis <- list(title = 'Percent',tickformat = ".1%")
   
 if(length(ctyfips) > 1 ){
 POVPlot <- f.povertycty_PLOT %>%
@@ -147,7 +147,7 @@ POVPlot <- f.povertycty_PLOT %>%
     type = 'bar', 
     x = ~POV.LEVEL, 
     y = ~value,
-    text = ~indText,
+    text = ~indText, textposition = "none",
     hoverinfo = 'text',
     transforms = list(
       list(
@@ -194,7 +194,7 @@ POVPlot <- f.povertycty_PLOT %>%
     type = 'bar', 
     x = ~POV.LEVEL, 
     y = ~value,
-    text = ~indText,
+    text = ~indText, textposition = "none",
     hoverinfo = 'text',
     transforms = list(
       list(
@@ -250,11 +250,14 @@ names(f.povertycty_tab) <- c("Agency/County","Value","Less than 50%", "50 to 124
        col_keys = names(f.povertycty_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
+       align(j=1:7, align="center", part="header") %>%
        align(j=1:2, align="left", part="body") %>%
-       width(j= 1, width=3) %>%
-       width(j=2:7,width=0.75) %>%
+       align(j=3:7, align="right", part="body") %>%
+       align(j=1, align="left", part="footer") %>%
+       width(j=1:2, width=3) %>%
+       width(j=3:7,width=0.9) %>%
        height(part="footer", height=0.4) %>%
-      height(part="header", i=2,height=0.7)
+       height(part="header", i=2,height=0.7)
 
 
 

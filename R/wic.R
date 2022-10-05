@@ -1,5 +1,5 @@
 #' wic generates tables and plotly charts for Women's Infants and Children (WIC) 
-#'   data from Kids County
+#'   data from Kids Count
 #'  CSBG Dashboard 11/2019  A. Bickford
 #' @param DBPool the DOLA database pool
 #' @lvl the selected agency
@@ -19,16 +19,14 @@ wic <- function(DBPool,lvl,listID,curYR){
   WICSQL <- "SELECT * FROM data.csbg_wic;"
   f.WIC <- dbGetQuery(DBPool, WICSQL) %>% filter(fips %in% ctyfips  & year == curYR)
   
-   f.WICctyVAL <- f.WIC 
+   f.WICctyVAL <- f.WIC %>% select("fips", "county", "wicpart","wicelig")
    
-   f.WICctyVAL <- f.WICctyVAL[,c("fips", "county", "wicpart","wicelig")]
    f.WICctyVAL <- f.WICctyVAL %>% mutate(wicnonpart = wicelig - wicpart,
                          wicpartpct = wicpart/wicelig,
                          wicnonpartpct = wicnonpart/wicelig,
-                         wiceligpct = 1)
-  
-   f.WICctyVAL <- f.WICctyVAL[,c("fips", "county", "wicpart","wicnonpart", "wicelig",
-                                 "wicpartpct","wicnonpartpct","wiceligpct")] 
+                         wiceligpct = 1) %>%
+                 select("fips", "county", "wicpart","wicnonpart", "wicelig",
+                        "wicpartpct","wicnonpartpct","wiceligpct")
    
    f.WICctyVAL$county <- paste0(f.WICctyVAL$county," County")
    
@@ -39,10 +37,9 @@ wic <- function(DBPool,lvl,listID,curYR){
       mutate(wicnonpart = wicelig - wicpart,
              wicpartpct = wicpart/wicelig,
              wicnonpartpct = wicnonpart/wicelig,
-             wiceligpct = 1)
-     
-    f.WICagyVAL$fips <- 0
-    f.WICagyVAL$county <- listID$plName1
+             wiceligpct = 1,
+             fips = 0,
+             county = listID$plName1)
     
     f.WICagyVAL <- f.WICagyVAL[,c("fips", "county", "wicpart","wicnonpart", "wicelig",
                                  "wicpartpct","wicnonpartpct","wiceligpct")]  
@@ -75,14 +72,14 @@ wic <- function(DBPool,lvl,listID,curYR){
     grTitle <- paste0("Women, Infants and Children (WIC) Participation, ",listID$plName1," ",curYR)
     outCap <- captionSrc("WIC","","")
     xAxis <- list(title = "Participation")
-    yAxis <- list(title = 'Percent',tickformat = "%")
+    yAxis <- list(title = 'Percent',tickformat = ".1%")
 
 
 if(length(ctyfips) > 1 ){
 WICPlot <- plot_ly(f.WICcty_PL, 
                    x = ~WIC, 
                    y = ~pct, 
-                   type = 'bar', text = ~indText, hoverinfo = 'text',
+                   type = 'bar', text = ~indText,  textposition = "none",hoverinfo = 'text',
                    transforms = list(
                       list(
                         type = 'filter',
@@ -124,7 +121,7 @@ WICPlot <- plot_ly(f.WICcty_PL,
 } else {
    WICPlot <- plot_ly(f.WICcty_PL, 
                       x = ~WIC, y = ~pct,  type = 'bar',
-                      text = ~indText, hoverinfo = 'text') %>%
+                      text = ~indText,  textposition = "none",hoverinfo = 'text') %>%
     layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
           showlegend = FALSE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
                       annotations = list(text = outCap,
@@ -155,7 +152,7 @@ WICPlot <- plot_ly(f.WICcty_PL,
 
     
 
-   f.WICcty_tab <- bind_rows(mutate_all(f.WIC_PCT,as.character), mutate_all(f.WIC_POP,as.character)) %>% arrange(fips,desc(Value))
+   f.WICcty_tab <- bind_rows(f.WIC_PCT, f.WIC_POP) %>% arrange(fips,desc(Value))
    f.WICcty_tab <- f.WICcty_tab[,c(2:6)]
 
      #Clearing county
@@ -178,8 +175,11 @@ WICPlot <- plot_ly(f.WICcty_PL,
        col_keys = names(f.WICcty_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=5) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=5) %>%
+       align(j=1:5, align="center", part="header") %>%
        align(j=1:2, align="left", part="body") %>%
-       width(j= 1, width=3) %>%
+       align(j=3:5, align="right", part="body") %>%
+       align(j=1, align="left", part="footer") %>%
+       width(j=1, width=3) %>%
        width(j=2:5,width=1) %>%
        height(part="footer", height=0.4) %>%
        height(part="header",i=2,height=0.6)

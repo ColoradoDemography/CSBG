@@ -103,13 +103,13 @@ f.saipe <- f.saiperaw %>%
     grTitle <- paste0("Percent Below Federal Poverty Level, ",listID$plName1," ",curYr)
     outCap <- captionSrc("SAIPE","","")
     xAxis <- list(title = "Age Category")
-    yAxis <- list(title = 'Percent',tickformat = "%")
+    yAxis <- list(title = 'Percent',tickformat = ".1%")
 
 if(length(ctyfips) > 1 ){
 POVPlot <- plot_ly(f.saipecty_PLOT, 
                    x = ~age_cat, 
                    y = ~value, 
-                   type = 'bar', text = ~indText, hoverinfo = 'text',
+                   type = 'bar', text = ~indText,  textposition = "none", hoverinfo = 'text',
                    transforms = list(
                       list(
                         type = 'filter',
@@ -151,7 +151,7 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
 } else {
    POVPlot <- plot_ly(f.saipecty_PLOT, 
                       x = ~age_cat, y = ~value,  type = 'bar',
-                      text = ~indText, hoverinfo = 'text') %>%
+                      text = ~indText,  textposition = "none", hoverinfo = 'text') %>%
     layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
           showlegend = FALSE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
                       annotations = list(text = outCap,
@@ -224,8 +224,11 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
        col_keys = names(f.saipecty_tabW)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=5) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=5) %>%
+       align(j=1:5, align="center", part="header") %>%
        align(j=1:2, align="left", part="body") %>%
-       width(j= 1, width=3) %>%
+       align(j=3:5, align="right", part="body") %>%
+       align(j=1, align="left", part="footer")  %>%
+       width(j=1, width=3) %>%
        width(j=2, width=1.8) %>%
        width(j=3:5,width=1) %>%
        height(part="body", height=0.4) %>%

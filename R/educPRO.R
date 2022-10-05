@@ -142,7 +142,7 @@ educPRO <- function(lvl,listID, ACS,curYr){
   f.educctyPlot$indText  <- paste0( f.educctyPlot$geoname," Educational Attainment: ", f.educctyPlot$educatt," Percentage: ",percent(f.educctyPlot$value * 100)," Count: ",NumFmt(f.educctyPlot$count)) 
     grTitle <- paste0("Educational Attainment by Federal Poverty Level, ",listID$plName1,"\nPersons Age 25 and Older")
     xAxis <- list(title='Educational Attainment')
-    yAxis <- list(title = 'Percent',tickformat = "%")
+    yAxis <- list(title = 'Percent',tickformat = ".1%")
 
 if(length(ctyfips) > 1 ){
 EDUCPlot <- f.educctyPlot %>%
@@ -267,7 +267,6 @@ EDUCPlot <- f.educctyPlot %>%
                           "High School Graduate",
                          "Some College, Associates Degree",
                         "Bachelor's Degree or Higher", "Total")
-                          
 
   # Flex Table
   tab_head <- paste0("Educational Attainment by Federal Poverty Level, ",listID$plName1,"\nPersons Age 25 and Older")
@@ -277,10 +276,13 @@ EDUCPlot <- f.educctyPlot %>%
        col_keys = names(f.educctyTab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=8) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=8) %>%
+       align(j=1:8, align="center", part="header") %>%
        align(j=1:2, align="left", part="body") %>%
-       width(j= 1, width=3) %>%
+       align(j=3:8, align="right", part="body") %>%
+       align(j=1, align="left", part="footer") %>%
+       width(j=1, width=3) %>%
        width(j=2,width=1.5) %>%
-       width(j=3:7,width=1) %>%
+       width(j=3:8,width=1) %>%
        height(part="footer", height=0.4) %>%
        height(part="header", height=1)
  

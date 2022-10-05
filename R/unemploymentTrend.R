@@ -16,12 +16,15 @@ unemploymentTrend <- function(lvl,listID,curYr){
   ctyfipsC <- substr(listID$list1,3,5)
  
 
-# reading data serries and selecting counties
-f.unempl_raw <- readLines("https://www.bls.gov/web/metro/laucntycur14.txt")
-unemplen <- length(f.unempl_raw) - 5
-f.unempl_raw <- f.unempl_raw[c(7:unemplen)]
+# reading data series and selecting counties
 
-f.unemploy <- read_delim(file=f.unempl_raw, delim="|",col_names = FALSE)
+ f.unempl_raw <- readLines("https://www.bls.gov/web/metro/laucntycur14.txt")
+
+ unemplen <- length(f.unempl_raw) - 12
+
+f.unemploy <- read_delim("https://www.bls.gov/web/metro/laucntycur14.txt", delim="|",  
+                         col_names=FALSE, skip=6, n_max=unemplen, trim_ws = TRUE)
+
 
 names(f.unemploy) <- c("series","stfips","fips","geoname","period","CLF","EMP",
                        "UNEMP","UNEMPRATE")
@@ -84,13 +87,13 @@ f.unemploycty$geoname <- sub(", CO","",f.unemploycty$geoname)
     outCap <- captionSrc("BLS","","")
     xAxis <- list("tickformat"= "%B, %Y", "tickmode"= "auto", "nticks" = 14,
                   "tick0" = f.unemploycty_PLOT[3,1], title = "Date")
-    yAxis <- list(title = 'Percent',tickformat = "%")
+    yAxis <- list(title = 'Percent',tickformat = ".1%")
 
 if(length(ctyfips) > 1 ){
 UNEMPPlot <- plot_ly(f.unemploycty_PLOT, 
                    x = ~date, 
                    y = ~UNEMPRATE, 
-                   type = 'scatter', mode = 'lines', text = ~indText, hoverinfo = 'text',
+                   type = 'scatter', mode = 'lines', text = ~indText,  textposition = "none",hoverinfo = 'text',
                    transforms = list(
                       list(
                         type = 'filter',
@@ -132,7 +135,7 @@ UNEMPPlot <- plot_ly(f.unemploycty_PLOT,
 } else {
    UNEMPPlot <- plot_ly(f.unemploycty_PLOT, 
                       x = ~date, y = ~UNEMPRATE, type = 'scatter',
-                      mode = 'lines', text = ~indText, hoverinfo = 'text') %>%
+                      mode = 'lines', text = ~indText,  textposition = "none",hoverinfo = 'text') %>%
      layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
           showlegend = FALSE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
                       annotations = list(text = outCap,
@@ -171,10 +174,13 @@ UNEMPPlot <- plot_ly(f.unemploycty_PLOT,
        set_header_labels(geoname = "Agency/County", date= "Month") %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=4) %>%
        add_footer_row(values=captionSrc("BLS","",""),top=FALSE,colwidths=4) %>%
+       align(j=1:4, align="center",part="header") %>%
        align(j=1:2, align="left", part="body") %>%
-       width(j= 1, width=3) %>%
+       align(j=3:4, align="right", part="body") %>%
+       align(j=1, align="left", part="footer") %>%
+       width(j=1, width=3) %>%
        width(j=2, width=2) %>%
-       width(j=3:4,width=1.2) %>%
+       width(j=3:4,width=1.25) %>%
        height(part="footer", height=0.4) %>%
        height(part="body", height=0.5)
       

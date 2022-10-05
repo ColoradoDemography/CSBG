@@ -308,7 +308,7 @@ if(length(ctyfips) > 1) {
     grTitle <- paste0("Housing Tenure, Below FPL, ",listID$plName1)
     outCap <- captionSrc("ACS",ACS,"B17010") 
     xAxis <- list(title = "Family Type")
-    yAxis <- list(title = 'Percent',tickformat = "%")
+    yAxis <- list(title = 'Percent',tickformat = ".1%")
     
     
  
@@ -402,7 +402,7 @@ if(length(ctyfips) > 1 ){
     f.ctyHH_Count <-  f.ctyHHL_tot %>% spread(tenure,count)
     f.ctyHH_Percent <-  f.ctyHHL_pct %>% spread(tenure,pct)
    
-    f.ctyHH_tab <- bind_rows(mutate_all(f.ctyHH_Count,as.character),mutate_all(f.ctyHH_Percent,as.character))  
+    f.ctyHH_tab <- bind_rows(f.ctyHH_Count,f.ctyHH_Percent)  
     
     
     # reordering Records for Table
@@ -445,11 +445,15 @@ if(length(ctyfips) > 1 ){
        col_keys = names(f.ctyHH_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
+       align(j=1:7,align="center", part="header") %>%
        align(j=1:2, align="left", part="body") %>%
+       align(j=3:7, align="right", part="body") %>%
+       align(j=1, align="left", part="footer") %>%
        width(j= 1, width=3) %>%
        width(j=2:3, width=1.6) %>%
        width(j=4, width=1) %>%
-       width(j=5:7,width=0.75) %>%
+       width(j=5:6,width=0.75) %>%
+       width(j=7,width=1) %>%
        height(part="footer", height=0.4) %>%
        height(part="header",i=2, height=0.7)
  
