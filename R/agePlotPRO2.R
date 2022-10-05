@@ -208,9 +208,22 @@ if(length(ctyfips) > 1 ){
                label = unique(f.place$geoname)[6]),
           list(method = "restyle",
                args = list("transforms[0].value", unique(f.place$geoname)[7]),
-               label = unique(f.place$geoname)[7])
+               label = unique(f.place$geoname)[7]),
+          list(method = "restyle",
+               args = list("transforms[0].value", unique(f.place$geoname)[8]),
+               label = unique(f.place$geoname)[8]),
+          list(method = "restyle",
+               args = list("transforms[0].value", unique(f.place$geoname)[9]),
+               label = unique(f.place$geoname)[9]),
+          list(method = "restyle",
+               args = list("transforms[0].value", unique(f.place$geoname)[10]),
+               label = unique(f.place$geoname)[10]),
+          list(method = "restyle",
+               args = list("transforms[0].value", unique(f.place$geoname)[11]),
+               label = unique(f.place$geoname)[11])
+        )
       )
-  )))
+  ))
 } else {
    AgePlot <- f.place %>%
   plot_ly(

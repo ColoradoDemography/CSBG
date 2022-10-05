@@ -178,7 +178,19 @@ if(length(ctyfips) > 1 ){
                                 label = unique(f.instotVAL_plot$NAME)[6]),
                            list(method = "restyle",
                                 args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[7]),
-                                label = unique(f.instotVAL_plot$NAME)[7])
+                                label = unique(f.instotVAL_plot$NAME)[7]),
+                           list(method = "restyle",
+                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[8]),
+                                label = unique(f.instotVAL_plot$NAME)[8]),
+                           list(method = "restyle",
+                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[9]),
+                                label = unique(f.instotVAL_plot$NAME)[9]),
+                           list(method = "restyle",
+                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[10]),
+                                label = unique(f.instotVAL_plot$NAME)[10]),
+                           list(method = "restyle",
+                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[11]),
+                                label = unique(f.instotVAL_plot$NAME)[11])
                          )
                        )))
 } else {

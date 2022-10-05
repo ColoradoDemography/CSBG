@@ -115,7 +115,19 @@ WICPlot <- plot_ly(f.WICcty_PL,
                      label = unique(f.WICcty_PL$county)[6]),
                 list(method = "restyle",
                      args = list("transforms[0].value", unique(f.WICcty_PL$county)[7]),
-                     label = unique(f.WICcty_PL$county)[7])
+                     label = unique(f.WICcty_PL$county)[7]),
+                list(method = "restyle",
+                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[8]),
+                     label = unique(f.WICcty_PL$county)[8]),
+                list(method = "restyle",
+                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[9]),
+                     label = unique(f.WICcty_PL$county)[9]),
+                list(method = "restyle",
+                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[10]),
+                     label = unique(f.WICcty_PL$county)[10]),
+                list(method = "restyle",
+                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[11]),
+                     label = unique(f.WICcty_PL$county)[11])              
             )
         )))
 } else {

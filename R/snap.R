@@ -131,7 +131,19 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
                      label = unique(f.SNAPcty_PL$county)[6]),
                 list(method = "restyle",
                      args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[7]),
-                     label = unique(f.SNAPcty_PL$county)[7])
+                     label = unique(f.SNAPcty_PL$county)[7]),
+                list(method = "restyle",
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[8]),
+                     label = unique(f.SNAPcty_PL$county)[8]),
+                list(method = "restyle",
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[9]),
+                     label = unique(f.SNAPcty_PL$county)[9]),
+                list(method = "restyle",
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[10]),
+                     label = unique(f.SNAPcty_PL$county)[10]),
+                list(method = "restyle",
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[11]),
+                     label = unique(f.SNAPcty_PL$county)[11])
             )
         )))
 } else {

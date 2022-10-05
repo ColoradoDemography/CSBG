@@ -359,7 +359,19 @@ if(length(ctyfips) > 1 ){
                label = unique(f.ctyHHL_PLT$geoname)[6]),
           list(method = "restyle",
                args = list("transforms[0].value", unique(f.ctyHHL_PLT$geoname)[7]),
-               label = unique(f.ctyHHL_PLT$geoname)[7])
+               label = unique(f.ctyHHL_PLT$geoname)[7]),
+          list(method = "restyle",
+               args = list("transforms[0].value", unique(f.ctyHHL_PLT$geoname)[8]),
+               label = unique(f.ctyHHL_PLT$geoname)[8]),
+          list(method = "restyle",
+               args = list("transforms[0].value", unique(f.ctyHHL_PLT$geoname)[9]),
+               label = unique(f.ctyHHL_PLT$geoname)[9]),
+          list(method = "restyle",
+               args = list("transforms[0].value", unique(f.ctyHHL_PLT$geoname)[10]),
+               label = unique(f.ctyHHL_PLT$geoname)[10]),
+          list(method = "restyle",
+               args = list("transforms[0].value", unique(f.ctyHHL_PLT$geoname)[11]),
+               label = unique(f.ctyHHL_PLT$geoname)[11])
       )
   )))
 } else {

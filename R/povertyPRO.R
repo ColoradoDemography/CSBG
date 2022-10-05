@@ -185,7 +185,19 @@ POVPlot <- f.povertycty_PLOT %>%
                label = unique(f.povertycty_PL$geoname)[6]),
           list(method = "restyle",
                args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[7]),
-               label = unique(f.povertycty_PL$geoname)[7])
+               label = unique(f.povertycty_PL$geoname)[7]),
+          list(method = "restyle",
+               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[8]),
+               label = unique(f.povertycty_PL$geoname)[8]),
+          list(method = "restyle",
+               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[9]),
+               label = unique(f.povertycty_PL$geoname)[9]),
+          list(method = "restyle",
+               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[10]),
+               label = unique(f.povertycty_PL$geoname)[10]),
+          list(method = "restyle",
+               args = list("transforms[0].value", unique(f.povertycty_PL$geoname)[11]),
+               label = unique(f.povertycty_PL$geoname)[11])
       )
   )))
 } else {
