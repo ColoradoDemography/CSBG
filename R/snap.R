@@ -70,7 +70,7 @@ snap <- function(DBPool,lvl,ACS,listID,curYR){
         select(GEOID, NAME, TOT_POV_EST : SNAP_POV_MOE_PCT)
     f.SNAPctyVAL <- bind_rows(f.SNAPagyVAL, f.SNAPctyVAL)
    }
-browser()
+
 # creating Plotly Chart
 
      f.SNAPcty_pct <- f.SNAPctyVAL %>%
