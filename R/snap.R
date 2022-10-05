@@ -3,7 +3,7 @@
 #'  CSBG Dashboard 11/2019 REVISED  9/2022 A. Bickford
 #' @param DBPool the DOLA database pool
 #' @param lvl the selected agency
-#' @param listID is the list of selected county codes
+#' @param listID is the list of selected GEOID codes
 #' @param cyrYr Current year value
 #' @return plotly graphic, data table and data file
 #' @export
@@ -70,7 +70,7 @@ snap <- function(DBPool,lvl,ACS,listID,curYR){
         select(GEOID, NAME, TOT_POV_EST : SNAP_POV_MOE_PCT)
     f.SNAPctyVAL <- bind_rows(f.SNAPagyVAL, f.SNAPctyVAL)
    }
-
+browser()
 # creating Plotly Chart
 
      f.SNAPcty_pct <- f.SNAPctyVAL %>%
@@ -99,9 +99,9 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
                    transforms = list(
                       list(
                         type = 'filter',
-                        target = ~county,
+                        target = ~NAME,
                         operation = '=',
-                        value = unique(f.SNAPcty_PL$county)[1]))) %>%
+                        value = unique(f.SNAPcty_PL$NAME)[1]))) %>%
  layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
           showlegend = FALSE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
                       annotations = list(text = outCap,
@@ -112,38 +112,38 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
         active = 0,
         buttons = list(
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[1]),
-                     label = unique(f.SNAPcty_PL$county)[1]),
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[1]),
+                     label = unique(f.SNAPcty_PL$NAME)[1]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[2]),
-                     label = unique(f.SNAPcty_PL$county)[2]),
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[2]),
+                     label = unique(f.SNAPcty_PL$NAME)[2]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[3]),
-                     label = unique(f.SNAPcty_PL$county)[3]),
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[3]),
+                     label = unique(f.SNAPcty_PL$NAME)[3]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[4]),
-                     label = unique(f.SNAPcty_PL$county)[4]),
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[4]),
+                     label = unique(f.SNAPcty_PL$NAME)[4]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[5]),
-                     label = unique(f.SNAPcty_PL$county)[5]),
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[5]),
+                     label = unique(f.SNAPcty_PL$NAME)[5]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[6]),
-                     label = unique(f.SNAPcty_PL$county)[6]),
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[6]),
+                     label = unique(f.SNAPcty_PL$NAME)[6]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[7]),
-                     label = unique(f.SNAPcty_PL$county)[7]),
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[7]),
+                     label = unique(f.SNAPcty_PL$NAME)[7]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[8]),
-                     label = unique(f.SNAPcty_PL$county)[8]),
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[8]),
+                     label = unique(f.SNAPcty_PL$NAME)[8]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[9]),
-                     label = unique(f.SNAPcty_PL$county)[9]),
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[9]),
+                     label = unique(f.SNAPcty_PL$NAME)[9]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[10]),
-                     label = unique(f.SNAPcty_PL$county)[10]),
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[10]),
+                     label = unique(f.SNAPcty_PL$NAME)[10]),
                 list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$county)[11]),
-                     label = unique(f.SNAPcty_PL$county)[11])
+                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[11]),
+                     label = unique(f.SNAPcty_PL$NAME)[11])
             )
         )))
 } else {
@@ -166,7 +166,7 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
     f.SNAP_POP$type = "Count"
     f.SNAP_POP <- f.SNAP_POP[,c(1,2,11,3:10)]
     
-    names(f.SNAP_POP)[1:3]<- c("fips", "Agency/ County","Value")
+    names(f.SNAP_POP)[1:3]<- c("fips", "Agency/County","Value")
    
     f.SNAP_PCT <- f.SNAPctyVAL[,c(1,2,11:16)] 
     f.SNAP_PCT[,3:8] <- lapply(f.SNAP_PCT[,3:8], function(x) percent(x * 100))
@@ -181,18 +181,18 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
     names(f.SNAP_PCT)<- names(f.SNAP_POP)
     
 
-    f.SNAPcty_tab <- bind_rows(f.SNAP_PCT, f.SNAP_POP) %>% arrange(fips,Value)
+    f.SNAPcty_tab <- bind_rows(f.SNAP_PCT, f.SNAP_POP) %>% arrange(fips,desc(Value))
     
-     #Clearing county
+     #Clearing GEOID
     if(length(ctyfips) == 1) {
       npanel1 <- 1
     } else {
       npanel1 = length(ctyfips) + 1
     }
     
-    f.SNAPcty_tab <- clrGeoname(f.SNAPcty_tab,"Agency/ County",npanel1,2)
+    f.SNAPcty_tab <- clrGeoname(f.SNAPcty_tab,"Agency/County",npanel1,2)
     f.SNAPcty_tab <- f.SNAPcty_tab[,c(2:4,6,8,10)]
-    names(f.SNAPcty_tab) <- c("Agency/ County","Value",
+    names(f.SNAPcty_tab) <- c("Agency/County","Value",
                               "Households in Poverty Estmate", 
                               "Households Receiving SNAP Benefits Estimate", 
                               "Households in Poverty Receiving SNAP Benefits Estimate", 
