@@ -95,7 +95,7 @@ for(i in 1:length(ctyfips)) {
 
 ```
 
-##### PAGE BREAK
+`r if("age" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r age3, results="asis", echo = FALSE}
 if("age" %in% unlist(outChk)) {
@@ -104,7 +104,7 @@ if("age" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("age" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r ageemp1, results="asis",  echo = FALSE}
 if("ageemp" %in% unlist(outChk)) {
@@ -132,7 +132,7 @@ if("ageemp" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("ageemp" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r ageemp3, results="asis", echo = FALSE}
 if("ageemp" %in% unlist(outChk)) {
@@ -141,7 +141,7 @@ if("ageemp" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("ageemp" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r pov1, results="asis",  echo = FALSE}
 if("pov" %in% unlist(outChk)) {
@@ -166,7 +166,7 @@ if("pov" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("pov" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r pov3, results="asis", echo = FALSE}
 if("pov" %in% unlist(outChk)) {
@@ -175,7 +175,7 @@ if("pov" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("pov" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r educatt1, results="asis",  echo = FALSE}
 if("educatt" %in% unlist(outChk)) {
@@ -199,7 +199,7 @@ if("educatt" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("educatt" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r educatt3, results="asis", echo = FALSE}
 if("educatt" %in% unlist(outChk)) {
@@ -208,7 +208,7 @@ if("educatt" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("educatt" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r povage1, results="asis",  echo = FALSE}
 if("povage" %in% unlist(outChk)) {
@@ -231,7 +231,7 @@ if("povage" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("povage" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r povage3, results="asis", echo = FALSE}
 if("povage" %in% unlist(outChk)) {
@@ -240,7 +240,7 @@ if("povage" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("povage" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r povagetr1, results="asis",  echo = FALSE}
 if("povagetr" %in% unlist(outChk)) {
@@ -262,7 +262,7 @@ if("povagetr" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("povagetr" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r povagetr3, results="asis", echo = FALSE}
 if("povagetr" %in% unlist(outChk)) {
@@ -271,7 +271,7 @@ if("povagetr" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("povagetr" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r povagedis1, results="asis",  echo = FALSE}
 if("povagedis" %in% unlist(outChk)) {
@@ -295,7 +295,7 @@ if("povagedis" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("povagedis" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r povagedis3, results="asis", echo = FALSE}
 if("povagedis" %in% unlist(outChk)) {
@@ -304,7 +304,7 @@ if("povagedis" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("povagedis" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r hhpov1, results="asis",  echo = FALSE}
 if("hhpov" %in% unlist(outChk)) {
@@ -327,7 +327,7 @@ if("hhpov" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("hhpov" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r hhpov3, results="asis", echo = FALSE}
 if("hhpov" %in% unlist(outChk)) {
@@ -336,7 +336,7 @@ if("hhpov" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("hhpov" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r tenure1, results="asis",  echo = FALSE}
 if("tenure" %in% unlist(outChk)) {
@@ -359,7 +359,7 @@ if("tenure" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("tenure" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r tenure3, results="asis", echo = FALSE}
 if("tenure" %in% unlist(outChk)) {
@@ -368,7 +368,7 @@ if("tenure" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("tenure" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r snap1, results="asis",  echo = FALSE}
 if("snap" %in% unlist(outChk)) {
@@ -391,7 +391,7 @@ if("snap" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("snap" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r snap3, results="asis", echo = FALSE}
 if("snap" %in% unlist(outChk)) {
@@ -400,7 +400,7 @@ if("snap" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("snap" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r wic1, results="asis",  echo = FALSE}
 if("wic" %in% unlist(outChk)) {
@@ -423,7 +423,7 @@ if("wic" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("wic" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r wic3, results="asis", echo = FALSE}
 if("wic" %in% unlist(outChk)) {
@@ -432,14 +432,14 @@ if("wic" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("wic" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r insurance1, results="asis",  echo = FALSE}
 if("insurance" %in% unlist(outChk)) {
     insurance_list <- oObj[[12,1]]
     insurance_table <- insurance_list[[1]]$FlexTable
 
-    cat("### Health Insurance by Source\n")
+    cat("### Health Insurance by Age and Poverty Level\n")
 }
 ```
 
@@ -455,7 +455,7 @@ if("insurance" %in% unlist(outChk)) {
 
 ```
 
-##### PAGE BREAK
+`r if("insurance" %in% unlist(outChk)){"##### PAGE BREAK"}`
 
 ```{r insurance3, results="asis", echo = FALSE}
 if("insurance" %in% unlist(outChk)) {

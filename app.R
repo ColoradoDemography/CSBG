@@ -1,9 +1,10 @@
 #' Community Services Block Grant Dashboard
-#' @author  Adam Bickford, Colorado State Demography Office, October 2019
-#' Release Version 1.0
-
-
+#' @author  Adam Bickford, Colorado State Demography Office, October 2022
+#' Release Version 2.0
+#' 
+#fix Word output, Table layout
 rm(list = ls())
+
 
 library(tidyverse, quietly=TRUE)
 library(readr)
@@ -40,6 +41,7 @@ library(DT)
 library(plotly)
 library(tidycensus)
 library(censusapi)  # Installed 2019
+library(httr)
 
 
 # Additions for Database pool
@@ -85,6 +87,7 @@ source("R/simpleCap.R")
 source("R/snap.R")
 source("R/unemploymentTrend.R")
 source("R/wic.R")
+source("R/pctMOE.R")
 
 
 
@@ -93,11 +96,10 @@ source("R/wic.R")
 # The GLOBAL Variables  Add Additional lists items as sections get defined
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
-# tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
-# tPath <- "C:/Users/adamb/OneDrive/Documents/TempDir"
-
+ tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
+ 
 #Production
- tPath <- "/tmp"  
+# tPath <- "/tmp"  
 
 # Locations for Google Analtyics Java Script Files
 # Local/ Development
@@ -156,7 +158,6 @@ wic11.list <<- list()
 ins12.list <<- list()
 
 
-
 # Structure of user Interface
 ui <-
   dashboardPage( skin="green", 
@@ -164,40 +165,38 @@ ui <-
                  dashboardHeader(title = span(img(src="co_dola__NoText-dept.png", height = 45, align = "top"),"Community Services Block Grant Dashboard"), titleWidth=550), #dashboardHeader
                  dashboardSidebar( width = 300,  useShinyjs(),
                                    # data level Drop down
-                                   selectInput("level", "Select an Agency" ,
+                                   selectInput("level", "Select a CSBG Agency" ,
                                                choices=c("Select an Agency",
-                                                         "Adams County",
-                                                          "Arapahoe County",
-                                                          "Baca County",
-                                                          "Boulder County",
-                                                          "Broomfield, City and County",
-                                                          "Colorado East Community Action Agency",
-                                                          "Delta County",
-                                                          "Denver, City and County",
-                                                          "Douglas County",
-                                                          "Eagle County",
-                                                          "El Paso County",
-                                                          "Garfield County, MCSA",
-                                                          "Gunnison County, MCSA",
-                                                          "Housing Solutions for the Southwest",
-                                                          "Jefferson County, MCSA",
-                                                          "Kiowa County",
-                                                          "Larimer County",
-                                                          "MADA",
-                                                          "Mesa County",
-                                                          "Moffat County United Way",
-                                                          "Mountain Family Center",
-                                                          "Northeastern Colorado Association of Local Governments",
-                                                          "Otero County, MCSA",
-                                                          "Prowers County",
-                                                          "Pueblo County",
-                                                          "Rio Blanco County",
-                                                          "Routt County",
-                                                          "San Luis Valley Community Action Agency",
-                                                          "South Central Council of Governments",
-                                                          "Summit County, MCSA",
-                                                          "Upper Arkansas Area Council of Governments",
-                                                          "Weld County"
+                                                         "Adams County Human Services Department",
+                                                         "Arapahoe County Community Resources",
+                                                         "Baca County Public Health Agency",
+                                                         "Boulder County Community Programs",
+                                                         "Broomfield Health and Human Services",
+                                                         "City and County of Denver Department of Human Services",
+                                                         "Colorado East Community Action Agency",
+                                                         "Delta County Health Department",
+                                                         "Douglas County",
+                                                         "El Paso County",
+                                                         "Garfield County Department of Human Services",
+                                                         "Gunnison County Department of Health and Human Services",
+                                                         "Housing Solutions for the Southwest",
+                                                         "Huerfano Las Animas Area Council of Governments",
+                                                         "Jefferson County",
+                                                         "Kiowa County",
+                                                         "La Puente Housing Inc.",
+                                                         "Larimer County Department of Human Services",
+                                                         "Mesa County Public Health",
+                                                         "Moffat County United Way",
+                                                         "Mountain Family Center",
+                                                         "Northeastern Colorado Association of Local Governments",
+                                                         "Otero County Department of Human Services",
+                                                         "Prowers County",
+                                                         "Pueblo County Department of Housing and Human Services",
+                                                         "Rio Blanco County Department of Human Services",
+                                                         "Routt County Department of Human Services",
+                                                         "Summit County Community and Senior Center",
+                                                         "Upper Arkansas Area Council of Governments",
+                                                         "Weld County Department of Human Services"
                                                           )  #Enabled in V1
                                    ),
                                    #Output Content Checkboxes
@@ -213,7 +212,7 @@ ui <-
                                                                   "Housing Tenure by Poverty Status" = "tenure",
                                                                   "Supplemental Nutrition Assistance Program (SNAP)" = "snap",
                                                                   "Women, Infants and Children (WIC)" = "wic",
-                                                                  "Health Insurance by Source" = "insurance"
+                                                                  "Health Insurance by Age and Poverty Level" = "insurance"
                                                                   
 
                                                       ),
@@ -284,8 +283,8 @@ server <- function(input, output, session) {
   infoSrc[10,2] <- "Eligibility and Participation in the Supplemental Nutrition Assistance Program"
   infoSrc[11,1] <- "<b>Women, Infants and Children (WIC)</b>"
   infoSrc[11,2] <- "Eligibility and Participation in the Women, Infants and Children Program"
-  infoSrc[12,1] <- "<b>Health Insurance by Source</b>"
-  infoSrc[12,2] <- "Health Insurance enrollment by source"
+  infoSrc[12,1] <- "<b>Health Insurance by Age and Poverty Level</b>"
+  infoSrc[12,2] <- "Percent Uninsured by Age and Povety Level using Small Area Health Instuance Estimates (SAHIE) data"
   
   infoTab <-  kable(infoSrc, format='html', table.attr='class="cleanTab"',align='l',linesep = "") %>%
     kable_styling(bootstrap_options ="condensed", full_width = F) %>%
@@ -370,6 +369,7 @@ server <- function(input, output, session) {
         
         #Population by Age  and Age by Poverty Status
         if("age" %in% input$outChk) {
+  
           age_text <- tags$h2("Population by Age")
           age_list <- agePlotPRO2(lvl=input$level,listID=fipslist,ACS=curACS,curYr=curYr)
           
@@ -801,8 +801,8 @@ server <- function(input, output, session) {
        #Supplemental Nutrition Assistance Program (SNAP)
         if("snap" %in% input$outChk) {
           snap_text <- tags$h2("Supplemental Nutrition Assistance Program (SNAP)")
-          snap_list <- snap(DBPool=DOLAPool,lvl=input$level,listID=fipslist,curYR=curYr)
-
+          snap_list <- snap(DBPool=DOLAPool,lvl=input$level,ACS= curACS,listID=fipslist,curYR=curYr)
+    
           outplotsnap <- snap_list$plot
           outtabsnap <- snap_list$table
           outCaption10 <- snap_list$caption
@@ -824,9 +824,9 @@ server <- function(input, output, session) {
 
           
           snap.info <- tags$div(boxContent(title= "Supplemental Nutrition Assistance Program (SNAP)",
-                                              description = "The Supplemental Nutrition Assistance Program (SNAP) Tables display eligibiliity for the Supplemental Nutrition Assistance Program (SNAP) program from Hunger Free Colorado",
+                                              description = "The Supplemental Nutrition Assistance Program (SNAP) Tables display eligibiliity for the Supplemental Nutrition Assistance Program (SNAP) program from ACS Table S2201",
                                               MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
-                                              urlList = list(c("Hunger Free Colorado SNAP Impact Reports","https://www.hungerfreecolorado.org/impact-reports/")) ),
+                                           urlList = list(c("American Community Survey, Table B18131","https://data.census.gov")) ),
                                    tags$br(),
                                    downloadObjUI("snap10tabl"), downloadObjUI("snap10data"))
 
@@ -895,10 +895,11 @@ server <- function(input, output, session) {
         }  
         
         
-        #Health Insurance by Source
+        #Health Insurance by Age and Poverty Level
         if("insurance" %in% input$outChk) {
-          insurance_text <- tags$h2("Health Insurance by Source")
-          insurance_list <- insurance(DBPool=DOLAPool,lvl=input$level,listID=fipslist,curYR=curYr)
+          insurance_text <- tags$h2("Health Insurance by Age and Poverty Level")
+          insurance_list <- insurance(ACS=curACS,lvl=input$level,listID=fipslist,curYR=curYr)
+        
 
           outplotinsurance <- insurance_list$plot
           outtabinsurance <- insurance_list$table
@@ -913,17 +914,17 @@ server <- function(input, output, session) {
           insuranceTabOut <-datatable(outtabinsurance,
                                  container = sketch12,
                                  rownames = FALSE,
-                                 caption = paste0("Health Insurance by Source: ",input$level),
+                                 caption = paste0("Health Insurance by Age and Poverty Level: ",input$level),
                                  options = list(pageLength = 10,
                                                autowidth= TRUE,
                                                columnDefs = list(list(width = '300px', targets = "_all"))))
                                                                  
 
           
-          insurance.info <- tags$div(boxContent(title= "Health Insurance by Source",
-                                              description = "The Health Insurance by Source Tables display Health Insturance by Source data compiled by the Colorado Health Institute",
+          insurance.info <- tags$div(boxContent(title= "Health Insurance by Age and Poverty Level",
+                                              description = "The Health Insurance byAge and Poverty Level displays ther percent uninsured based on data from the Small Area Health Insurance Estiamtes Program (SAHIE)",
                                               MSA= "F", stats = "F", muni = "F", multiCty = "F", PlFilter = "F", 
-                                              urlList = list(c("Coloeado Health Institute Regional Data Workbook","https://www.coloradohealthinstitute.org/data/%7B%22field_category%22:[%2298%22]%7D")) ),
+                                              urlList = list(c("Small Area Health Insurance Estimates Program","https://www.census.gov/programs-surveys/saipe.html")) ),
                                    tags$br(),
                                    downloadObjUI("ins12tabl"), downloadObjUI("ins12data"))
 
@@ -938,7 +939,7 @@ server <- function(input, output, session) {
           #building List
           ins12.list <<- list(insurance.box0, insurance.box1, insurance.box2)
           outputObj[[12,1]] <- list(insurance_list)
-          outputObj[[12,2]] <- list("Health Insurance by Source")
+          outputObj[[12,2]] <- list("Health Insurance by Age and Poverty Level")
           
           incProgress()
         } 
@@ -955,9 +956,9 @@ server <- function(input, output, session) {
         tDir <- dir.create(fullDir) #Setting Temporary Directory location for Reporting
         
         fileMat <- TempFil(fullDir)  
-        
-        x <-  outputWord(input$outChk, fipslist, input$level, outputObj,fileMat)  # x is  a list with nothing in it.
-        shinyjs::show("outputWord")
+      
+      x <-  outputWord(input$outChk, fipslist, input$level, outputObj,fileMat)  # x is  a list with nothing in it.
+       shinyjs::show("outputWord")
         }) #Progress Bar
     }#if input$unit == ""
     
@@ -1067,6 +1068,7 @@ server <- function(input, output, session) {
     }
     
     #Supplemental Nutrition Assistance Program (SNAP)
+
     if("snap" %in% input$outChk) {
     callModule(downloadObj, id = "snap10tabl", input$level,"snap10tabl", snap_list$FlexTable)
     callModule(downloadObj, id = "snap10data", input$level,"snap10data", snap_list$data)
@@ -1078,7 +1080,7 @@ server <- function(input, output, session) {
     callModule(downloadObj, id = "wic11data", input$level,"wic11data", wic_list$data)
     }
     
-    #health Insurance by Source
+    #health Insurance by Age and Poverty Level
     if("insurance" %in% input$outChk) {
     callModule(downloadObj, id = "ins12tabl", input$level,"ins12tabl", insurance_list$FlexTable)
     callModule(downloadObj, id = "ins12data", input$level,"ins12data", insurance_list$data)
