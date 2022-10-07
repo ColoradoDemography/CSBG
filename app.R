@@ -96,7 +96,7 @@ source("R/pctMOE.R")
 # The GLOBAL Variables  Add Additional lists items as sections get defined
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
-# tPath <- "J:/Community Profiles/Shiny Demos/TempDir"  #Development
+# tPath <- "C:/Users/abickford/Documents/TempDir"  #Development
  
 #Production
  tPath <- "/tmp"  
@@ -183,7 +183,8 @@ ui <-
                                                          "Huerfano Las Animas Area Council of Governments",
                                                          "Jefferson County",
                                                          "Kiowa County",
-                                                         "La Puente Housing Inc.",
+                                                         "La Puente Housing Inc. Primary Service Area",
+                                                         "La Puente Housing Inc. Additional Service Area",
                                                          "Larimer County Department of Human Services",
                                                          "Mesa County Public Health",
                                                          "Moffat County United Way",
