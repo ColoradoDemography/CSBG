@@ -3,7 +3,7 @@
 #'  CSBG Dashboard 11/2019 REVISED  9/2022 A. Bickford
 #' @param DBPool the DOLA database pool
 #' @param lvl the selected agency
-#' @param listID is the list of selected GEOID codes
+#' @param listID is the list of selected county codes
 #' @param cyrYr Current year value
 #' @return plotly graphic, data table and data file
 #' @export
@@ -90,6 +90,7 @@ snap <- function(DBPool,lvl,ACS,listID,curYR){
     outCap <- captionSrc("ACS",ACS,"S2201")
     xAxis <- list(title='SNAP Participation')
     yAxis <- list(title = 'Percent',tickformat = ".1%")
+    txtNames <- unique(f.SNAPcty_PL$county)
 
 if(length(ctyfips) > 1 ){
 SNAPPlot <- plot_ly(f.SNAPcty_PL, 
@@ -99,9 +100,9 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
                    transforms = list(
                       list(
                         type = 'filter',
-                        target = ~NAME,
+                        target = ~county,
                         operation = '=',
-                        value = unique(f.SNAPcty_PL$NAME)[1]))) %>%
+                        value = unique(f.SNAPcty_PL$county)[1]))) %>%
  layout( title=grTitle, yaxis = yAxis, xaxis=xAxis,
           showlegend = FALSE, hoverlabel = "right", margin = list(l = 50, r = 50, t = 60, b = 100),  
                       annotations = list(text = outCap,
@@ -110,41 +111,7 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
       list(
         type = 'dropdown',
         active = 0,
-        buttons = list(
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[1]),
-                     label = unique(f.SNAPcty_PL$NAME)[1]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[2]),
-                     label = unique(f.SNAPcty_PL$NAME)[2]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[3]),
-                     label = unique(f.SNAPcty_PL$NAME)[3]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[4]),
-                     label = unique(f.SNAPcty_PL$NAME)[4]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[5]),
-                     label = unique(f.SNAPcty_PL$NAME)[5]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[6]),
-                     label = unique(f.SNAPcty_PL$NAME)[6]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[7]),
-                     label = unique(f.SNAPcty_PL$NAME)[7]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[8]),
-                     label = unique(f.SNAPcty_PL$NAME)[8]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[9]),
-                     label = unique(f.SNAPcty_PL$NAME)[9]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[10]),
-                     label = unique(f.SNAPcty_PL$NAME)[10]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.SNAPcty_PL$NAME)[11]),
-                     label = unique(f.SNAPcty_PL$NAME)[11])
-            )
+        buttons = genDropdown(txtNames)
         )))
 } else {
    SNAPPlot <- plot_ly(f.SNAPcty_PL, 
@@ -166,7 +133,7 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
     f.SNAP_POP$type = "Count"
     f.SNAP_POP <- f.SNAP_POP[,c(1,2,11,3:10)]
     
-    names(f.SNAP_POP)[1:3]<- c("fips", "Agency/County","Value")
+    names(f.SNAP_POP)[1:3]<- c("fips", "Agency/ County","Value")
    
     f.SNAP_PCT <- f.SNAPctyVAL[,c(1,2,11:16)] 
     f.SNAP_PCT[,3:8] <- lapply(f.SNAP_PCT[,3:8], function(x) percent(x * 100))
@@ -181,43 +148,53 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
     names(f.SNAP_PCT)<- names(f.SNAP_POP)
     
 
-    f.SNAPcty_tab <- bind_rows(f.SNAP_PCT, f.SNAP_POP) %>% arrange(fips,desc(Value))
+    f.SNAPcty_tab <- bind_rows(f.SNAP_PCT, f.SNAP_POP) %>% arrange(fips,Value)
     
-     #Clearing GEOID
+     #Clearing county
     if(length(ctyfips) == 1) {
       npanel1 <- 1
     } else {
       npanel1 = length(ctyfips) + 1
     }
     
-    f.SNAPcty_tab <- clrGeoname(f.SNAPcty_tab,"Agency/County",npanel1,2)
-    f.SNAPcty_tab <- f.SNAPcty_tab[,c(2:4,6,8,10)]
-    names(f.SNAPcty_tab) <- c("Agency/County","Value",
-                              "Households in Poverty Estmate", 
-                              "Households Receiving SNAP Benefits Estimate", 
-                              "Households in Poverty Receiving SNAP Benefits Estimate", 
-                              "Households in Poverty Not Receiving SNAP Benefits Estimate")
+    f.SNAPcty_tab <- clrGeoname(f.SNAPcty_tab,"Agency/ County",npanel1,2)
+
+    
 
  # Flex Table
   tab_head <- paste0("Supplemental Nutrition Assistance Program (SNAP) Participation, ",listID$plName1, " ",curYR)
-   
+  col_header <- c("", "","","Households in Poverty", "Households Receiving SNAP Benefits",
+                  "Households in Poverty Receiving SNAP Benefits", "Households in Poverty Not Receiving SNAP Benefits")
+
   f.snapFlex <- flextable(
        f.SNAPcty_tab,
        col_keys = names(f.SNAPcty_tab)) %>%
-       fontsize(size=10, part='all') %>%
-       add_header_row(values=tab_head,colwidths=6) %>%
-       add_footer_row(values=outCap,top=FALSE,colwidths=6) %>%
-       align(j=1:6, align="center", part="header") %>%
-       align(j=1:2, align="left", part="body") %>%
-       align(j=3:6, align="right", part="body") %>%
-       align(j=1, align="left", part="footer") %>%
-       width(j=1, width=2) %>%
-       width(j=2:6,width=1) %>%
+       fontsize(size=9, part='all') %>%
+       add_header_row(value=col_header,colwidths= c(1,1,1,2,2,2,2)) %>%
+       add_header_row(values=tab_head,colwidths=11) %>%
+       set_header_labels(TOT_POV_EST = 'Estimate',
+                         TOT_POV_MOE = 'Margin of Error',
+                         TOT_SNAP_EST = 'Estimate',
+                         TOT_SNAP_MOE = 'Margin of Error',
+                         SNAP_POV_EST = 'Estimate',
+                         SNAP_POV_MOE = 'Margin of Error',
+                         NSNAP_POV_EST = 'Estimate',
+                         NSNAP_POV_MOE = 'Margin of Error') %>%
+       add_footer_row(values=outCap,top=FALSE,colwidths=11) %>%
+       align(i=2:3, j=1:11, align="center", part="header") %>%
+       align(j=1:3, align="left", part="body") %>%
+       align(j=4:11, align="right", part="body") %>%
+       width(j= 1, width=.9) %>%
+       width(j=2:11,width=.9) %>%
        height(part="footer", height=0.4) %>%
        height(part="header",i=2,height=0.6) 
     
 
-  
+  names(f.SNAPcty_tab) <- c("fips", "Agency/ County","Value",
+                            "Households in Poverty Estmate", "Households in Poverty MOE", 
+                            "Households Receiving SNAP Benefits Estimate", "Households Receiving SNAP Benefits MOE",
+                            "Households in Poverty Receiving SNAP Benefits Estimate", "Households in Poverty Receiving SNAP Benefits MOE", 
+                            "Households in Poverty Not Receiving SNAP Benefits Estimate", "Households in Poverty Not Receiving SNAP Benefits MOE" )
   #bind list
   outList <- list("plot"= SNAPPlot, "data" = f.SNAPcty_PL, "table" = f.SNAPcty_tab, "FlexTable" = f.snapFlex,"caption" = outCap)
   

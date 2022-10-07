@@ -17,7 +17,7 @@ captionSrc <- function(type, dataSrc,tab) {
     srcStr <- paste0("State Demography Office and U.S. Bureau of Economic Analysis", dateStr)
   }
   if(type == "SAIPE") {
-    srcStr <- paste0("U.S. Census Bureau Small Area Income and Poverty Estimates (SAIPE) ", dateStr)
+    srcStr <- paste0("U.S. Census Bureau Small Area Income and Poverty Estimates (SAIPE)\n", dateStr)
   }
   if(type == "QCEW") {
     srcStr <- paste0("Department of Labor and Employment (QCEW)", dateStr)

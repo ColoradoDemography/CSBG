@@ -17,7 +17,7 @@ tabTitle <-function(item) {
                      "tenure" = "Housing Tenure by Poverty Status",
                      "snap" = "Supplemental Nutrition Assistance Program (SNAP)",
                      "wic" = "Women, Infants and Children (WIC)",
-                     "insurance" = "Health Insurance by Age and Poverty Level"
+                     "insurance" = "Health Insurance by Source"
                      
 
 )

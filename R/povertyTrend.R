@@ -99,6 +99,7 @@ povertyTrend <- function(lvl,listID,ACS,curYr,censKey){
     outCap <- captionSrc("SAIPE","","")
     xAxis <- list(title = "Age Category")
     yAxis <- list(title = 'Percent',tickformat = ".1%")
+    txtNames <- unique(f.saipecty_PLOT$geoname)
 
 if(length(ctyfips) > 1 ){
 POVPlot <- plot_ly(f.saipecty_PLOT, 
@@ -119,29 +120,7 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
       list(
         type = 'dropdown',
         active = 0,
-        buttons = list(
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[1]),
-                     label = unique(f.saipecty_PLOT$geoname)[1]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[2]),
-                     label = unique(f.saipecty_PLOT$geoname)[2]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[3]),
-                     label = unique(f.saipecty_PLOT$geoname)[3]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[4]),
-                     label = unique(f.saipecty_PLOT$geoname)[4]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[5]),
-                     label = unique(f.saipecty_PLOT$geoname)[5]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[6]),
-                     label = unique(f.saipecty_PLOT$geoname)[6]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.saipecty_PLOT$geoname)[7]),
-                     label = unique(f.saipecty_PLOT$geoname)[7])
-            )
+        buttons = genDropdown(txtNames)
         )))
 } else {
    POVPlot <- plot_ly(f.saipecty_PLOT, 
@@ -175,10 +154,9 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
     f.saipe_PCTW <- gather(f.saipe_PCT,age_cat,value, povpct0517:povpcttot,factor_key=TRUE) %>%
            spread(year,value)
     f.saipe_PCTW$type = "Percentage"
-    
 
-    f.saipecty_tab <- bind_rows(f.saipe_PCTW, f.saipe_POVW, f.saipe_POPW) %>% arrange(fips,type) %>%
-    select (geoname, age_cat, type, "2010" : "2020")
+    f.saipecty_tab <- bind_rows(f.saipe_PCTW, f.saipe_POVW, f.saipe_POPW) %>% arrange(fips,type)
+    f.saipecty_tab <-f.saipecty_tab[,c(2,13,3,4:12)]
     
     f.saipecty_tab$age_cat <- plyr::revalue(f.saipecty_tab$age_cat, 
                   c("povpct0517" = 	"5 to 17",
@@ -202,25 +180,24 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
     f.saipecty_tab <- clrGeoname(f.saipecty_tab,"geoname",npanel1,9)
     f.saipecty_tab <- clrGeoname(f.saipecty_tab,"type",npanel2,3)
     
+    
 
  # Flex Table
   tab_head <- paste0("Percent Below Federal Poverty Level by Age Trend, ",listID$plName1)
   nCols <- ncol(f.saipecty_tab)
-   names(f.saipecty_tab)[1:3] <- c("Agency/County","Age Category", 'Value')
- 
+   names(f.saipecty_tab)[1] <- "Agency/County"
+  names(f.saipecty_tab)[2] <- "Value"
+  names(f.saipecty_tab)[3] <- "Age Category"
   
   f.povFlex <- flextable(
        f.saipecty_tab,
        col_keys = names(f.saipecty_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=nCols) %>%
        add_footer_row(values=captionSrc("SAIPE","",""),top=FALSE,colwidths=nCols) %>%
-       align(j=1:nCols, align="center", part="header") %>%
        align(j=1:2, align="left", part="body") %>%
-       align(j=3:nCols, align="right", part="body") %>%
-       align(j=1, align="left", part="footer") %>%
-       width(j= 1, width=2) %>%
-       width(j=2:3, width=1.1) %>%
-       width(j=4:nCols,width=0.7) %>%
+       width(j= 1, width=3) %>%
+       width(j=2:3, width=1) %>%
+       width(j=4:11,width=0.7) %>%
        height(part="footer", height=0.4) %>%
        height(part="body", height=0.5)
       

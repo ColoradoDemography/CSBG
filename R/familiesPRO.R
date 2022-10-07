@@ -309,6 +309,7 @@ if(length(ctyfips) > 1) {
     outCap <- captionSrc("ACS",ACS,"B17010") 
     xAxis <- list(title = "Family Type")
     yAxis <- list(title = 'Percent',tickformat = ".1%")
+    txtNames <- unique(f.ctyFAML_PLT$geoname)
     
     
  
@@ -338,41 +339,7 @@ if(length(ctyfips) > 1 ){
       list(
         type = 'dropdown',
         active = 0,
-        buttons = list(
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyFAML_PLT$geoname)[1]),
-               label = unique(f.ctyFAML_PLT$geoname)[1]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyFAML_PLT$geoname)[2]),
-               label = unique(f.ctyFAML_PLT$geoname)[2]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyFAML_PLT$geoname)[3]),
-               label = unique(f.ctyFAML_PLT$geoname)[3]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyFAML_PLT$geoname)[4]),
-               label = unique(f.ctyFAML_PLT$geoname)[4]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyFAML_PLT$geoname)[5]),
-               label = unique(f.ctyFAML_PLT$geoname)[5]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyFAML_PLT$geoname)[6]),
-               label = unique(f.ctyFAML_PLT$geoname)[6]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyFAML_PLT$geoname)[7]),
-               label = unique(f.ctyFAML_PLT$geoname)[7]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyFAML_PLT$geoname)[8]),
-               label = unique(f.ctyFAML_PLT$geoname)[8]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyFAML_PLT$geoname)[9]),
-               label = unique(f.ctyFAML_PLT$geoname)[9]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyFAML_PLT$geoname)[10]),
-               label = unique(f.ctyFAML_PLT$geoname)[10]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.ctyFAML_PLT$geoname)[11]),
-               label = unique(f.ctyFAML_PLT$geoname)[11])
-      )
+        buttons = genDropdown(txtNames)
   )))
 } else {
    FAMPLOT <- f.ctyFAML_PLT %>%

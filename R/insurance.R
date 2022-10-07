@@ -130,6 +130,7 @@ f.instotVAL_plot <- inner_join(f.instotVAL_pct_plot,f.instotVAL_cnt_plot, by=c("
     outCap <- captionSrc("SAHIE",curYr,"")
     xAxis <- list(title = "Age Group")
     yAxis <- list(title = 'Percent',tickformat = ".1%")
+    txtNames <- unique(f.instotVAL_plot$NAME)
 
 
 if(length(ctyfips) > 1 ){
@@ -157,41 +158,7 @@ if(length(ctyfips) > 1 ){
                        list(
                          type = 'dropdown',
                          active = 0,
-                         buttons = list(
-                           list(method = "restyle",
-                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[1]),
-                                label = unique(f.instotVAL_plot$NAME)[1]),
-                           list(method = "restyle",
-                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[2]),
-                                label = unique(f.instotVAL_plot$NAME)[2]),
-                           list(method = "restyle",
-                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[3]),
-                                label = unique(f.instotVAL_plot$NAME)[3]),
-                           list(method = "restyle",
-                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[4]),
-                                label = unique(f.instotVAL_plot$NAME)[4]),
-                           list(method = "restyle",
-                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[5]),
-                                label = unique(f.instotVAL_plot$NAME)[5]),
-                           list(method = "restyle",
-                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[6]),
-                                label = unique(f.instotVAL_plot$NAME)[6]),
-                           list(method = "restyle",
-                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[7]),
-                                label = unique(f.instotVAL_plot$NAME)[7]),
-                           list(method = "restyle",
-                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[8]),
-                                label = unique(f.instotVAL_plot$NAME)[8]),
-                           list(method = "restyle",
-                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[9]),
-                                label = unique(f.instotVAL_plot$NAME)[9]),
-                           list(method = "restyle",
-                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[10]),
-                                label = unique(f.instotVAL_plot$NAME)[10]),
-                           list(method = "restyle",
-                                args = list("transforms[0].value", unique(f.instotVAL_plot$NAME)[11]),
-                                label = unique(f.instotVAL_plot$NAME)[11])
-                         )
+                         buttons = genDropdown(txtNames)
                        )))
 } else {
   INSPlot <- f.instotVAL_plot %>%
@@ -255,27 +222,24 @@ for(i in 1:nrow(f.ins_Tab)){
   } 
 }
 
-f.ins_Tab <- f.ins_Tab %>% select(-fips)
-
-names(f.ins_Tab)[1:3] <- c("Agency/County","Age Group","Value")
+names(f.ins_Tab)[2:4] <- c("Agency/County","Age Group","Value")
 
 
 # Flex Table
 tab_head <- paste0("Uninsured by Age and Poverty Level, ",listID$plName1, " ",curYR)
-col_header <- c( "","","", "Poverty Level")
+col_header <- c("", "","","", "Poverty Level")
 
 f.insFlex <- flextable(
   f.ins_Tab,  col_keys = names( f.ins_Tab)) %>%
-  fontsize(size=10, part='all') %>%
-  add_header_row(value=col_header,colwidths= c(1,1,1,2)) %>%
-  add_header_row(values=tab_head,colwidths=5) %>%
-  add_footer_row(values=outCap,top=FALSE,colwidths=5) %>%
-  align(j=1:5, align="center", part="header") %>%
-  align(j=1:3, align="left", part="body") %>%
-  align(j=4:5, align="right", part="body") %>%
-  align(j=1,align="left", part="footer") %>%
-  width(j=1, width=.9) %>%
-  width(j=2:5,width=1.2) %>%
+  fontsize(size=9, part='all') %>%
+  add_header_row(value=col_header,colwidths= c(1,1,1,1,2)) %>%
+  add_header_row(values=tab_head,colwidths=6) %>%
+ add_footer_row(values=outCap,top=FALSE,colwidths=6) %>%
+  #align(i=1:2, j=1:6, align="center", part="header") %>%
+  align(j=1:4, align="left", part="body") %>%
+  align(j=5:6, align="right", part="body") %>%
+  width(j= 1, width=.9) %>%
+  width(j=2:6,width=1.2) %>%
   height(part="footer", height=0.4) %>%
   height(part="header",i=2,height=0.6)
 

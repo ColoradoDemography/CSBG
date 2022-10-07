@@ -161,7 +161,7 @@ agePlotPRO2  <- function(lvl,listID,ACS,curYr) {
   grTitle <- paste0("Population by Age, ",listID$plName1)
   xAxis <- list(title='Age Category')
   yAxis <- list(title = 'Percent',tickformat = ".1%")
-  
+  txtNames <- unique(f.place$geoname)
 
 if(length(ctyfips) > 1 ){
  AgePlot <- f.place %>%
@@ -187,43 +187,8 @@ if(length(ctyfips) > 1 ){
       list(
         type = 'dropdown',
         active = 0,
-        buttons = list(
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.place$geoname)[1]),
-               label = unique(f.place$geoname)[1]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.place$geoname)[2]),
-               label = unique(f.place$geoname)[2]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.place$geoname)[3]),
-               label = unique(f.place$geoname)[3]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.place$geoname)[4]),
-               label = unique(f.place$geoname)[4]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.place$geoname)[5]),
-               label = unique(f.place$geoname)[5]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.place$geoname)[6]),
-               label = unique(f.place$geoname)[6]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.place$geoname)[7]),
-               label = unique(f.place$geoname)[7]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.place$geoname)[8]),
-               label = unique(f.place$geoname)[8]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.place$geoname)[9]),
-               label = unique(f.place$geoname)[9]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.place$geoname)[10]),
-               label = unique(f.place$geoname)[10]),
-          list(method = "restyle",
-               args = list("transforms[0].value", unique(f.place$geoname)[11]),
-               label = unique(f.place$geoname)[11])
-        )
-      )
-  ))
+        buttons = genDropdown(txtNames)
+        )))
 } else {
    AgePlot <- f.place %>%
   plot_ly(
@@ -259,18 +224,15 @@ f.place_tab <- clrGeoname( f.place_tab,"County",npanel1,2)
  
  tab_head <- paste0("Population by Age, ",listID$plName1)
 
-
+ 
  f.flexage <- flextable(
        f.place_tab,
        col_keys = names(f.place_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
-       add_footer_row(values=outCap, colwidths=7) %>%
-       align(j=1:7, align="center", part="header") %>%
+       add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
        align(j=1:2, align="left", part="body") %>%
-       align(j=3:7, align="right", part="body") %>%
-       align(j=1,align="left", part="footer") %>%
-       width(j=1:2, width=3) %>%
-       width(j=3:7,width=0.75) %>%
+       width(j= 1, width=3) %>%
+       width(j=2:7,width=0.75) %>%
        height(part="footer", height=0.4)
  
  

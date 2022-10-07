@@ -73,6 +73,7 @@ wic <- function(DBPool,lvl,listID,curYR){
     outCap <- captionSrc("WIC","","")
     xAxis <- list(title = "Participation")
     yAxis <- list(title = 'Percent',tickformat = ".1%")
+    txtNames <- unique(f.WICcty_PL$county)
 
 
 if(length(ctyfips) > 1 ){
@@ -94,41 +95,7 @@ WICPlot <- plot_ly(f.WICcty_PL,
       list(
         type = 'dropdown',
         active = 0,
-        buttons = list(
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[1]),
-                     label = unique(f.WICcty_PL$county)[1]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[2]),
-                     label = unique(f.WICcty_PL$county)[2]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[3]),
-                     label = unique(f.WICcty_PL$county)[3]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[4]),
-                     label = unique(f.WICcty_PL$county)[4]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[5]),
-                     label = unique(f.WICcty_PL$county)[5]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[6]),
-                     label = unique(f.WICcty_PL$county)[6]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[7]),
-                     label = unique(f.WICcty_PL$county)[7]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[8]),
-                     label = unique(f.WICcty_PL$county)[8]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[9]),
-                     label = unique(f.WICcty_PL$county)[9]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[10]),
-                     label = unique(f.WICcty_PL$county)[10]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.WICcty_PL$county)[11]),
-                     label = unique(f.WICcty_PL$county)[11])              
-            )
+        buttons = genDropdown(txtNames)
         )))
 } else {
    WICPlot <- plot_ly(f.WICcty_PL, 
@@ -187,11 +154,8 @@ WICPlot <- plot_ly(f.WICcty_PL,
        col_keys = names(f.WICcty_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=5) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=5) %>%
-       align(j=1:5, align="center", part="header") %>%
        align(j=1:2, align="left", part="body") %>%
-       align(j=3:5, align="right", part="body") %>%
-       align(j=1, align="left", part="footer") %>%
-       width(j=1, width=3) %>%
+       width(j= 1, width=3) %>%
        width(j=2:5,width=1) %>%
        height(part="footer", height=0.4) %>%
        height(part="header",i=2,height=0.6)

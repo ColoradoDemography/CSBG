@@ -88,6 +88,7 @@ f.unemploycty$geoname <- sub(", CO","",f.unemploycty$geoname)
     xAxis <- list("tickformat"= "%B, %Y", "tickmode"= "auto", "nticks" = 14,
                   "tick0" = f.unemploycty_PLOT[3,1], title = "Date")
     yAxis <- list(title = 'Percent',tickformat = ".1%")
+    txtNames <- unique(f.unemploycty_PLOT$geoname)
 
 if(length(ctyfips) > 1 ){
 UNEMPPlot <- plot_ly(f.unemploycty_PLOT, 
@@ -108,41 +109,7 @@ UNEMPPlot <- plot_ly(f.unemploycty_PLOT,
       list(
         type = 'dropdown',
         active = 0,
-        buttons = list(
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.unemploycty_PLOT$geoname)[1]),
-                     label = unique(f.unemploycty_PLOT$geoname)[1]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.unemploycty_PLOT$geoname)[2]),
-                     label = unique(f.unemploycty_PLOT$geoname)[2]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.unemploycty_PLOT$geoname)[3]),
-                     label = unique(f.unemploycty_PLOT$geoname)[3]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.unemploycty_PLOT$geoname)[4]),
-                     label = unique(f.unemploycty_PLOT$geoname)[4]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.unemploycty_PLOT$geoname)[5]),
-                     label = unique(f.unemploycty_PLOT$geoname)[5]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.unemploycty_PLOT$geoname)[6]),
-                     label = unique(f.unemploycty_PLOT$geoname)[6]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.unemploycty_PLOT$geoname)[7]),
-                     label = unique(f.unemploycty_PLOT$geoname)[7]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.unemploycty_PLOT$geoname)[8]),
-                     label = unique(f.unemploycty_PLOT$geoname)[8]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.unemploycty_PLOT$geoname)[9]),
-                     label = unique(f.unemploycty_PLOT$geoname)[9]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.unemploycty_PLOT$geoname)[10]),
-                     label = unique(f.unemploycty_PLOT$geoname)[10]),
-                list(method = "restyle",
-                     args = list("transforms[0].value", unique(f.unemploycty_PLOT$geoname)[11]),
-                     label = unique(f.unemploycty_PLOT$geoname)[11])
-            )
+        buttons = genDropdown(txtNames)
         )))
 } else {
    UNEMPPlot <- plot_ly(f.unemploycty_PLOT, 
@@ -186,13 +153,10 @@ UNEMPPlot <- plot_ly(f.unemploycty_PLOT,
        set_header_labels(geoname = "Agency/County", date= "Month") %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=4) %>%
        add_footer_row(values=captionSrc("BLS","",""),top=FALSE,colwidths=4) %>%
-       align(j=1:4, align="center",part="header") %>%
        align(j=1:2, align="left", part="body") %>%
-       align(j=3:4, align="right", part="body") %>%
-       align(j=1, align="left", part="footer") %>%
-       width(j=1, width=3) %>%
+       width(j= 1, width=3) %>%
        width(j=2, width=2) %>%
-       width(j=3:4,width=1.25) %>%
+       width(j=3:4,width=1) %>%
        height(part="footer", height=0.4) %>%
        height(part="body", height=0.5)
       

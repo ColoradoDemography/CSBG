@@ -1,8 +1,22 @@
-genDropdown <- function(ctyfips, NameVar) {
-  outlist <- "list("
-  for(i in 1:length(ctyfips)) {
-    outlist <- paste0(outlist, 'list(method = "restyle", args = list("transforms[0].value", unique(',NameVar,')[',i,']),label = unique(',NameVar,')[',i,']),')
+# genDropdown populates the a dropdown list based on the number of 
+# elements in the NameList parameter
+#Creates a dynamic set of dropdowns
+
+genDropdown <- function(NameList) {
+  outlist <- list(list(
+    method = "restyle", 
+    args=list("transforms[0].value", NameList[1]),
+    label = NameList[1]
+  ))
+  
+  for(i in 2:length(NameList)) {
+    item <- list(list(
+      method = "restyle", 
+      args=list("transforms[0].value", NameList[i]),
+      label = NameList[i]
+    ))
+    outlist <- c(outlist,item)
   }
-  outlist <- paste0(substr(outlist,1,nchar(outlist)-1),")")
+  
   return(outlist)
 }
