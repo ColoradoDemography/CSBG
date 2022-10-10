@@ -164,7 +164,8 @@ SNAPPlot <- plot_ly(f.SNAPcty_PL,
        align(i=2:3, j=1:5, align="center", part="header") %>%
        align(j=1:2, align="left", part="body") %>%
        align(j=3:5, align="right", part="body") %>%
-       width(j= 1:5, width=1) %>%
+       width(j=1, width=3) %>%
+       width(j= 2:5, width=1) %>%
        height(part="footer", height=0.4) %>%
        height(part="header",i=2,height=0.6) 
     

@@ -425,7 +425,9 @@ if(length(ctyfips) > 1 ){
        col_keys = names(f.ctyFAM_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
-       align(j=1:2, align="left", part="body") %>%
+       align(j=1:7, align="center", part="header") %>%
+       align(j=1:3, align="left", part="body") %>%
+       align(j=4:7, align="right", part="body") %>%
        width(j= 1, width=3) %>%
        width(j=2:3, width=1.6) %>%
        width(j=4, width=1) %>%

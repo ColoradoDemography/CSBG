@@ -123,10 +123,14 @@ UNEMPPlot <- plot_ly(f.unemploycty_PLOT,
 }
     
 # Creating Table data file
-    f.unemploy_tab <- f.unemploycty_PLOT[,c(2,3,7,6)] 
-    f.unemploy_tab$date <- format(f.unemploy_tab$date, "%B, %Y")
-    f.unemploy_tab$UNEMP <- NumFmt(f.unemploy_tab$UNEMP)
-    f.unemploy_tab$UNEMPRATE <- percent(f.unemploy_tab$UNEMPRATE * 100)
+ 
+    f.unemploy_tab <- f.unemploycty %>% 
+      arrange(fips, date) %>% 
+      mutate(date = format(date, "%B, %Y"),
+             UNEMP = NumFmt(UNEMP),
+             UNEMPRATE = percent(UNEMPRATE * 100)) %>%
+      select(geoname, date, UNEMPRATE, UNEMP)
+  
     names(f.unemploy_tab)[3] <- "Unemployment Rate"
     names(f.unemploy_tab)[4] <- "Unemployment"
     
@@ -153,10 +157,12 @@ UNEMPPlot <- plot_ly(f.unemploycty_PLOT,
        set_header_labels(geoname = "Agency/County", date= "Month") %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=4) %>%
        add_footer_row(values=captionSrc("BLS","",""),top=FALSE,colwidths=4) %>%
+       align(j=1:4, align="center",part="header") %>%
        align(j=1:2, align="left", part="body") %>%
+       align(j=3:4, align="right", part="body") %>%
        width(j= 1, width=3) %>%
        width(j=2, width=2) %>%
-       width(j=3:4,width=1) %>%
+       width(j=3:4,width=1.5) %>%
        height(part="footer", height=0.4) %>%
        height(part="body", height=0.5)
       

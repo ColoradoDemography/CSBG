@@ -203,7 +203,9 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
        col_keys = names(f.saipecty_tabW)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=5) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=5) %>%
+       align(j=1:5, align="center", part="header") %>%
        align(j=1:2, align="left", part="body") %>%
+       align(j=3:5, align="right", part="body") %>%
        width(j= 1, width=3) %>%
        width(j=2, width=1.8) %>%
        width(j=3:5,width=1) %>%

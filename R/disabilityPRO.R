@@ -315,10 +315,12 @@ if(length(ctyfips) > 1 ){
        col_keys = names(f.ctyDIS_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=6) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=6) %>%
+       align(j=1:6, align="center", part="header") %>%
        align(j=1:2, align="left", part="body") %>%  
+       align(j=3:6, align="right",part="body") %>%
        width(j= 1, width=3) %>%
-       width(j=2, width=1.1) %>%
-       width(j=3:6,width=0.75) %>%
+       width(j=2:3, width=1.1) %>%
+       width(j=4:6,width=0.75) %>%
        height(part="footer", height=0.4) %>%
        height(part="header",i=2,height=0.8)
  

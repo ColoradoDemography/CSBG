@@ -256,7 +256,9 @@ EDUCPlot <- f.educctyPlot %>%
        col_keys = names(f.educctyTab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=8) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=8) %>%
-       align(j=1:2, align="left", part="body") %>%
+       align(j=1:7,align="center",part="header") %>%
+       align(j=1:3, align="left", part="body") %>%
+       align(j=4:7, align="right", part="body") %>%
        width(j= 1, width=3) %>%
        width(j=2,width=1.5) %>%
        width(j=3:7,width=1) %>%

@@ -231,11 +231,10 @@ col_header <- c("", "","","", "Poverty Level")
 
 f.insFlex <- flextable(
   f.ins_Tab,  col_keys = names( f.ins_Tab)) %>%
-  fontsize(size=9, part='all') %>%
   add_header_row(value=col_header,colwidths= c(1,1,1,1,2)) %>%
   add_header_row(values=tab_head,colwidths=6) %>%
- add_footer_row(values=outCap,top=FALSE,colwidths=6) %>%
-  #align(i=1:2, j=1:6, align="center", part="header") %>%
+  add_footer_row(values=outCap,top=FALSE,colwidths=6) %>%
+  align(j=1:6, align="center", part="header") %>%
   align(j=1:4, align="left", part="body") %>%
   align(j=5:6, align="right", part="body") %>%
   width(j= 1, width=.9) %>%

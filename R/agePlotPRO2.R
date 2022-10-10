@@ -148,12 +148,13 @@ agePlotPRO2  <- function(lvl,listID,ACS,curYr) {
     f.place_tab <- bind_rows(f.place_pct,f.place_pop)
     f.place_tab <- f.place_tab %>% arrange(county,desc(type))
     f.place_tab <- f.place_tab[,c(1,8,3:7)]
-    
-     names(f.place_tab)[1] <- "County"
-      names(f.place_tab)[2] <- "Type"
-    f.place_tab$County <- ifelse(f.place_tab$Type == "Count", "",f.place_tab$County)
-   
  
+    names(f.place_tab)[1] <- "County"
+      names(f.place_tab)[2] <- "Value"
+    f.place_tab$County <- ifelse(f.place_tab$Value == "Count", "",f.place_tab$County)
+    
+    names(f.place_tab)[1] <- "Agency/County" 
+    
   #Preparing Plot
   f.place <- f.place[which(f.place$age_cat != "Total"),] %>% arrange(county)
   f.place$age_pct <- round(f.place$age_pct, digits = 3)
@@ -219,9 +220,9 @@ if(length(ctyfips) > 1 ){
     } else {
       npanel1 = length(ctyfips) + 1
     }
- 
-f.place_tab <- clrGeoname( f.place_tab,"County",npanel1,2)
- 
+
+f.place_tab <- clrGeoname( f.place_tab,"Agency/County",npanel1,2)
+
  tab_head <- paste0("Population by Age, ",listID$plName1)
 
  
@@ -230,9 +231,11 @@ f.place_tab <- clrGeoname( f.place_tab,"County",npanel1,2)
        col_keys = names(f.place_tab)) %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=7) %>%
        add_footer_row(values=outCap,top=FALSE,colwidths=7) %>%
+       align(j=1:7, align="center",part="header") %>%
        align(j=1:2, align="left", part="body") %>%
+       align(j=3:7, align="right",part="body") %>%
        width(j= 1, width=3) %>%
-       width(j=2:7,width=0.75) %>%
+       width(j=2:7,width=1) %>%
        height(part="footer", height=0.4)
  
  

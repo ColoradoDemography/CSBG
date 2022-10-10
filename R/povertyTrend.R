@@ -155,8 +155,10 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
            spread(year,value)
     f.saipe_PCTW$type = "Percentage"
 
-    f.saipecty_tab <- bind_rows(f.saipe_PCTW, f.saipe_POVW, f.saipe_POPW) %>% arrange(fips,type)
-    f.saipecty_tab <-f.saipecty_tab[,c(2,13,3,4:12)]
+    f.saipecty_tab <- bind_rows(f.saipe_PCTW, f.saipe_POVW, f.saipe_POPW) %>% arrange(fips,type) %>%
+       select("geoname", "type", "age_cat",  "2010" : "2020")
+   
+    
     
     f.saipecty_tab$age_cat <- plyr::revalue(f.saipecty_tab$age_cat, 
                   c("povpct0517" = 	"5 to 17",
@@ -183,6 +185,7 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
     
 
  # Flex Table
+
   tab_head <- paste0("Percent Below Federal Poverty Level by Age Trend, ",listID$plName1)
   nCols <- ncol(f.saipecty_tab)
    names(f.saipecty_tab)[1] <- "Agency/County"
@@ -192,12 +195,13 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
   f.povFlex <- flextable(
        f.saipecty_tab,
        col_keys = names(f.saipecty_tab)) %>%
+       fontsize(size=10, part="all") %>%
        add_header_row(values=tab_head,top=TRUE,colwidths=nCols) %>%
        add_footer_row(values=captionSrc("SAIPE","",""),top=FALSE,colwidths=nCols) %>%
        align(j=1:2, align="left", part="body") %>%
-       width(j= 1, width=3) %>%
+       width(j= 1, width=2) %>%
        width(j=2:3, width=1) %>%
-       width(j=4:11,width=0.7) %>%
+       width(j=4:11,width=0.6) %>%
        height(part="footer", height=0.4) %>%
        height(part="body", height=0.5)
       
