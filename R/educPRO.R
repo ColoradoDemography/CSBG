@@ -118,18 +118,18 @@ educPRO <- function(lvl,listID, ACS,curYr){
 
  f.educctyPCT <- bind_rows(f.educctyPovP,f.educctyTotP)  %>% arrange(as.numeric(county))
  f.educctyPCT <- f.educctyPCT[which(f.educctyPCT$educatt != "TOT"),] 
-
+ 
  f.educctyPlot <- inner_join(f.educctyPCT,f.educctyCNT[,2:6],by=c("county","educatt","lvl"))
  
-  f.educctyPlot$educatt <- plyr::revalue(f.educctyPlot$educatt,  c("LTHS"="Less Than High School",
-                         "HSGRAD" = "High School Graduate",
-                         "COLL" = "Some College, Associates Degree",
-                         "BA" = "Bachelor's Degree or Higher"))
+  f.educctyPlot$educatt <- plyr::revalue(f.educctyPlot$educatt,  c("LTHS"="Less Than\nHigh School",
+                         "HSGRAD" = "High School\nGraduate",
+                         "COLL" = "Some College,\nAssociates\nDegree",
+                         "BA" = "Bachelor's Degree\nor Higher"))
   
- f.educctyPlot$educatt <-  factor(f.educctyPlot$educatt, levels=c("Less Than High School",
-                 "High School Graduate",
-                  "Some College, Associates Degree",
-                    "Bachelor's Degree or Higher")) 
+ f.educctyPlot$educatt <-  factor(f.educctyPlot$educatt, levels=c("Less Than\nHigh School",
+                 "High School\nGraduate",
+                  "Some College,\nAssociates\nDegree",
+                    "Bachelor's Degree\nor Higher")) 
   
  f.educctyPlot$lvl <- ifelse(f.educctyPlot$lvl == "POV","Persons Below FPL","All Persons")
  f.educctyPlot$lvl <- factor(f.educctyPlot$lvl, levels = c("Persons Below FPL","All Persons"))
