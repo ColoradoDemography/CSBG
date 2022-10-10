@@ -96,10 +96,10 @@ source("R/pctMOE.R")
 # The GLOBAL Variables  Add Additional lists items as sections get defined
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
-# tPath <- "C:/Users/abickford/Documents/TempDir"  #Development
+tPath <- "C:/Users/abickford/Documents/TempDir"  #Development
  
 #Production
- tPath <- "/tmp"  
+# tPath <- "/tmp"  
 
 # Locations for Google Analtyics Java Script Files
 # Local/ Development
@@ -176,6 +176,7 @@ ui <-
                                                          "Colorado East Community Action Agency",
                                                          "Delta County Health Department",
                                                          "Douglas County",
+                                                         "Eagle County",
                                                          "El Paso County",
                                                          "Garfield County Department of Human Services",
                                                          "Gunnison County Department of Health and Human Services",
@@ -183,11 +184,11 @@ ui <-
                                                          "Huerfano Las Animas Area Council of Governments",
                                                          "Jefferson County",
                                                          "Kiowa County",
-                                                         "La Puente Housing Inc. Primary Service Area",
-                                                         "La Puente Housing Inc. Additional Service Area",
+                                                         "La Puente Housing Inc.",
                                                          "Larimer County Department of Human Services",
                                                          "Mesa County Public Health",
                                                          "Moffat County United Way",
+                                                         "Montrose, Ouray, and San Miguel Counties",
                                                          "Mountain Family Center",
                                                          "Northeastern Colorado Association of Local Governments",
                                                          "Otero County Department of Human Services",
