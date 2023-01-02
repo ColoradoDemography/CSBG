@@ -10,7 +10,10 @@
 #' @export
 
 insurance <- function(ACS,lvl,listID,curYR){
-
+browser()
+  
+  # Correcting for 2021 data not being released
+  curYR <- curYR - 1
   # Collecting List of Counties
 
   ctyfips <- str_sub(listID$list1,3,5)
@@ -20,11 +23,13 @@ insurance <- function(ACS,lvl,listID,curYR){
 # Extracting ins data
   APIurl <- paste0("https://api.census.gov/data/timeseries/healthins/sahie?get=",
                    "NAME,NIPR_PT,NIC_PT,NUI_PT",
-                   "&for=county:*&in=state:08&SEXCAT=0&YEAR=", curYr, 
+                   "&for=county:*&in=state:08&SEXCAT=0&time=", curYR, 
                    "&AGECAT=0,1&IPRCAT=0,1&key=",censAPI)
+  
   
   res = GET(APIurl)
   f.data <- as.data.frame(fromJSON(rawToChar(res$content)))
+  
   names(f.data) <- f.data[1,]
   
   f.instotcty <-  f.data %>% filter(county %in% ctyfips) %>%
@@ -127,7 +132,7 @@ f.instotVAL_plot <- inner_join(f.instotVAL_pct_plot,f.instotVAL_cnt_plot, by=c("
     f.instotVAL_plot$indText  <- paste0(f.instotVAL_plot$NAME," Uninsured: \n",f.instotVAL_plot$AGE,"\n", 
                                             f.instotVAL_plot$POV,"\nPercent: ", percent(f.instotVAL_plot$PCT * 100)," Count: ",NumFmt(f.instotVAL_plot$COUNT))  
     grTitle <- paste0("Percent Uninsured by Age and Poverty Level,\n",listID$plName1," ",curYR)
-    outCap <- captionSrc("SAHIE",curYr,"")
+    outCap <- captionSrc("SAHIE",curYR,"")
     xAxis <- list(title = "Age Group")
     yAxis <- list(title = 'Percent',tickformat = ".1%")
     txtNames <- unique(f.instotVAL_plot$NAME)
