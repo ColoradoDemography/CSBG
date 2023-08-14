@@ -11,7 +11,7 @@
 
 insurance <- function(ACS,lvl,listID,curYR,censAPI){
 
-  browser()
+  
   # Correcting for 2021 data not being released
  # curYR <- curYR - 1
   # Collecting List of Counties
