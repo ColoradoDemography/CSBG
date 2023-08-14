@@ -11,9 +11,9 @@
 
 insurance <- function(ACS,lvl,listID,curYR,censAPI){
 
-  
+  browser()
   # Correcting for 2021 data not being released
-  curYR <- curYR - 1
+ # curYR <- curYR - 1
   # Collecting List of Counties
 
   ctyfips <- str_sub(listID$list1,3,5)
@@ -22,18 +22,18 @@ insurance <- function(ACS,lvl,listID,curYR,censAPI){
   
 # Extracting ins data
   APIurl <- paste0("https://api.census.gov/data/timeseries/healthins/sahie?get=",
-                   "NAME,NIPR_PT,NIC_PT,NUI_PT",
+                   "NAME,NIPR_PT,NIC_PT,NUI_PT,IPRCAT,AGECAT",
                    "&for=county:*&in=state:08",
-                   "&SEXCAT=0&AGECAT=0,1&IPRCAT=0",
                    "&time=",curYR,"&key=",censAPI)
   
   
-  res = GET(APIurl)
-  f.data <- as.data.frame(fromJSON(rawToChar(res$content)))
+ 
+  f.data <- fromJSON(APIurl) %>% as.data.frame 
   
   names(f.data) <- f.data[1,]
   
-  f.instotcty <-  f.data %>% filter(county %in% ctyfips) %>%
+  f.instotcty <-  f.data %>% filter(county %in% ctyfips) %>% 
+       filter(IPRCAT %in% c("0","1")) %>% filter(AGECAT %in% c("0","1")) %>%
     select(county, AGECAT,IPRCAT,NIPR_PT,NIC_PT,NUI_PT) 
   f.instotcty[,2:6]  <- sapply(f.instotcty[,2:6], as.numeric )
 
