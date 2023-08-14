@@ -24,7 +24,7 @@ insurance <- function(ACS,lvl,listID,curYR){
   APIurl <- paste0("https://api.census.gov/data/timeseries/healthins/sahie?get=",
                    "NAME,NIPR_PT,NIC_PT,NUI_PT",
                    "&for=county:*&in=state:08",
-                   "&SEXCAT=0&AGECAT=0,1&IPRCAT=0,1",
+                   "&SEXCAT=0&AGECAT=0,1&IPRCAT=0",
                    "&time=",curYR,"&key=",censAPI)
   
   
