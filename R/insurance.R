@@ -10,7 +10,7 @@
 #' @export
 
 insurance <- function(ACS,lvl,listID,curYR){
-browser()
+
   
   # Correcting for 2021 data not being released
   curYR <- curYR - 1
@@ -23,8 +23,9 @@ browser()
 # Extracting ins data
   APIurl <- paste0("https://api.census.gov/data/timeseries/healthins/sahie?get=",
                    "NAME,NIPR_PT,NIC_PT,NUI_PT",
-                   "&for=county:*&in=state:08&SEXCAT=0&time=", curYR, 
-                   "&AGECAT=0,1&IPRCAT=0,1&key=",censAPI)
+                   "&for=county:*&in=state:08",
+                   "&SEXCAT=0&AGECAT=0,1&IPRCAT=0,1",
+                   "&time=",curYR,"&key=",censAPI)
   
   
   res = GET(APIurl)
