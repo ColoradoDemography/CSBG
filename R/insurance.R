@@ -9,7 +9,7 @@
 #' @return plotly graphic, data table and data file
 #' @export
 
-insurance <- function(ACS,lvl,listID,curYR){
+insurance <- function(ACS,lvl,listID,curYR,censAPI){
 
   
   # Correcting for 2021 data not being released
