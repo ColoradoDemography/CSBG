@@ -108,8 +108,8 @@ source("R/pctMOE.R")
 # tagManJS <- "J:/Community Profiles/Shiny Demos/codemogLib/www/tag_manager.js"
 
 #Production
-# initJS <- "/srv/shiny-server/ProfileDashboard2/www/dL_init.js"
-# tagManJS <- "/srv/shiny-server/ProfileDashboard2/www/tag_manager.js"
+ initJS <- "/srv/shiny-server/ProfileDashboard2/www/dL_init.js"
+ tagManJS <- "/srv/shiny-server/ProfileDashboard2/www/tag_manager.js"
 
 
 # Set up database pool 1/23/19
