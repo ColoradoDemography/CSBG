@@ -29,7 +29,6 @@ listTofips <- function(value1,inlist2,value2){
                              "Huerfano Las Animas Area Council of Governments" =  c("08055", "08071"),
                              "Jefferson County" =  c("08059", "08093", "08119"),
                              "Kiowa County" =  c("08061"),
-                             "La Puente Housing Inc." =  c("08003", "08021", "08023", "08079", "08105", "08109"),
                              "Larimer County Department of Human Services" =  c("08069"),
                              "Mesa County Public Health" =  c("08077"),
                              "Moffat County United Way" =  c("08081"),
@@ -41,6 +40,7 @@ listTofips <- function(value1,inlist2,value2){
                              "Pueblo County Department of Housing and Human Services" =  c("08101"),
                              "Rio Blanco County Department of Human Services" =  c("08103"),
                              "Routt County Department of Human Services" =  c("08107"),
+                             "SLV Community Solutions" =  c("08003", "08021", "08023", "08079", "08105", "08109"),
                              "Summit County Community and Senior Center" =  c("08019", "08047", "08117"),
                              "Upper Arkansas Area Council of Governments" =  c("08015", "08027", "08043", "08065"),
                              "Weld County Department of Human Services" =  c("08123")
