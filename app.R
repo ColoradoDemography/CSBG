@@ -184,7 +184,6 @@ ui <-
                                                          "Huerfano Las Animas Area Council of Governments",
                                                          "Jefferson County",
                                                          "Kiowa County",
-                                                         "La Puente Housing Inc.",
                                                          "Larimer County Department of Human Services",
                                                          "Mesa County Public Health",
                                                          "Moffat County United Way",
@@ -196,6 +195,7 @@ ui <-
                                                          "Pueblo County Department of Housing and Human Services",
                                                          "Rio Blanco County Department of Human Services",
                                                          "Routt County Department of Human Services",
+                                                         "SLV Community Solutions",
                                                          "Summit County Community and Senior Center",
                                                          "Upper Arkansas Area Council of Governments",
                                                          "Weld County Department of Human Services"
