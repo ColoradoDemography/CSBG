@@ -17,12 +17,12 @@ unemploymentTrend <- function(lvl,listID,curYr){
  
 
 # reading data series and selecting counties
-
- f.unempl_raw <- readLines("https://www.bls.gov/web/metro/laucntycur14.txt")
+browser()
+ f.unempl_raw <- readLines("./data/laucntycur14.txt")
 
  unemplen <- length(f.unempl_raw) - 12
 
-f.unemploy <- read_delim("https://www.bls.gov/web/metro/laucntycur14.txt", delim="|",  
+f.unemploy <- read_delim("./data/laucntycur14.txt", delim="|",  
                          col_names=FALSE, skip=6, n_max=unemplen, trim_ws = TRUE)
 
 
