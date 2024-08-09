@@ -8,8 +8,9 @@
 
 povertyTrend <- function(lvl,listID,ACS,curYr,censKey){
 
+  yrval10 <- curYr - 10
   # Collecting List of Counties
-  timeSTR <- paste0("from ", curYr - 10," to ", curYr)
+  timeSTR <- paste0("from ", yrval10," to ", curYr)
 
  
   ctyfips <- as.numeric(substr(listID$list1,3,5))
@@ -156,8 +157,8 @@ POVPlot <- plot_ly(f.saipecty_PLOT,
            spread(year,value)
     f.saipe_PCTW$type = "Percentage"
 
-    f.saipecty_tab <- bind_rows(f.saipe_PCTW, f.saipe_POVW, f.saipe_POPW) %>% arrange(fips,type) %>%
-       select("geoname", "type", "age_cat",  "2011" : "2021")
+    f.saipecty_tab <- bind_rows(f.saipe_PCTW, f.saipe_POVW, f.saipe_POPW) %>% arrange(fips,type) 
+    f.saipecty_tab <- f.saipecty_tab[,c(15,2:14)]
    
     
     

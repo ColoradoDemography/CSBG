@@ -11,11 +11,10 @@
 
 insurance <- function(ACS,lvl,listID,curYR,censAPI){
 
-  
-  # Correcting for 2021 data not being released
- # curYR <- curYR - 1
+ 
+  # Correcting for 2022 data not being released
+  #curYR <- curYR - 1
   # Collecting List of Counties
-
   ctyfips <- str_sub(listID$list1,3,5)
   f.ctyNames <- data.frame(str_sub(listID$list2,3,5),listID$plName2)
   names(f.ctyNames) <- c("fips", "NAME")

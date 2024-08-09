@@ -4,8 +4,10 @@
 #' @return Matrix of filename vectors
 #' @export
 
-TempFil <- function(oDir) {
-  oMatrix <- matrix(data=NA,nrow=99)
+TempFil <- function(oDir,chkList, locList) {
+  ctyfips <- as.character(as.numeric(substr(locList$list1,3,5)))
+  npng <- (length(chkList) * (length(ctyfips)+1)) + 4
+  oMatrix <- matrix(data=NA,nrow=npng)
 
   # Copying RMD File      
   file.copy("SDO_Report.Rmd",oDir)
@@ -21,7 +23,7 @@ TempFil <- function(oDir) {
  file.copy("www/Landscape.docx",oDir)
   
   
-  for(i in 4:99) {
+  for(i in 4:npng) {
       oMatrix[i] <- tempfile(tmpdir=oDir,fileext=".png")
     } 
  

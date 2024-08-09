@@ -11,13 +11,13 @@
 wic <- function(DBPool,lvl,listID,curYR){
 
   # Collecting List of Counties
- 
+  curYr <- curYr - 1  # Need to update WIC data for 2022
   ctyfips <- as.numeric(substr(listID$list1,3,5))
   
   
 # Extracting WIC data
   WICSQL <- "SELECT * FROM data.csbg_wic;"
-  f.WIC <- dbGetQuery(DBPool, WICSQL) %>% filter(fips %in% ctyfips  & year == curYR)
+  f.WIC <- dbGetQuery(DBPool, WICSQL) %>% filter(fips %in% ctyfips  & year == curYr)  
   
    f.WICctyVAL <- f.WIC %>% select("fips", "county", "wicpart","wicelig")
    

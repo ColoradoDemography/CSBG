@@ -1,5 +1,3 @@
-#' outputWord  Generates a word document for dowload
-#'
 #' outputWord is the server function that facilitates the download
 #'
 #' @param chkList is the list of topical areas selected
@@ -16,11 +14,13 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
   if(length(ctyfips) > 1) {
     ctyfips <- c("0",ctyfips)
   }
-  
+
+  npng <- (length(chkList) * (length(ctyfips)+1)) + 4
+  xmat <- fileMat
   base <- 10
+  grCount <- 4
   
   if("age" %in% chkList) {
-    grCount <- 4
     age_list <- outputMat[[1,1]]
     age_data <- age_list[[1]]$data
     age_caption <- age_list[[1]]$caption
@@ -38,7 +38,7 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
     ggimg1 <- age_data2 %>% ggplot(aes(x=age_cat, y=age_pct)) +
     geom_bar(stat="identity", position="dodge", color="black", fill="blue")+
           scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
-           theme_codemog(base_size=base) +
+    #       theme_codemog(base_size=base) +
            labs(title = age_title,
                 subtitle = LocName,
                 caption = age_caption,
@@ -57,8 +57,6 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
   }
 
   if("ageemp" %in% chkList) {
-
-    grCount <- 12
     ageemp_list <- outputMat[[2,1]]
     ageemp_data <- ageemp_list[[1]]$data
     ageemp_caption <- ageemp_list[[1]]$caption
@@ -75,10 +73,10 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
        
        LocName <- unique(ageemp_data2$geoname)
        ggimg2a <-ggplot(ageemp_data2, aes(x=date, y=UNEMPRATE)) +
-       geom_line(size=1.2) +
+       geom_line(linewidth=1.2) +
              scale_x_date(labels = date_format("%B, %Y")) +
              scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
-              theme_codemog(base_size=base) +
+         #     theme_codemog(base_size=base) +
               labs(title = ageemp_title,
                    subtitle = LocName,
                    caption = ageemp_caption,
@@ -97,7 +95,6 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
   }   
  
  if("pov" %in% chkList) {
-   grCount <- 20
     pov_list <- outputMat[[3,1]]
     pov_data <- pov_list[[1]]$data
     pov_caption <- pov_list[[1]]$caption
@@ -114,7 +111,7 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
        ggimg3 <-ggplot(pov_data2, aes(x=POV.LEVEL, y=pct)) +
        geom_bar(stat="identity", position="dodge", color="black", fill="blue")+
              scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
-              theme_codemog(base_size=base) +
+         #     theme_codemog(base_size=base) +
               labs(title = pov_title,
                    subtitle = LocName,
                    caption = pov_caption,
@@ -133,19 +130,18 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
  }
   
  if("educatt" %in% chkList) {
-  grCount <- 28
     educatt_list <- outputMat[[4,1]]
     educatt_data <- educatt_list[[1]]$data
     educatt_caption <- educatt_list[[1]]$caption
     educatt_title <- unlist(outputMat[[4,2]])
     educatt_title <- paste0(educatt_title,",\n",locList$plName1)
+
+   educatt_data <- educatt_data %>%
+          mutate(educatt2 = ifelse(str_detect(educatt,"Less Than"),1,
+                            ifelse(str_detect(educatt,"Graduate"),2,
+                            ifelse(str_detect(educatt,"Some College"),3,4))))
     
-    educatt_data$educatt <- plyr::revalue(educatt_data$educatt,  
-                        c("Less Than High School"="Less Than\nHigh School",
-                         "High School Graduate" = "High School\nGraduate",
-                         "Some College, Associates Degree" = "Some College,\nAssociates Degree",
-                         "Bachelor's Degree or Higher" = "Bachelor's Degree\nor Higher"))
-    educatt_data$educatt <-  factor(educatt_data$educatt, levels=c("Less Than\nHigh School",
+    educatt_data$educatt <-  factor(educatt_data$educatt2, levels= c(1,2,3,4), labels=c("Less Than\nHigh School",
                  "High School\nGraduate", "Some College,\nAssociates Degree",
                  "Bachelor's Degree\nor Higher")) 
     
@@ -162,7 +158,7 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
              scale_fill_manual(values=c("#00953A","#6EC4E8"),
                       name="Poverty Level") +
              scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
-              theme_codemog(base_size=base) +
+         #     theme_codemog(base_size=base) +
               labs(title = educatt_title,
                    subtitle = LocName,
                    caption = educatt_caption,
@@ -180,7 +176,6 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
  } 
   
  if("povage" %in% chkList) {
-    grCount <- 36
     povage_list <- outputMat[[5,1]]
     povage_data <- povage_list[[1]]$data
     povage_caption <- povage_list[[1]]$caption
@@ -199,7 +194,7 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
        ggimg5 <-ggplot(povage_data2, aes(x=age_cat, y=value)) +
        geom_bar(stat="identity", position="dodge",  color="black", fill="blue")+
              scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
-              theme_codemog(base_size=base) +
+          #    theme_codemog(base_size=base) +
               labs(title = povage_title,
                    subtitle = LocName,
                    caption = povage_caption,
@@ -217,7 +212,6 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
  } 
   
  if("povagetr" %in% chkList) {
-    grCount <- 44
     povagetr_list <- outputMat[[6,1]]
     povagetr_data <- povagetr_list[[1]]$data
     povagetr_caption <- povagetr_list[[1]]$caption
@@ -234,10 +228,10 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
        
        LocName <- unique(povagetr_data2$geoname)
        ggimg6 <-ggplot(povagetr_data2, aes(x=year, y=value, group= age_cat, color=age_cat)) +
-       geom_line(size=1.1) +
+       geom_line(linewidth=1.1) +
              scale_color_manual(values=c("blue","orange","green"), name="Age Category") +
              scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
-              theme_codemog(base_size=base) +
+          #    theme_codemog(base_size=base) +
               labs(title = povagetr_title,
                    subtitle = LocName,
                    caption = povagetr_caption,
@@ -255,7 +249,6 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
  } 
   
  if("povagedis" %in% chkList) {
-    grCount <- 52
     povagedis_list <- outputMat[[7,1]]
     povagedis_data <- povagedis_list[[1]]$data
     povagedis_caption <- povagedis_list[[1]]$caption
@@ -274,7 +267,7 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
        ggimg7 <-ggplot(povagedis_data2, aes(x=age_cat, y=pct)) +
        geom_bar(stat="identity", position="dodge",  color="black", fill="blue")+
              scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
-              theme_codemog(base_size=base) +
+          #    theme_codemog(base_size=base) +
               labs(title = povagedis_title,
                    subtitle = LocName,
                    caption = povagedis_caption,
@@ -293,7 +286,6 @@ outputWord <- function(chkList, locList, lvl, outputMat,fileMat) {
   
 
 if("hhpov" %in% chkList) {
-    grCount <- 60
     hhpov_list <- outputMat[[8,1]]
     hhpov_data <- hhpov_list[[1]]$data
     hhpov_table <- hhpov_list[[1]]$FlexTable
@@ -314,7 +306,7 @@ if("hhpov" %in% chkList) {
              scale_fill_manual(values=c("#00953A","#6EC4E8"),
                       name="Presence of Children") +
              scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
-              theme_codemog(base_size=base) +
+          #    theme_codemog(base_size=base) +
               labs(title = hhpov_title,
                    subtitle = LocName,
                    caption = hhpov_caption,
@@ -332,7 +324,6 @@ if("hhpov" %in% chkList) {
 }
   
  if("tenure" %in% chkList) {
-    grCount <- 68
     tenure_list <- outputMat[[9,1]]
     tenure_data <- tenure_list[[1]]$data
     tenure_caption <- tenure_list[[1]]$caption
@@ -351,7 +342,7 @@ if("hhpov" %in% chkList) {
              scale_fill_manual(values=c("#00953A","#6EC4E8"),
                       name="Housing Tenure") +
              scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
-              theme_codemog(base_size=base) +
+          #    theme_codemog(base_size=base) +
               labs(title = tenure_title,
                    subtitle = LocName,
                    caption = tenure_caption,
@@ -370,9 +361,6 @@ if("hhpov" %in% chkList) {
 
   
    if("snap" %in% chkList) {
-
-     #FIX THIS
-    grCount <- 76
     snap_list <- outputMat[[10,1]]
     snap_data <- snap_list[[1]]$data
     snap_caption <- snap_list[[1]]$caption
@@ -387,11 +375,11 @@ if("hhpov" %in% chkList) {
        maxLim <- max(snap_data2$pct) + 20
      
        
-       LocName <- unique(snap_data2$county)
+       LocName <- unique(snap_data2$NAME)
      ggimg10 <-ggplot(snap_data2, aes(x=SNAP, y=pct)) +
        geom_bar(stat="identity", position="dodge",  color="black", fill="blue")+
              scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
-              theme_codemog(base_size=base) +
+         #     theme_codemog(base_size=base) +
               labs(title = snap_title,
                    subtitle = LocName,
                    caption = snap_caption,
@@ -409,7 +397,6 @@ if("hhpov" %in% chkList) {
    }
   
    if("wic" %in% chkList) {
-     grCount <- 84
     wic_list <- outputMat[[11,1]]
     wic_data <- wic_list[[1]]$data
     wic_caption <- wic_list[[1]]$caption
@@ -425,7 +412,7 @@ if("hhpov" %in% chkList) {
      ggimg11 <-ggplot(wic_data2, aes(x=WIC, y=pct)) +
        geom_bar(stat="identity", position="dodge",  color="black", fill="blue")+
              scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
-              theme_codemog(base_size=base) +
+           #   theme_codemog(base_size=base) +
               labs(title = wic_title,
                    subtitle = LocName,
                    caption = wic_caption,
@@ -444,7 +431,6 @@ if("hhpov" %in% chkList) {
   
  
   if("insurance" %in% chkList) {
-    grCount <- 92
     insurance_list <- outputMat[[12,1]]
     insurance_data <- insurance_list[[1]]$data
     insurance_caption <- insurance_list[[1]]$caption
@@ -465,7 +451,7 @@ if("hhpov" %in% chkList) {
              scale_y_continuous(limits = c(0, maxLim), label=percent, expand = c(0, 0)) +
        scale_fill_manual(values=c("#00953A","#6EC4E8"),
                          name="Poverty Level") +
-              theme_codemog(base_size=base) +
+           #   theme_codemog(base_size=base) +
               labs(title = insurance_title,
                    subtitle = LocName,
                    caption = insurance_caption,

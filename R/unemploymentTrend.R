@@ -17,7 +17,7 @@ unemploymentTrend <- function(lvl,listID,curYr){
  
 
 # reading data series and selecting counties
-browser()
+
  f.unempl_raw <- readLines("./data/laucntycur14.txt")
 
  unemplen <- length(f.unempl_raw) - 12
