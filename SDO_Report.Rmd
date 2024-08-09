@@ -59,7 +59,7 @@ if(length(ctyfips) > 1) {
 }
 
 base <- 10 
-
+grCount <- 4
  
 ```
 
@@ -84,7 +84,7 @@ if("age" %in% unlist(outChk)) {
 ```{r age2, results="asis", echo = FALSE, out.width = "100%", fig.pos="h"}
 
 if("age" %in% unlist(outChk)) {
-grCount <- 4
+
 for(i in 1:length(ctyfips)) {
    agep <- fixPath(filemat[grCount])
    cat(paste0("![](",agep,")  \n"))
@@ -119,8 +119,6 @@ cat("### Unemployment Rate  \n")
 ```{r ageemp2, results="asis", echo = FALSE, out.width = "100%", fig.pos="h"}
 
 if("ageemp" %in% unlist(outChk)) {
-   grCount <- 12
-  
    for(i in 1:length(ctyfips)) {
           ageemp1p <- fixPath(filemat[grCount])   
           grCount <- grCount + 1
@@ -155,7 +153,6 @@ cat("### Population by Federal Poverty Level  \n")
 ```{r pov2, results="asis", echo = FALSE}
 
 if("pov" %in% unlist(outChk)) {
-   grCount <- 20
    for(i in 1:length(ctyfips)) {
       povp <- fixPath(filemat[grCount])
    cat(paste0("![](",povp,")  \n"))
@@ -189,7 +186,6 @@ cat("### Educational Attainment by Federal Poverty Level  \n")
 ```{r educatt2, results="asis", echo = FALSE}
 
 if("educatt" %in% unlist(outChk)) {
-    grCount <- 28
    for(i in 1:length(ctyfips)) {
       educp <- fixPath(filemat[grCount])
       cat(paste0("![](",educp,")  \n"))
@@ -221,7 +217,6 @@ cat("### Age by Federal Poverty Level  \n")
 
 ```{r povage2, results="asis", echo = FALSE}
 if("povage" %in% unlist(outChk)) {
-   grCount <- 36
    for(i in 1:length(ctyfips)) {
       povagep <- fixPath(filemat[grCount])
       cat(paste0("![](",povagep,")  \n"))
@@ -253,7 +248,6 @@ if("povagetr" %in% unlist(outChk)) {
 
 ```{r povagetr2, results="asis", echo = FALSE}
 if("povagetr" %in% unlist(outChk)) {
-   grCount <- 44
    for(i in 1:length(ctyfips)) {
        povagetrp <- fixPath(filemat[grCount])
        cat(paste0("![](",povagetrp,")  \n"))
@@ -285,7 +279,6 @@ cat("### Age by Federal Poverty Level for Persons with Disabilities  \n")
 
 ```{r povagedis2, results="asis", echo = FALSE}
 if("povagedis" %in% unlist(outChk)) {
-   grCount <- 52
    for(i in 1:length(ctyfips)) {
        povagedisp <- fixPath(filemat[grCount])
        cat(paste0("![](",povagedisp,")  \n"))
@@ -317,7 +310,6 @@ if("hhpov" %in% unlist(outChk)) {
 
 ```{r hhpov2, results="asis", echo = FALSE}
 if("hhpov" %in% unlist(outChk)) {
-   grCount <- 60
    for(i in 1:length(ctyfips)) {
        hhpovp <- fixPath(filemat[grCount])
        cat(paste0("![](",hhpovp,")  \n"))
@@ -349,7 +341,6 @@ if("tenure" %in% unlist(outChk)) {
 
 ```{r tenure2, results="asis", echo = FALSE}
 if("tenure" %in% unlist(outChk)) {
-   grCount <- 68
    for(i in 1:length(ctyfips)) {
        tenurep <- fixPath(filemat[grCount])
        cat(paste0("![](",tenurep,")  \n"))
@@ -381,7 +372,6 @@ if("snap" %in% unlist(outChk)) {
 
 ```{r snap2, results="asis", echo = FALSE}
 if("snap" %in% unlist(outChk)) {
-   grCount <- 76
    for(i in 1:length(ctyfips)) {
        snapp <- fixPath(filemat[grCount]) 
        cat(paste0("![](",snapp,")  \n"))
@@ -413,7 +403,6 @@ if("wic" %in% unlist(outChk)) {
 
 ```{r wic2, results="asis", echo = FALSE}
 if("wic" %in% unlist(outChk)) {
-   grCount <- 84
    for(i in 1:length(ctyfips)) {
        wicp <- fixPath(filemat[grCount])
        cat(paste0("![](",wicp,")  \n"))
@@ -445,7 +434,6 @@ if("insurance" %in% unlist(outChk)) {
 
 ```{r insurance2, results="asis", echo = FALSE}
 if("insurance" %in% unlist(outChk)) {
-    grCount <- 92
    for(i in 1:length(ctyfips)) {
        insurancep <- fixPath(filemat[grCount]) 
        cat(paste0("![](",insurancep,")  \n"))

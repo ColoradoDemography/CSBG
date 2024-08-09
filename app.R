@@ -96,10 +96,10 @@ source("R/pctMOE.R")
 # The GLOBAL Variables  Add Additional lists items as sections get defined
 #File Locations ALSO LOOK AT LINE IN THE WORD OUTPUT CODE  LINE 990
 # Local/Development
-tPath <- "C:/Users/abickford/Documents/TempDir"  #Development
+#tPath <- "C:/Users/abickford/Documents/TempDir"  #Development
  
 #Production
-# tPath <- "/tmp"  
+tPath <- "/tmp"  
 
 # Locations for Google Analtyics Java Script Files
 # Local/ Development
@@ -181,10 +181,11 @@ ui <-
                                                          "Garfield County Department of Human Services",
                                                          "Gunnison County",
                                                          "Housing Solutions for the Southwest",
-                                                         "Huerfano Las Animas Area Council of Governments ",
+                                                         "Huerfano County",
                                                          "Jefferson County",
                                                          "Kiowa County",
                                                          "Larimer County",
+                                                         "Las Animas County",
                                                          "Mesa County",
                                                          "Moffat County",
                                                          "Montrose County",
@@ -195,7 +196,7 @@ ui <-
                                                          "Prowers County",
                                                          "Pueblo County",
                                                          "Rio Blanco County",
-                                                         "Routt County Department of Human Services ",
+                                                         "Routt County",
                                                          "San Miguel County",
                                                          "SLV Community Solutions",
                                                          "Summit County",
@@ -961,8 +962,8 @@ server <- function(input, output, session) {
         fullDir <- file.path(tPath,tName)
         tDir <- dir.create(fullDir) #Setting Temporary Directory location for Reporting
         
-        fileMat <- TempFil(fullDir)  
-      
+        fileMat <- TempFil(fullDir,input$outChk, fipslist)  
+
       x <-  outputWord(input$outChk, fipslist, input$level, outputObj,fileMat)  # x is  a list with nothing in it.
        shinyjs::show("outputWord")
         }) #Progress Bar
